@@ -1,0 +1,71 @@
+# Backup und alte Dateien
+*.bak
+*.old
+
+# Markdown-Dateien (außer README.md)
+*.md
+!README.md
+
+# Frontend (Node.js / React)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.DS_Store
+
+# Backend (Laravel / PHP)
+backend/vendor/
+backend/.env
+backend/.env.backup
+backend/storage/*.key
+backend/storage/logs/
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/bootstrap/cache/*
+backend/public/storage
+backend/public/hot
+backend/composer.lock
+backend/.phpunit.result.cache
+backend/Homestead.json
+backend/Homestead.yaml
+backend/npm-debug.log
+backend/yarn-error.log
+
+# Datenbank
+*.sql
+*.sqlite
+*.db
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# IDE und Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Temporäre Dateien
+tmp/
+temp/
+*.tmp
+
+# System-Dateien
+Thumbs.db
+.DS_Store
+
+# Backup-Ordner
+/backup
