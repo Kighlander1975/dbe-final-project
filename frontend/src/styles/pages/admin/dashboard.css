@@ -1,17 +1,59 @@
-/* Admin Dashboard Styles */
+/* src/styles/pages/admin.css */
 
 .admin-dashboard {
   padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-dashboard__header {
   text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 .admin-dashboard__title {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #fff;
+  margin-bottom: 0.5rem;
+  color: var(--primary-green-dark);
 }
 
 .admin-dashboard__subtitle {
   font-size: 1.2rem;
-  color: #888;
+  color: var(--text-medium);
+}
+
+.admin-dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.admin-dashboard__card {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border-left: 4px solid var(--primary-green);
+  transition: all 0.3s ease;
+}
+
+.admin-dashboard__card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-dashboard__card-title {
+  font-size: 1.5rem;
+  color: var(--primary-green-dark);
+  margin-bottom: 1rem;
+}
+
+.admin-dashboard__card-content {
+  color: var(--text-medium);
+  font-size: 1rem;
 }

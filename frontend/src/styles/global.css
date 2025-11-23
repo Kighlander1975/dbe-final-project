@@ -1,5 +1,39 @@
 /* src/styles/global.css */
 
+:root {
+  /* Hauptfarben vom Spiel */
+  --primary-green: #2d9f5e;
+  --primary-green-light: #3db872;
+  --primary-green-dark: #1f7a47;
+  
+  --accent-blue: #1e5a8e;
+  --accent-red: #d32f2f;
+  --accent-orange: #ff9800;
+  
+  /* Hintergründe */
+  --bg-light: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-subtle: #e8f5e9;
+  --bg-gradient: linear-gradient(135deg, #2d9f5e 0%, #1e5a8e 100%);
+  
+  /* Text */
+  --text-dark: #2c3e50;
+  --text-medium: #546e7a;
+  --text-light: #78909c;
+  
+  /* Schatten */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 16px rgba(0,0,0,0.2);
+  --shadow-card: 0 2px 8px rgba(45, 159, 94, 0.15);
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
 /* CSS Reset */
 * {
   margin: 0;
@@ -17,16 +51,21 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  background-color: #1a1a1a;
-  color: #ffffff;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
   line-height: 1.6;
   min-height: 100vh;
 }
 
 /* Links */
 a {
-  color: inherit;
+  color: var(--primary-green);
   text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-green-dark);
 }
 
 /* Lists */
@@ -40,6 +79,7 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  transition: all 0.3s ease;
 }
 
 /* Images */
@@ -53,28 +93,86 @@ img {
 input, textarea, select {
   font-family: inherit;
   font-size: inherit;
+  border: 2px solid #e0e0e0;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  transition: border-color 0.3s ease;
 }
 
-/* Remove default focus outline, add custom one */
-:focus {
-  outline: 2px solid #4CAF50;
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(45, 159, 94, 0.1);
+}
+
+/* Custom focus outline */
+:focus-visible {
+  outline: 2px solid var(--primary-green);
   outline-offset: 2px;
 }
 
-/* Scrollbar styling (optional) */
+/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #2a2a2a;
+  background: var(--bg-subtle);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4a4a4a;
+  background: var(--primary-green-light);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5a5a5a;
+  background: var(--primary-green);
+}
+
+/* Utility Classes */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--primary-green);
+  color: white;
+  border: 2px solid var(--primary-green);
+}
+
+.btn-primary:hover {
+  background: var(--primary-green-dark);
+  border-color: var(--primary-green-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--primary-green);
+  border: 2px solid var(--primary-green);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-subtle);
 }

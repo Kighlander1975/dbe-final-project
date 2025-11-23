@@ -1,10 +1,12 @@
 <?php
-
+// app/Http/Controllers/AuthController.php
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -24,14 +26,17 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'email_verification_token' => Str::random(64), // Token generieren
+            // email_verified_at bleibt NULL (unverifiziert)
         ]);
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        // Verifizierungs-E-Mail senden
+        $this->sendVerificationEmail($user);
 
+        // KEIN Token zurückgeben! User muss erst verifizieren
         return response()->json([
-            'user' => $user,
-            'token' => $token,
-            'message' => 'User registered successfully'
+            'message' => 'Registrierung erfolgreich! Bitte überprüfe deine E-Mails und verifiziere deine Adresse.',
+            'email' => $user->email,
         ], 201);
     }
 
@@ -49,8 +54,16 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'The provided credentials are incorrect.'
+                'message' => 'Die eingegebenen Zugangsdaten sind falsch.'
             ], 401);
+        }
+
+        // Check ob E-Mail verifiziert ist
+        if (is_null($user->email_verified_at)) {
+            return response()->json([
+                'message' => 'Bitte verifiziere zuerst deine E-Mail-Adresse.',
+                'error' => 'email_not_verified'
+            ], 403);
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
@@ -58,7 +71,7 @@ class AuthController extends Controller
         return response()->json([
             'user' => $user,
             'token' => $token,
-            'message' => 'Login successful'
+            'message' => 'Login erfolgreich'
         ]);
     }
 
@@ -70,7 +83,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logged out successfully'
+            'message' => 'Erfolgreich abgemeldet'
         ]);
     }
 
@@ -79,6 +92,37 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+
+        // Doppelter Check (falls Token existiert aber unverifiziert)
+        if (is_null($user->email_verified_at)) {
+            return response()->json([
+                'message' => 'E-Mail-Adresse nicht verifiziert.',
+                'error' => 'email_not_verified'
+            ], 403);
+        }
+
+        return response()->json($user);
+    }
+
+    /**
+     * Verifizierungs-E-Mail senden
+     */
+    private function sendVerificationEmail(User $user)
+    {
+        $verificationUrl = config('app.frontend_url') . '/verify-email?token=' . $user->email_verification_token;
+
+        // Einfache E-Mail (später mit Mailable ersetzen)
+        Mail::raw(
+            "Hallo {$user->name},\n\n" .
+                "Bitte verifiziere deine E-Mail-Adresse:\n\n" .
+                "{$verificationUrl}\n\n" .
+                "Viele Grüße,\n" .
+                "Dein Team",
+            function ($message) use ($user) {
+                $message->to($user->email)
+                    ->subject('E-Mail-Adresse verifizieren');
+            }
+        );
     }
 }

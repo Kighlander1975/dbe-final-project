@@ -1,28 +1,27 @@
-/* src/styles/pages/login.css */
-/* src/styles/pages/register.css */
-/* src/styles/pages/newgame.css */
+/* src/styles/pages/forms.css */
 
-.login, .register, .newgame {
+/* Gemeinsame Styles für Login, Register, NewGame, VerifyEmail */
+.login, .register, .newgame, .verify-email {
   max-width: 500px;
   margin: 0 auto;
   padding: 3rem 2rem;
 }
 
-.login__container, .register__container, .newgame__container {
+.login__container, .register__container, .newgame__container, .verify-email__container {
   background: var(--bg-card);
   padding: 3rem;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
 }
 
-.login__title, .register__title, .newgame__title {
+.login__title, .register__title, .newgame__title, .verify-email__title {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
   color: var(--primary-green-dark);
   text-align: center;
 }
 
-.login__subtitle, .register__subtitle, .newgame__subtitle {
+.login__subtitle, .register__subtitle, .newgame__subtitle, .verify-email__subtitle {
   font-size: 1.1rem;
   color: var(--text-medium);
   text-align: center;
@@ -69,4 +68,25 @@
 .form-link a:hover {
   color: var(--primary-green-dark);
   text-decoration: underline;
+}
+
+/* ⭐ NEU: Success/Error Messages */
+.success-message {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid #c3e6cb;
+}
+
+.error-message {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #fee;
+  color: #c33;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid #fcc;
 }
