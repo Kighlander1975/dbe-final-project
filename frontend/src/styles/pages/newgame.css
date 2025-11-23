@@ -1,0 +1,17 @@
+/* New Game Page Styles */
+
+.newgame {
+  padding: 2rem;
+  text-align: center;
+}
+
+.newgame__title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.newgame__subtitle {
+  font-size: 1.2rem;
+  color: #888;
+}

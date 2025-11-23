@@ -1,0 +1,17 @@
+/* Register Page Styles */
+
+.register {
+  padding: 2rem;
+  text-align: center;
+}
+
+.register__title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.register__subtitle {
+  font-size: 1.2rem;
+  color: #888;
+}

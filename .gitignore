@@ -67,5 +67,11 @@ temp/
 Thumbs.db
 .DS_Store
 
-# Backup-Ordner
+# Ignore-Ordner
 /backup
+/bilder_sammlung
+/gedanken
+
+# Umgang mit "*.md" Dateien
+!README.md
+*.md

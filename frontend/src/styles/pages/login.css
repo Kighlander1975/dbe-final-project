@@ -1,0 +1,17 @@
+/* Login Page Styles */
+
+.login {
+  padding: 2rem;
+  text-align: center;
+}
+
+.login__title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.login__subtitle {
+  font-size: 1.2rem;
+  color: #888;
+}

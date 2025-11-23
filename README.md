@@ -92,7 +92,7 @@ Die Anwendung wird mit folgenden Technologien entwickelt:
 - **JavaScript (ES6+)** für die Funktionalität
 
 #### Backend
-- **Laravel 11** als PHP-Framework
+- **Laravel 12** als PHP-Framework
 - **PHP 8.2+** für die Serverlogik
 - **Laravel Sanctum** für API-Authentifizierung
 - **RESTful API** für Frontend-Backend-Kommunikation
@@ -113,22 +113,22 @@ Die Entwicklungsumgebung basiert auf Docker und besteht aus vier Services:
 #### Container-Architektur
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Docker Compose                        │
-├─────────────────────────────────────────────────────────┤
-│                                                           │
+┌────────────────────────────────────────────────────────┐
+│                    Docker Compose                      │
+├────────────────────────────────────────────────────────┤
+│                                                        │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
 │  │   Frontend   │  │   Backend    │  │   Database   │  │
 │  │              │  │              │  │              │  │
 │  │  React+Vite  │  │   Laravel    │  │   MariaDB    │  │
 │  │  Port: 3000  │  │  Port: 8000  │  │  Port: 3307  │  │
 │  └──────────────┘  └──────────────┘  └──────────────┘  │
-│                                                           │
-│                    ┌──────────────┐                      │
-│                    │  phpMyAdmin  │                      │
-│                    │  Port: 8080  │                      │
-│                    └──────────────┘                      │
-└─────────────────────────────────────────────────────────┘
+│                                                        │
+│                    ┌──────────────┐                    │
+│                    │  phpMyAdmin  │                    │
+│                    │  Port: 8080  │                    │
+│                    └──────────────┘                    │
+└────────────────────────────────────────────────────────┘
 ```
 
 #### Service-Details
