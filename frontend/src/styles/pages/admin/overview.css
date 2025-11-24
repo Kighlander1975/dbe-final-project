@@ -1,0 +1,102 @@
+/* Ergänzung für Overview-Komponente */
+
+.admin-overview {
+  max-width: 1200px;
+}
+
+.admin-overview__title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-green-dark);
+}
+
+.admin-overview__subtitle {
+  font-size: 1.1rem;
+  color: var(--text-medium);
+  margin-bottom: 2rem;
+}
+
+.admin-overview__info-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 2rem;
+}
+
+.admin-overview__section-title {
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.admin-overview__info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.admin-overview__info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-overview__info-item strong {
+  color: var(--text-medium);
+  font-size: 0.9rem;
+}
+
+.admin-overview__info-item span {
+  color: var(--text-dark);
+  font-size: 1rem;
+}
+
+/* Statistik-Karten */
+.admin-overview__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.admin-overview__stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-overview__stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.admin-overview__stat-icon {
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+}
+
+.admin-overview__stat-content h3 {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+}
+
+.admin-overview__stat-value {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--primary-green-dark);
+  margin: 0;
+}

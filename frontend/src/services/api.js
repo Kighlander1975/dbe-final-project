@@ -2,6 +2,19 @@
 
 const API_BASE_URL = "http://localhost:8000/api";
 
+// Diese Funktion wird später durch den tatsächlichen Import ersetzt
+// Sie dient nur als Platzhalter, damit wir die Datei nicht direkt importieren müssen
+// (was zu zirkulären Abhängigkeiten führen könnte)
+let loadingHandlers = {
+    startLoading: () => {},
+    stopLoading: () => {},
+};
+
+// Funktion zum Setzen der Loading-Handler von außen
+export function setLoadingHandlers(handlers) {
+    loadingHandlers = handlers;
+}
+
 /**
  * Cookie-Helper: Liest ein Cookie nach Namen
  */
@@ -25,6 +38,10 @@ function getCSRFToken() {
  * Zentrale API-Funktion
  */
 async function apiRequest(endpoint, options = {}) {
+    // Starte den globalen Ladevorgang
+    const loadingMessage = options.loadingMessage || "Wird geladen...";
+    loadingHandlers.startLoading(loadingMessage);
+
     const token = localStorage.getItem("token");
     const csrfToken = getCSRFToken();
 
@@ -63,9 +80,13 @@ async function apiRequest(endpoint, options = {}) {
             throw new Error(data.message || "API request failed");
         }
 
+        // Beende den globalen Ladevorgang
+        loadingHandlers.stopLoading();
         return data;
     } catch (error) {
         console.error("API Error:", error);
+        // Beende den globalen Ladevorgang auch im Fehlerfall
+        loadingHandlers.stopLoading();
         throw error;
     }
 }
@@ -99,6 +120,7 @@ export const authAPI = {
                 password,
                 password_confirmation,
             }),
+            loadingMessage: "Registrierung wird verarbeitet..."
         });
     },
 
@@ -108,6 +130,7 @@ export const authAPI = {
         return apiRequest("/login", {
             method: "POST",
             body: JSON.stringify({ email, password }),
+            loadingMessage: "Anmeldung wird verarbeitet..."
         });
     },
 
@@ -115,6 +138,7 @@ export const authAPI = {
     logout: async () => {
         return apiRequest("/logout", {
             method: "POST",
+            loadingMessage: "Abmeldung wird verarbeitet..."
         });
     },
 
@@ -122,6 +146,7 @@ export const authAPI = {
     getUser: async () => {
         return apiRequest("/user", {
             method: "GET",
+            loadingMessage: "Benutzerdaten werden geladen..."
         });
     },
 
@@ -129,6 +154,7 @@ export const authAPI = {
     checkRole: async () => {
         return apiRequest("/user/role", {
             method: "GET",
+            loadingMessage: "Benutzerrolle wird überprüft..."
         });
     },
 
@@ -137,6 +163,7 @@ export const authAPI = {
         return apiRequest("/verify-email", {
             method: "POST",
             body: JSON.stringify({ token }),
+            loadingMessage: "E-Mail wird verifiziert..."
         });
     },
 
@@ -146,6 +173,7 @@ export const authAPI = {
         return apiRequest("/resend-verification", {
             method: "POST",
             body: JSON.stringify({ email }),
+            loadingMessage: "E-Mail wird gesendet..."
         });
     },
 };
@@ -159,6 +187,7 @@ export const adminAPI = {
         
         return apiRequest(`/admin/users?${params.toString()}`, {
             method: "GET",
+            loadingMessage: "Benutzerliste wird geladen..."
         });
     },
 
@@ -167,6 +196,7 @@ export const adminAPI = {
         return apiRequest(`/admin/users/${userId}/role`, {
             method: "PATCH",
             body: JSON.stringify({ role }),
+            loadingMessage: "Benutzerrolle wird aktualisiert..."
         });
     },
 
@@ -174,6 +204,7 @@ export const adminAPI = {
     banUser: async (userId) => {
         return apiRequest(`/admin/users/${userId}/ban`, {
             method: "PATCH",
+            loadingMessage: "Benutzer wird gesperrt..."
         });
     },
 
@@ -181,6 +212,7 @@ export const adminAPI = {
     unbanUser: async (userId) => {
         return apiRequest(`/admin/users/${userId}/unban`, {
             method: "PATCH",
+            loadingMessage: "Benutzer wird entsperrt..."
         });
     },
 };

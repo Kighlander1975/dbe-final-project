@@ -42,6 +42,9 @@ function Login() {
     const result = await login(formData.email, formData.password);
 
     if (result.success) {
+      // Setze das Flag, dass der Benutzer gerade eingeloggt wurde
+      sessionStorage.setItem('justLoggedIn', 'true');
+      
       showToast('Erfolgreich angemeldet!', 'success', 6000);
       
       // Warte kurz, damit AuthContext den State setzen kann

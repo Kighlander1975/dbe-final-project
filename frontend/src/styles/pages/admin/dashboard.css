@@ -1,4 +1,4 @@
-/* src/styles/pages/admin.css */
+/* src/styles/pages/admin/dashboard.css */
 
 .admin-dashboard {
   padding: 2rem;
@@ -6,54 +6,303 @@
   margin: 0 auto;
 }
 
-.admin-dashboard__header {
-  text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-}
-
 .admin-dashboard__title {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
   color: var(--primary-green-dark);
+  text-align: center;
 }
 
 .admin-dashboard__subtitle {
   font-size: 1.2rem;
   color: var(--text-medium);
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.admin-dashboard__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+/* Info Card */
+.admin-dashboard__info-card {
   margin-top: 2rem;
-}
-
-.admin-dashboard__card {
+  padding: 1.5rem;
   background: var(--bg-card);
-  padding: 2rem;
   border-radius: var(--radius-lg);
+  border: 1px solid #e0e0e0;
   box-shadow: var(--shadow-card);
-  border-left: 4px solid var(--primary-green);
-  transition: all 0.3s ease;
 }
 
-.admin-dashboard__card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
+.admin-dashboard__info-card p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: var(--text-dark);
 }
 
-.admin-dashboard__card-title {
+/* Management Card */
+.admin-dashboard__management-card {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid #e0e0e0;
+  box-shadow: var(--shadow-card);
+}
+
+.admin-dashboard__management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-dashboard__section-title {
   font-size: 1.5rem;
   color: var(--primary-green-dark);
-  margin-bottom: 1rem;
+  margin: 0;
 }
 
-.admin-dashboard__card-content {
+/* Filter Buttons */
+.admin-dashboard__filter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: #e5e7eb;
+  color: var(--text-dark);
+  cursor: pointer;
+  text-transform: capitalize;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: #d1d5db;
+}
+
+.filter-btn--active {
+  background: var(--primary-green);
+  color: white;
+}
+
+/* Loading State */
+.admin-dashboard__loading {
+  text-align: center;
+  padding: 2rem;
   color: var(--text-medium);
-  font-size: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Table */
+.admin-dashboard__table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-dashboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.admin-dashboard__table thead tr {
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.admin-dashboard__table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
+}
+
+.admin-dashboard__table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.admin-dashboard__table tbody tr:hover {
+  background-color: var(--bg-subtle);
+}
+
+.admin-dashboard__table td {
+  padding: 0.75rem;
+  color: var(--text-dark);
+}
+
+/* Role Badges */
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.role-badge--admin {
+  background: #fbbf24;
+  color: #000;
+}
+
+.role-badge--player {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.role-badge--banned {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Actions Column */
+.admin-dashboard__actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-dashboard__role-select {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e0e0e0;
+  background: white;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.admin-dashboard__role-select:hover {
+  border-color: var(--primary-green);
+}
+
+.admin-dashboard__role-select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(45, 159, 94, 0.1);
+}
+
+/* Action Buttons */
+.action-btn {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-btn--ban {
+  background: #ef4444;
+}
+
+.action-btn--ban:hover {
+  background: #dc2626;
+}
+
+.action-btn--unban {
+  background: #10b981;
+}
+
+.action-btn--unban:hover {
+  background: #059669;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 1rem;
+  }
+
+  .admin-dashboard__title {
+    font-size: 2rem;
+  }
+
+  .admin-dashboard__subtitle {
+    font-size: 1rem;
+  }
+
+  .admin-dashboard__management-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-dashboard__filter {
+    width: 100%;
+  }
+
+  .filter-btn {
+    flex: 1;
+    min-width: 70px;
+  }
+
+  .admin-dashboard__table {
+    font-size: 0.85rem;
+  }
+
+  .admin-dashboard__table th,
+  .admin-dashboard__table td {
+    padding: 0.5rem;
+  }
+
+  .admin-dashboard__actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-dashboard__role-select,
+  .action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-dashboard__info-card,
+  .admin-dashboard__management-card {
+    padding: 1rem;
+  }
+
+  .admin-dashboard__section-title {
+    font-size: 1.2rem;
+  }
+}
+/* src/styles/pages/admin/dashboard.css */
+
+.admin-dashboard {
+  display: flex;
+  min-height: calc(100vh - 200px); /* Anpassen an Header/Footer */
+  background: var(--bg-light);
+  gap: 0;
+}
+
+.admin-dashboard__content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    flex-direction: column;
+  }
+
+  .admin-dashboard__content {
+    padding: 1rem;
+  }
 }

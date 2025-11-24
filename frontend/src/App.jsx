@@ -1,5 +1,5 @@
 // src/App.jsx
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 
 // Layout
@@ -8,7 +8,7 @@ import MainLayout from './layouts/MainLayout'
 // Components
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
-import AdminRoute from './components/AdminRoute' // ⭐ NEU
+import AdminRoute from './components/AdminRoute'
 
 // Pages - Öffentlich
 import Home from './pages/Home'
@@ -22,7 +22,19 @@ import NewGame from './pages/NewGame'
 // Pages - Admin
 import Dashboard from './pages/admin/Dashboard'
 
+// API Loading Handlers
+import { useLoading } from './context/LoadingContext'
+import { setLoadingHandlers } from './services/api'
+
 function App() {
+  // Verbinde den LoadingContext mit der API
+  const { startLoading, stopLoading } = useLoading();
+  
+  useEffect(() => {
+    // Setze die Loading-Handler für die API
+    setLoadingHandlers({ startLoading, stopLoading });
+  }, [startLoading, stopLoading]);
+
   return (
     <Routes>
       <Route element={<MainLayout />}>
@@ -58,9 +70,9 @@ function App() {
           } 
         />
         
-        {/* ⭐ NEU: Admin (nur für Admins) */}
+        {/* ⭐ Admin-Bereich mit Unterseiten */}
         <Route 
-          path="/admin" 
+          path="/admin/*" 
           element={
             <AdminRoute>
               <Dashboard />

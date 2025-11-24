@@ -1,0 +1,136 @@
+/* src/styles/pages/admin/user-management.css */
+
+.user-management {
+  max-width: 1200px;
+}
+
+.user-management__title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-green-dark);
+}
+
+.user-management__subtitle {
+  font-size: 1.1rem;
+  color: var(--text-medium);
+  margin-bottom: 2rem;
+}
+
+.user-management__card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.user-management__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.user-management__section-title {
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.user-management__filter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.user-management__loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-medium);
+}
+
+.user-management__table-wrapper {
+  overflow-x: auto;
+}
+
+.user-management__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-management__table thead tr {
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.user-management__table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.user-management__table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.user-management__table tbody tr:hover {
+  background-color: var(--bg-subtle);
+}
+
+.user-management__table td {
+  padding: 0.75rem;
+}
+
+.user-management__actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.user-management__role-select {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e0e0e0;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.user-management__role-select:hover {
+  border-color: var(--primary-green);
+}
+
+.user-management__role-select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(45, 159, 94, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-management__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-management__filter {
+    width: 100%;
+  }
+
+  .filter-btn {
+    flex: 1;
+  }
+
+  .user-management__actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-management__role-select,
+  .action-btn {
+    width: 100%;
+  }
+}

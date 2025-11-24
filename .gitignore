@@ -2,9 +2,12 @@
 *.bak
 *.old
 
-# Markdown-Dateien (außer README.md)
+# Markdown-Dateien (außer spezifische Dokumentationen)
 *.md
 !README.md
+!FRONTEND-ROLE-DOCS.md
+!LOADING-OVERLAY-DOCS.md
+!ADMIN-DASHBOARD-DOCS.md
 
 # Frontend (Node.js / React)
 frontend/node_modules/
@@ -52,7 +55,6 @@ docker-compose.override.yml
 *.swp
 *.swo
 *~
-.DS_Store
 
 # Logs
 *.log
@@ -71,8 +73,3 @@ Thumbs.db
 /backup
 /bilder_sammlung
 /gedanken
-
-# Umgang mit "*.md" Dateien
-!README.md
-!Frontend-Role-Docu.md
-*.md

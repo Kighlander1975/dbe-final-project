@@ -3,6 +3,7 @@ import React from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import LoadingOverlay from "../components/LoadingOverlay";
 import "../styles/layout.css";
 
 function MainLayout() {
@@ -18,6 +19,9 @@ function MainLayout() {
 
   return (
     <div className="main-layout">
+      {/* Globaler Loading-Overlay */}
+      <LoadingOverlay />
+      
       <header className="main-layout__header">
         <nav className="main-layout__nav">
           <Link to="/" className="main-layout__logo">
