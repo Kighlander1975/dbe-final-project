@@ -1,17 +1,447 @@
-/* New Game Page Styles */
+/* src/styles/pages/newgame.css */
+
+/* ============================================
+   CONTAINER
+   ============================================ */
 
 .newgame {
-  padding: 2rem;
-  text-align: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+/* ============================================
+   FORM
+   ============================================ */
+
+.newgame__form {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow-card);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.newgame__header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e8e8e8;
 }
 
 .newgame__title {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #fff;
+    font-size: 1.75rem;
+    margin: 0;
+    color: var(--text-dark);
+    font-weight: 700;
 }
 
-.newgame__subtitle {
-  font-size: 1.2rem;
-  color: #888;
+/* ============================================
+   FIELDSETS
+   ============================================ */
+
+.form-fieldset {
+    border: 2px solid #e0e0e0;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: white;
+}
+
+.form-fieldset:last-of-type {
+    margin-bottom: 1.5rem;
+}
+
+.form-legend {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    padding: 0 0.5rem;
+}
+
+/* ============================================
+   FORM GROUPS
+   ============================================ */
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.form-hint {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.4rem;
+}
+
+/* ============================================
+   SPIELNAME INPUT
+   ============================================ */
+
+.gamename-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-input--gamename {
+    flex: 0 1 50%;
+    min-width: 200px;
+    max-width: 400px;
+    padding: 0.6rem 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    background: white;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+
+.form-input--gamename:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(45, 159, 94, 0.1);
+}
+
+.gamename-suffix {
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* ============================================
+   SPIELERANZAHL BUTTONS
+   ============================================ */
+
+.player-count-buttons {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.player-btn {
+    padding: 0.6rem 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: var(--radius-md);
+    background: white;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.player-btn:hover {
+    border-color: var(--primary-green-light);
+    background: var(--bg-subtle);
+    transform: translateY(-1px);
+}
+
+.player-btn--active {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+    box-shadow: var(--shadow-md);
+}
+
+.player-btn--active:hover {
+    background: var(--primary-green-dark);
+    border-color: var(--primary-green-dark);
+}
+
+/* ============================================
+   SPIELER GRID
+   ============================================ */
+
+.players-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ============================================
+   EINZELNE SPIELER-ZEILE
+   ============================================ */
+
+.player-row {
+    background: var(--bg-light);
+    border: 2px solid #e0e0e0;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1rem;
+    margin: 0;
+    transition: all 0.2s ease;
+}
+
+.player-row:hover {
+    border-color: var(--primary-green-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.player-legend {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    padding: 0 0.5rem;
+}
+
+/* ============================================
+   FELDER (E-Mail + Name + Badge)
+   ============================================ */
+
+.player-row__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr 120px;
+    gap: 0.5rem;
+    align-items: start;
+}
+
+.player-input-wrapper {
+    position: relative;
+}
+
+.player-input-wrapper--hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    background: white;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(45, 159, 94, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.form-input--locked {
+    background: #f5f5f5;
+    color: var(--text-medium);
+    cursor: not-allowed;
+}
+
+.form-input:disabled {
+    background: transparent;
+    border-color: transparent;
+    cursor: default;
+}
+
+.form-input--error {
+    border-color: #dc3545;
+    background: #fff5f5;
+}
+
+.form-input--error:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.form-input--warning {
+    border-color: #0288d1;
+    background: #f0f8ff;
+}
+
+.form-input--warning:focus {
+    border-color: #0288d1;
+    box-shadow: 0 0 0 3px rgba(2, 136, 209, 0.1);
+}
+
+/* ============================================
+   ERROR/INFO MESSAGES
+   ============================================ */
+
+.input-error {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    color: #dc3545;
+    background: #fff5f5;
+}
+
+.input-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    color: #01579b;
+    line-height: 1.4;
+}
+
+.input-info__icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.input-info__text {
+    flex: 1;
+}
+
+/* ============================================
+   PLAYER BADGES
+   ============================================ */
+
+.player-badge {
+    display: inline-block;
+    width: 100%;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-self: start;
+    margin-top: 0.25rem;
+}
+
+.player-badge--hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.player-badge--current {
+    background: var(--primary-green);
+    color: white;
+}
+
+.player-badge--registered {
+    background: var(--primary-green-light);
+    color: white;
+}
+
+.player-badge--new {
+    background: var(--accent-orange);
+    color: white;
+}
+
+.player-badge--guest {
+    background: var(--text-light);
+    color: white;
+}
+
+/* ============================================
+   FORM ACTIONS
+   ============================================ */
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e8e8e8;
+    margin-top: 0;
+}
+
+.form-actions .btn {
+    flex: 1;
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .player-count-buttons {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .newgame {
+        padding: 1rem 0.5rem;
+    }
+
+    .newgame__form {
+        padding: 1.5rem;
+    }
+
+    .gamename-wrapper {
+        flex-wrap: wrap;
+    }
+
+    .form-input--gamename {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .gamename-suffix {
+        flex: 1 1 100%;
+    }
+
+    .player-count-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .player-row__fields {
+        grid-template-columns: 1fr;
+    }
+
+    .player-input-wrapper--hidden {
+        display: none;
+    }
+
+    .player-badge {
+        justify-self: start;
+        width: auto;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
 }

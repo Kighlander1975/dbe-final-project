@@ -150,7 +150,7 @@ export const authAPI = {
         });
     },
 
-    // ⭐ NEU: Check user role
+    // ⭐ Check user role
     checkRole: async () => {
         return apiRequest("/user/role", {
             method: "GET",
@@ -178,9 +178,27 @@ export const authAPI = {
     },
 };
 
-// ⭐ NEU: Admin API Endpoints
+// ⭐ NEU: User API (Public)
+export const userAPI = {
+    /**
+     * Get all users (öffentlich, für Spielerauswahl)
+     * GET /api/users
+     * Optional: Filter nach Role → ?role=player
+     */
+    getAll: async (page = 1, role = null) => {
+        const params = new URLSearchParams({ page });
+        if (role) params.append('role', role);
+        
+        return apiRequest(`/users?${params.toString()}`, {
+            method: "GET",
+            loadingMessage: "Benutzerliste wird geladen..."
+        });
+    },
+};
+
+// ⭐ Admin API Endpoints
 export const adminAPI = {
-    // Get all users
+    // Get all users (admin)
     getUsers: async (page = 1, role = null) => {
         const params = new URLSearchParams({ page });
         if (role) params.append('role', role);

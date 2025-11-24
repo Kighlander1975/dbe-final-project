@@ -1,5 +1,5 @@
 <?php
-
+// app/routes/api.php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -14,6 +14,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/verify-email', [VerificationController::class, 'verify']);
 Route::post('/resend-verification', [VerificationController::class, 'resend']);
 
+// ⭐ NEU: Public User List (ÖFFENTLICH, für Spielerauswahl)
+Route::get('/users', [UserController::class, 'index'])->name('users.public');
+
 // Protected routes (Email verified required)
 Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
@@ -24,7 +27,7 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
     
     // Admin-only routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {
-        Route::get('/users', [UserController::class, 'index']);
+        Route::get('/users', [UserController::class, 'index'])->name('users.admin');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
         Route::patch('/users/{user}/ban', [UserController::class, 'banUser']);
         Route::patch('/users/{user}/unban', [UserController::class, 'unbanUser']);
