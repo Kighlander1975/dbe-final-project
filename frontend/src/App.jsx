@@ -8,12 +8,13 @@ import MainLayout from './layouts/MainLayout'
 // Components
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
+import AdminRoute from './components/AdminRoute' // ⭐ NEU
 
 // Pages - Öffentlich
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import VerifyEmail from './pages/VerifyEmail' // ⭐ NEU
+import VerifyEmail from './pages/VerifyEmail'
 
 // Pages - Geschützt
 import NewGame from './pages/NewGame'
@@ -27,8 +28,6 @@ function App() {
       <Route element={<MainLayout />}>
         {/* Öffentlich */}
         <Route path="/" element={<Home />} />
-        
-        {/* ⭐ NEU: E-Mail-Verifizierung (öffentlich) */}
         <Route path="/verify-email" element={<VerifyEmail />} />
         
         {/* NUR für NICHT angemeldete User */}
@@ -59,13 +58,13 @@ function App() {
           } 
         />
         
-        {/* Admin */}
+        {/* ⭐ NEU: Admin (nur für Admins) */}
         <Route 
           path="/admin" 
           element={
-            <ProtectedRoute>
+            <AdminRoute>
               <Dashboard />
-            </ProtectedRoute>
+            </AdminRoute>
           } 
         />
         

@@ -6,7 +6,7 @@ import { useToast } from "../context/ToastContext";
 import "../styles/layout.css";
 
 function MainLayout() {
-  const { user, logout, loading } = useAuth()
+  const { user, logout, loading, isAdmin } = useAuth() // ⭐ isAdmin hinzugefügt
   const { showToast } = useToast()
   const navigate = useNavigate()
 
@@ -24,7 +24,6 @@ function MainLayout() {
             🎯 Stechen Helper
           </Link>
           
-          {/* Zeige Menu nur wenn NICHT loading */}
           {!loading && (
             <ul className="main-layout__menu">
               <li>
@@ -36,9 +35,14 @@ function MainLayout() {
                   <li>
                     <Link to="/new-game">🎮 Neues Spiel</Link>
                   </li>
-                  <li>
-                    <Link to="/admin">⚙️ Admin</Link>
-                  </li>
+                  
+                  {/* ⭐ NEU: Admin-Link nur für Admins */}
+                  {isAdmin() && (
+                    <li>
+                      <Link to="/admin">⚙️ Admin</Link>
+                    </li>
+                  )}
+                  
                   <li>
                     <span style={{ 
                       color: 'rgba(255,255,255,0.9)',
@@ -47,6 +51,19 @@ function MainLayout() {
                       alignItems: 'center',
                       gap: '0.5rem'
                     }}>
+                      {/* ⭐ NEU: Role-Badge */}
+                      {isAdmin() && (
+                        <span style={{
+                          background: '#fbbf24',
+                          color: '#000',
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '4px',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                        }}>
+                          ADMIN
+                        </span>
+                      )}
                       👤 {user.name}
                     </span>
                   </li>
@@ -83,7 +100,6 @@ function MainLayout() {
             </ul>
           )}
 
-          {/* Zeige Skeleton während loading */}
           {loading && (
             <div style={{
               display: 'flex',
@@ -118,7 +134,6 @@ function MainLayout() {
         <p>© 2024 Stechen Helper - Alle Rechte vorbehalten</p>
       </footer>
 
-      {/* CSS Animation für Skeleton */}
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }

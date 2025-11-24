@@ -74,4 +74,5 @@ Thumbs.db
 
 # Umgang mit "*.md" Dateien
 !README.md
+!Frontend-Role-Docu.md
 *.md

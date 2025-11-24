@@ -25,7 +25,7 @@ function getCSRFToken() {
  * Zentrale API-Funktion
  */
 async function apiRequest(endpoint, options = {}) {
-    const token = localStorage.getItem("auth_token");
+    const token = localStorage.getItem("token");
     const csrfToken = getCSRFToken();
 
     const config = {
@@ -41,7 +41,6 @@ async function apiRequest(endpoint, options = {}) {
         ...options,
     };
 
-    // ⭐ DEBUG: Request-Details
     console.log("📤 API Request:", {
         url: `${API_BASE_URL}${endpoint}`,
         method: config.method,
@@ -54,7 +53,6 @@ async function apiRequest(endpoint, options = {}) {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
         const data = await response.json();
 
-        // ⭐ DEBUG: Response-Details
         console.log("📥 API Response:", {
             status: response.status,
             ok: response.ok,
@@ -127,7 +125,14 @@ export const authAPI = {
         });
     },
 
-    // ⭐ NEU: E-Mail verifizieren
+    // ⭐ NEU: Check user role
+    checkRole: async () => {
+        return apiRequest("/user/role", {
+            method: "GET",
+        });
+    },
+
+    // E-Mail verifizieren
     verifyEmail: async (token) => {
         return apiRequest("/verify-email", {
             method: "POST",
@@ -135,12 +140,47 @@ export const authAPI = {
         });
     },
 
-    // ⭐ NEU: Verifizierungs-E-Mail erneut senden
+    // Verifizierungs-E-Mail erneut senden
     resendVerification: async (email) => {
         await initCSRF();
         return apiRequest("/resend-verification", {
             method: "POST",
             body: JSON.stringify({ email }),
+        });
+    },
+};
+
+// ⭐ NEU: Admin API Endpoints
+export const adminAPI = {
+    // Get all users
+    getUsers: async (page = 1, role = null) => {
+        const params = new URLSearchParams({ page });
+        if (role) params.append('role', role);
+        
+        return apiRequest(`/admin/users?${params.toString()}`, {
+            method: "GET",
+        });
+    },
+
+    // Update user role
+    updateUserRole: async (userId, role) => {
+        return apiRequest(`/admin/users/${userId}/role`, {
+            method: "PATCH",
+            body: JSON.stringify({ role }),
+        });
+    },
+
+    // Ban user
+    banUser: async (userId) => {
+        return apiRequest(`/admin/users/${userId}/ban`, {
+            method: "PATCH",
+        });
+    },
+
+    // Unban user
+    unbanUser: async (userId) => {
+        return apiRequest(`/admin/users/${userId}/unban`, {
+            method: "PATCH",
         });
     },
 };

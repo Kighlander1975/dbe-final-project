@@ -71,12 +71,42 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // ⭐ NEU: Role-Helper-Funktionen
+  const isAdmin = () => {
+    return user?.role === 'admin'
+  }
+
+  const isPlayer = () => {
+    return user?.role === 'player'
+  }
+
+  const isBanned = () => {
+    return user?.role === 'banned'
+  }
+
+  const hasRole = (role) => {
+    return user?.role === role
+  }
+
+  const canAccessAdmin = () => {
+    return isAdmin()
+  }
+
+  // ⭐ NEU: isAuthenticated Helper
+  const isAuthenticated = !!user
+
   const value = {
     user,
     register,
     login,
     logout,
-    loading
+    loading,
+    isAuthenticated,      // ⭐ NEU
+    isAdmin,              // ⭐ NEU
+    isPlayer,             // ⭐ NEU
+    isBanned,             // ⭐ NEU
+    hasRole,              // ⭐ NEU
+    canAccessAdmin,       // ⭐ NEU
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
