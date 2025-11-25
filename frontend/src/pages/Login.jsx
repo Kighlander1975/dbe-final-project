@@ -1,128 +1,134 @@
 // src/pages/Login.jsx
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
-import '../styles/pages/forms.css';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
+import "../styles/pages/forms.css";
 
 function Login() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const { showToast } = useToast();
+    const navigate = useNavigate();
+    const { login } = useAuth();
+    const { showToast } = useToast();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
     });
-    setError('');
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    // Validation
-    if (!formData.email || !formData.password) {
-      setError('Bitte fülle alle Felder aus');
-      setLoading(false);
-      return;
-    }
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+        setError("");
+    };
 
-    // Login
-    const result = await login(formData.email, formData.password);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
 
-    if (result.success) {
-      // Setze das Flag, dass der Benutzer gerade eingeloggt wurde
-      sessionStorage.setItem('justLoggedIn', 'true');
-      
-      showToast('Erfolgreich angemeldet!', 'success', 6000);
-      
-      // Warte kurz, damit AuthContext den State setzen kann
-      setTimeout(() => {
-        navigate('/');
-      }, 100);
-    } else {
-      setError(result.message);
-    }
+        // Validation
+        if (!formData.email || !formData.password) {
+            setError("Bitte fülle alle Felder aus");
+            setLoading(false);
+            return;
+        }
 
-    setLoading(false);
-  };
+        // Login
+        const result = await login(formData.email, formData.password);
 
-  return (
-    <div className="login">
-      <div className="login__container">
-        <h1 className="login__title">🔐 Login</h1>
-        <p className="login__subtitle">Melde dich an</p>
+        if (result.success) {
+            // Setze das Flag, dass der Benutzer gerade eingeloggt wurde
+            sessionStorage.setItem("justLoggedIn", "true");
 
-        {error && (
-          <div style={{
-            padding: '1rem',
-            marginBottom: '1rem',
-            backgroundColor: '#fee',
-            color: '#c33',
-            borderRadius: 'var(--radius-md)',
-            textAlign: 'center',
-          }}>
-            {error}
-          </div>
-        )}
+            showToast("Erfolgreich angemeldet!", "success", 6000);
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">E-Mail</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="deine@email.de"
-              disabled={loading}
-              required
-            />
-          </div>
+            // Warte kurz, damit AuthContext den State setzen kann
+            setTimeout(() => {
+                navigate("/");
+            }, 100);
+        } else {
+            setError(result.message);
+        }
 
-          <div className="form-group">
-            <label htmlFor="password">Passwort</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              disabled={loading}
-              required
-            />
-          </div>
+        setLoading(false);
+    };
 
-          <div className="form-actions">
-            <button 
-              type="submit" 
-              className="btn btn-primary"
-              disabled={loading}
-            >
-              {loading ? 'Anmelden...' : 'Anmelden'}
-            </button>
-          </div>
-        </form>
+    return (
+        <div className="login">
+            <div className="login__container">
+                <h1 className="login__title">🔐 Login</h1>
+                <p className="login__subtitle">Melde dich an</p>
 
-        <div className="form-link">
-          Noch kein Account? <Link to="/register">Jetzt registrieren</Link>
+                {error && (
+                    <div
+                        style={{
+                            padding: "1rem",
+                            marginBottom: "1rem",
+                            backgroundColor: "#fee",
+                            color: "#c33",
+                            borderRadius: "var(--radius-md)",
+                            textAlign: "center",
+                        }}
+                    >
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="email">E-Mail</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="deine@email.de"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="password">Passwort</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="••••••••"
+                            disabled={loading}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-actions">
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={loading}
+                        >
+                            {loading ? "Anmelden..." : "Anmelden"}
+                        </button>
+                    </div>
+                    <div className="form-link" style={{ marginTop: "1rem" }}>
+                        <Link to="/forgot-password">Passwort vergessen?</Link>
+                    </div>
+                </form>
+
+                <div className="form-link">
+                    Noch kein Account?{" "}
+                    <Link to="/register">Jetzt registrieren</Link>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default Login;

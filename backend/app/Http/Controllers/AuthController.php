@@ -113,7 +113,7 @@ class AuthController extends Controller
         if ($user->isBanned()) {
             // Token widerrufen
             $request->user()->currentAccessToken()->delete();
-            
+
             return response()->json([
                 'message' => 'Ihr Account wurde gesperrt.',
                 'error' => 'account_banned'
@@ -130,7 +130,7 @@ class AuthController extends Controller
     public function checkRole(Request $request)
     {
         $user = $request->user();
-        
+
         return response()->json([
             'role' => $user->role->value,
             'label' => $user->getRoleLabel(),
@@ -161,5 +161,39 @@ class AuthController extends Controller
                     ->subject('E-Mail-Adresse verifizieren');
             }
         );
+    }
+    /**
+     * Change password for authenticated user
+     */
+    public function changePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        // Prüfe, ob das aktuelle Passwort korrekt ist
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'message' => 'Das aktuelle Passwort ist falsch.'
+            ], 422);
+        }
+
+        // Prüfe, ob das neue Passwort unterschiedlich ist
+        if (Hash::check($validated['new_password'], $user->password)) {
+            return response()->json([
+                'message' => 'Das neue Passwort darf nicht mit dem alten übereinstimmen.'
+            ], 422);
+        }
+
+        // Update password
+        $user->password = Hash::make($validated['new_password']);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Passwort erfolgreich geändert.'
+        ]);
     }
 }

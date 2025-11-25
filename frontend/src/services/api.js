@@ -120,7 +120,7 @@ export const authAPI = {
                 password,
                 password_confirmation,
             }),
-            loadingMessage: "Registrierung wird verarbeitet..."
+            loadingMessage: "Registrierung wird verarbeitet...",
         });
     },
 
@@ -130,7 +130,7 @@ export const authAPI = {
         return apiRequest("/login", {
             method: "POST",
             body: JSON.stringify({ email, password }),
-            loadingMessage: "Anmeldung wird verarbeitet..."
+            loadingMessage: "Anmeldung wird verarbeitet...",
         });
     },
 
@@ -138,7 +138,7 @@ export const authAPI = {
     logout: async () => {
         return apiRequest("/logout", {
             method: "POST",
-            loadingMessage: "Abmeldung wird verarbeitet..."
+            loadingMessage: "Abmeldung wird verarbeitet...",
         });
     },
 
@@ -146,7 +146,7 @@ export const authAPI = {
     getUser: async () => {
         return apiRequest("/user", {
             method: "GET",
-            loadingMessage: "Benutzerdaten werden geladen..."
+            loadingMessage: "Benutzerdaten werden geladen...",
         });
     },
 
@@ -154,7 +154,7 @@ export const authAPI = {
     checkRole: async () => {
         return apiRequest("/user/role", {
             method: "GET",
-            loadingMessage: "Benutzerrolle wird überprüft..."
+            loadingMessage: "Benutzerrolle wird überprüft...",
         });
     },
 
@@ -163,7 +163,7 @@ export const authAPI = {
         return apiRequest("/verify-email", {
             method: "POST",
             body: JSON.stringify({ token }),
-            loadingMessage: "E-Mail wird verifiziert..."
+            loadingMessage: "E-Mail wird verifiziert...",
         });
     },
 
@@ -173,7 +173,49 @@ export const authAPI = {
         return apiRequest("/resend-verification", {
             method: "POST",
             body: JSON.stringify({ email }),
-            loadingMessage: "E-Mail wird gesendet..."
+            loadingMessage: "E-Mail wird gesendet...",
+        });
+    },
+
+    // Passwort-Reset-Link anfordern
+    forgotPassword: async (email) => {
+        await initCSRF();
+        return apiRequest("/forgot-password", {
+            method: "POST",
+            body: JSON.stringify({ email }),
+            loadingMessage: "E-Mail wird gesendet...",
+        });
+    },
+
+    // Passwort zurücksetzen
+    resetPassword: async (email, token, password, password_confirmation) => {
+        await initCSRF();
+        return apiRequest("/reset-password", {
+            method: "POST",
+            body: JSON.stringify({
+                email,
+                token,
+                password,
+                password_confirmation,
+            }),
+            loadingMessage: "Passwort wird zurückgesetzt...",
+        });
+    },
+    // Passwort ändern (für eingeloggte User)
+    changePassword: async (
+        current_password,
+        new_password,
+        new_password_confirmation
+    ) => {
+        await initCSRF();
+        return apiRequest("/user/change-password", {
+            method: "POST",
+            body: JSON.stringify({
+                current_password,
+                new_password,
+                new_password_confirmation,
+            }),
+            loadingMessage: "Passwort wird geändert...",
         });
     },
 };
@@ -187,11 +229,11 @@ export const userAPI = {
      */
     getAll: async (page = 1, role = null) => {
         const params = new URLSearchParams({ page });
-        if (role) params.append('role', role);
-        
+        if (role) params.append("role", role);
+
         return apiRequest(`/users?${params.toString()}`, {
             method: "GET",
-            loadingMessage: "Benutzerliste wird geladen..."
+            loadingMessage: "Benutzerliste wird geladen...",
         });
     },
 };
@@ -201,11 +243,11 @@ export const adminAPI = {
     // Get all users (admin)
     getUsers: async (page = 1, role = null) => {
         const params = new URLSearchParams({ page });
-        if (role) params.append('role', role);
-        
+        if (role) params.append("role", role);
+
         return apiRequest(`/admin/users?${params.toString()}`, {
             method: "GET",
-            loadingMessage: "Benutzerliste wird geladen..."
+            loadingMessage: "Benutzerliste wird geladen...",
         });
     },
 
@@ -214,7 +256,7 @@ export const adminAPI = {
         return apiRequest(`/admin/users/${userId}/role`, {
             method: "PATCH",
             body: JSON.stringify({ role }),
-            loadingMessage: "Benutzerrolle wird aktualisiert..."
+            loadingMessage: "Benutzerrolle wird aktualisiert...",
         });
     },
 
@@ -222,7 +264,7 @@ export const adminAPI = {
     banUser: async (userId) => {
         return apiRequest(`/admin/users/${userId}/ban`, {
             method: "PATCH",
-            loadingMessage: "Benutzer wird gesperrt..."
+            loadingMessage: "Benutzer wird gesperrt...",
         });
     },
 
@@ -230,7 +272,7 @@ export const adminAPI = {
     unbanUser: async (userId) => {
         return apiRequest(`/admin/users/${userId}/unban`, {
             method: "PATCH",
-            loadingMessage: "Benutzer wird entsperrt..."
+            loadingMessage: "Benutzer wird entsperrt...",
         });
     },
 };
