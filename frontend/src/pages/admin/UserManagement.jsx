@@ -2,16 +2,18 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
+import { useLoading } from '../../context/LoadingContext' // ✅ NEU
 import { adminAPI } from '../../services/api'
 import '../../styles/pages/admin/user-management.css'
 
 function UserManagement() {
   const { user } = useAuth()
   const { showToast } = useToast()
+  const { startLoading, stopLoading } = useLoading() // ✅ NEU
   
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState('all') // all, player, admin, banned
+  const [filter, setFilter] = useState('all')
 
   // Load users
   useEffect(() => {
@@ -20,6 +22,10 @@ function UserManagement() {
 
   const loadUsers = async () => {
     setLoading(true)
+    
+    // ✅ Loading starten
+    startLoading('Lade Benutzer...')
+    
     try {
       const roleFilter = filter === 'all' ? null : filter
       const data = await adminAPI.getUsers(1, roleFilter)
@@ -28,21 +34,29 @@ function UserManagement() {
       showToast('Fehler beim Laden der Benutzer', 'error')
     } finally {
       setLoading(false)
+      stopLoading() // ✅ Loading stoppen
     }
   }
 
   const handleRoleChange = async (userId, newRole) => {
+    // ✅ Loading starten
+    startLoading('Rolle wird geändert...')
+    
     try {
       await adminAPI.updateUserRole(userId, newRole)
       showToast('Rolle erfolgreich geändert!', 'success')
       loadUsers()
     } catch (error) {
       showToast('Fehler beim Ändern der Rolle', 'error')
+      stopLoading() // ✅ Bei Fehler stoppen
     }
   }
 
   const handleBan = async (userId) => {
     if (!confirm('Benutzer wirklich sperren?')) return
+    
+    // ✅ Loading starten
+    startLoading('Benutzer wird gesperrt...')
     
     try {
       await adminAPI.banUser(userId)
@@ -50,16 +64,21 @@ function UserManagement() {
       loadUsers()
     } catch (error) {
       showToast(error.message || 'Fehler beim Sperren', 'error')
+      stopLoading() // ✅ Bei Fehler stoppen
     }
   }
 
   const handleUnban = async (userId) => {
+    // ✅ Loading starten
+    startLoading('Sperrung wird aufgehoben...')
+    
     try {
       await adminAPI.unbanUser(userId)
       showToast('Sperrung wurde aufgehoben', 'success')
       loadUsers()
     } catch (error) {
       showToast('Fehler beim Entsperren', 'error')
+      stopLoading() // ✅ Bei Fehler stoppen
     }
   }
 

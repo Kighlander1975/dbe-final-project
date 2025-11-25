@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
+import { useLoading } from '../context/LoadingContext'; // ✅ NEU
 import '../styles/pages/forms.css';
 
 function ForgotPassword() {
   const { showToast } = useToast();
+  const { startLoading, stopLoading } = useLoading(); // ✅ NEU
 
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -18,11 +20,15 @@ function ForgotPassword() {
     setError('');
     setSuccess(false);
     setLoading(true);
+    
+    // ✅ SOFORT Loading starten
+    startLoading('Reset-Link wird gesendet...');
 
     // Validation
     if (!email) {
       setError('Bitte gib deine E-Mail-Adresse ein');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
@@ -31,9 +37,11 @@ function ForgotPassword() {
       setSuccess(true);
       showToast('📧 ' + response.message, 'success', 8000);
       setEmail('');
+      stopLoading(); // ✅ NEU: Bei Erfolg stoppen
     } catch (err) {
       setError(err.message || 'Ein Fehler ist aufgetreten');
       showToast('❌ ' + (err.message || 'Fehler beim Senden'), 'error');
+      stopLoading(); // ✅ NEU: Bei Fehler stoppen
     } finally {
       setLoading(false);
     }

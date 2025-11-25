@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
+import { useLoading } from '../context/LoadingContext'; // ✅ NEU
 import '../styles/pages/forms.css';
 
 function ChangePassword() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { user } = useAuth();
+  const { startLoading, stopLoading } = useLoading(); // ✅ NEU
 
   const [formData, setFormData] = useState({
     current_password: '',
@@ -44,29 +46,36 @@ function ChangePassword() {
     e.preventDefault();
     setError('');
     setLoading(true);
+    
+    // ✅ SOFORT Loading starten
+    startLoading('Passwort wird geändert...');
 
     // Validation
     if (!formData.current_password || !formData.new_password || !formData.new_password_confirmation) {
       setError('Bitte fülle alle Felder aus');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
     if (formData.new_password.length < 8) {
       setError('Das neue Passwort muss mindestens 8 Zeichen lang sein');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
     if (formData.new_password !== formData.new_password_confirmation) {
       setError('Die neuen Passwörter stimmen nicht überein');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
     if (formData.current_password === formData.new_password) {
       setError('Das neue Passwort darf nicht mit dem alten übereinstimmen');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
@@ -93,6 +102,7 @@ function ChangePassword() {
     } catch (err) {
       setError(err.message || 'Ein Fehler ist aufgetreten');
       showToast('❌ ' + (err.message || 'Fehler beim Ändern'), 'error');
+      stopLoading(); // ✅ NEU: Bei Fehler stoppen
     } finally {
       setLoading(false);
     }

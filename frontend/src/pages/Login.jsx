@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { useLoading } from "../context/LoadingContext"; // ✅ NEU
 import "../styles/pages/forms.css";
 
 function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
     const { showToast } = useToast();
+    const { startLoading, stopLoading } = useLoading(); // ✅ NEU
 
     const [formData, setFormData] = useState({
         email: "",
@@ -16,7 +18,7 @@ function Login() {
     });
 
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); // Lokaler State für Button-Disable
 
     const handleChange = (e) => {
         setFormData({
@@ -30,32 +32,42 @@ function Login() {
         e.preventDefault();
         setError("");
         setLoading(true);
+        
+        // ✅ SOFORT globales Loading starten (vor Validation!)
+        startLoading("Anmeldung läuft...");
 
         // Validation
         if (!formData.email || !formData.password) {
             setError("Bitte fülle alle Felder aus");
             setLoading(false);
+            stopLoading(); // ✅ NEU
             return;
         }
 
-        // Login
-        const result = await login(formData.email, formData.password);
+        try {
+            // Login
+            const result = await login(formData.email, formData.password);
 
-        if (result.success) {
-            // Setze das Flag, dass der Benutzer gerade eingeloggt wurde
-            sessionStorage.setItem("justLoggedIn", "true");
+            if (result.success) {
+                // Setze das Flag, dass der Benutzer gerade eingeloggt wurde
+                sessionStorage.setItem("justLoggedIn", "true");
 
-            showToast("Erfolgreich angemeldet!", "success", 6000);
+                showToast("Erfolgreich angemeldet!", "success", 6000);
 
-            // Warte kurz, damit AuthContext den State setzen kann
-            setTimeout(() => {
-                navigate("/");
-            }, 100);
-        } else {
-            setError(result.message);
+                // Warte kurz, damit AuthContext den State setzen kann
+                setTimeout(() => {
+                    navigate("/");
+                }, 100);
+            } else {
+                setError(result.message);
+                stopLoading(); // ✅ NEU: Bei Fehler Loading stoppen
+            }
+        } catch (err) {
+            setError("Ein Fehler ist aufgetreten");
+            stopLoading(); // ✅ NEU: Bei Exception Loading stoppen
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     return (

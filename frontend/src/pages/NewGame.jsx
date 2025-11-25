@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLoading } from "../context/LoadingContext"; // ✅ NEU
 import { userAPI } from "../services/api";
 import PlayerCountSelector from "../components/newgame/PlayerCountSelector";
 import PlayerInput from "../components/newgame/PlayerInput";
@@ -10,6 +11,7 @@ import "../styles/pages/newgame.css";
 function NewGame() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { startLoading, stopLoading } = useLoading(); // ✅ NEU
 
     // State
     const [playerCount, setPlayerCount] = useState(5);
@@ -18,8 +20,7 @@ function NewGame() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     
-    // Maximale Spieleranzahl für die Datenpersistenz
-    const MAX_PLAYERS_CACHE = 11; // Maximale Anzahl von Spielern in der Anwendung
+    const MAX_PLAYERS_CACHE = 11;
 
     // User-Liste beim Laden abrufen
     useEffect(() => {
@@ -27,6 +28,9 @@ function NewGame() {
             try {
                 setLoading(true);
                 setError(null);
+                
+                // ✅ Loading starten
+                startLoading('Lade Spielerdaten...');
 
                 const response = await userAPI.getAll();
                 console.log("📥 User-Liste geladen:", response);
@@ -40,10 +44,16 @@ function NewGame() {
 
                 setAvailableEmails(emailList);
                 setLoading(false);
+                
+                // ✅ Loading stoppen
+                stopLoading();
             } catch (err) {
                 console.error("❌ Fehler beim Laden der User:", err);
                 setError("Benutzerliste konnte nicht geladen werden");
                 setLoading(false);
+                
+                // ✅ Loading stoppen
+                stopLoading();
             }
         };
 
@@ -112,12 +122,11 @@ function NewGame() {
             const usedGuestNames = getUsedGuestNames(i);
             const allPlayerNames = getAllPlayerNames(i);
             
-            // Bestehende Spielerdaten abrufen, falls vorhanden
             const existingPlayerData = players[i - 1];
             
             inputs.push(
                 <PlayerInput
-                    key={`player-${i}`} // Eindeutiger Key, der sich nicht ändert
+                    key={`player-${i}`}
                     playerNumber={i}
                     currentUser={i === 1 ? user : null}
                     availableEmails={availableEmails}
@@ -126,7 +135,6 @@ function NewGame() {
                     allPlayerNames={allPlayerNames}
                     onPlayerChange={handlePlayerChange}
                     isCurrentUser={i === 1}
-                    // Übergebe existierende Daten, falls vorhanden
                     existingData={existingPlayerData}
                 />
             );

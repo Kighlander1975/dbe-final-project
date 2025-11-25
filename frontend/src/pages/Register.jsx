@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useLoading } from '../context/LoadingContext'; // ✅ NEU
 import '../styles/pages/forms.css';
 
 function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
   const { showToast } = useToast();
+  const { startLoading, stopLoading } = useLoading(); // ✅ NEU
 
   const [formData, setFormData] = useState({
     name: '',
@@ -18,7 +20,7 @@ function Register() {
   });
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); // ⭐ NEU
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -27,31 +29,37 @@ function Register() {
       [e.target.name]: e.target.value,
     });
     setError('');
-    setSuccess(''); // ⭐ NEU
+    setSuccess('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess(''); // ⭐ NEU
+    setSuccess('');
     setLoading(true);
+    
+    // ✅ SOFORT Loading starten
+    startLoading('Registrierung läuft...');
 
     // Validation
     if (!formData.name || !formData.email || !formData.password || !formData.password_confirmation) {
       setError('Bitte fülle alle Felder aus');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
     if (formData.password.length < 8) {
       setError('Passwort muss mindestens 8 Zeichen lang sein');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
     if (formData.password !== formData.password_confirmation) {
       setError('Passwörter stimmen nicht überein');
       setLoading(false);
+      stopLoading(); // ✅ NEU
       return;
     }
 
@@ -64,19 +72,16 @@ function Register() {
     );
 
     if (result.success) {
-      // ⭐ Success-Message anzeigen
       setSuccess('✅ Registrierung erfolgreich! Bitte überprüfe deine E-Mails und verifiziere deine Adresse.');
-      
-      // ⭐ Toast anzeigen
       showToast('📧 Bitte verifiziere deine E-Mail-Adresse!', 'info', 8000);
       
-      // ⭐ Nach 3 Sekunden zum Login
+      // Nach 3 Sekunden zum Login
       setTimeout(() => {
         navigate('/login');
       }, 3000);
     } else {
-      // ⭐ Fehler bleibt als rote Box
       setError(result.message);
+      stopLoading(); // ✅ NEU: Bei Fehler stoppen
     }
 
     setLoading(false);
@@ -88,7 +93,7 @@ function Register() {
         <h1 className="register__title">📝 Registrierung</h1>
         <p className="register__subtitle">Erstelle deinen Account</p>
 
-        {/* ⭐ Success-Message */}
+        {/* Success-Message */}
         {success && (
           <div style={{
             padding: '1rem',
@@ -103,7 +108,7 @@ function Register() {
           </div>
         )}
 
-        {/* ⭐ Error-Message */}
+        {/* Error-Message */}
         {error && (
           <div style={{
             padding: '1rem',
@@ -127,7 +132,7 @@ function Register() {
               value={formData.name}
               onChange={handleChange}
               placeholder="Dein Name"
-              disabled={loading || success} // ⭐ Auch bei Success disablen
+              disabled={loading || success}
               required
             />
           </div>
@@ -141,7 +146,7 @@ function Register() {
               value={formData.email}
               onChange={handleChange}
               placeholder="deine@email.de"
-              disabled={loading || success} // ⭐ Auch bei Success disablen
+              disabled={loading || success}
               required
             />
           </div>
@@ -155,7 +160,7 @@ function Register() {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
-              disabled={loading || success} // ⭐ Auch bei Success disablen
+              disabled={loading || success}
               required
             />
           </div>
@@ -169,7 +174,7 @@ function Register() {
               value={formData.password_confirmation}
               onChange={handleChange}
               placeholder="••••••••"
-              disabled={loading || success} // ⭐ Auch bei Success disablen
+              disabled={loading || success}
               required
             />
           </div>
@@ -178,7 +183,7 @@ function Register() {
             <button 
               type="submit" 
               className="btn btn-primary"
-              disabled={loading || success} // ⭐ Auch bei Success disablen
+              disabled={loading || success}
             >
               {loading ? 'Registrieren...' : success ? 'Weiterleitung...' : 'Registrieren'}
             </button>
