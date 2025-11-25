@@ -166,7 +166,7 @@ function MainLayout() {
             </main>
 
             <footer className="main-layout__footer">
-                <p>© 2024 Stechen Helper - Alle Rechte vorbehalten</p>
+                <p>© 2025 Stechen Helper - Alle Rechte vorbehalten</p>
             </footer>
 
             <style>{`
