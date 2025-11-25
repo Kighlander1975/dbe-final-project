@@ -141,7 +141,7 @@ Die Entwicklungsumgebung basiert auf Docker und besteht aus vier Services:
 
 **Backend-Container** (`stechen_backend`)
 - PHP 8.2 FPM mit Nginx
-- Laravel 11 Framework
+- Laravel 12 Framework
 - Port: 8000
 - Volume: `./backend` → `/var/www/html`
 
