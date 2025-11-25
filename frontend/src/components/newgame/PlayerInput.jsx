@@ -10,7 +10,7 @@ function PlayerInput({
     allPlayerNames = [],
     onPlayerChange,
     isCurrentUser = false,
-    existingData = null, // Neu: Existierende Daten für Persistenz
+    existingData = null,
 }) {
     // State
     const [primaryValue, setPrimaryValue] = useState("");
@@ -21,7 +21,6 @@ function PlayerInput({
     const [nameError, setNameError] = useState(null);
     const [nameWarning, setNameWarning] = useState(null);
     
-    // Ref für die Initialisierung, um zu verfolgen, ob die Komponente bereits initialisiert wurde
     const isInitialized = useRef(false);
 
     // ✅ useRef für onPlayerChange (verhindert Loop)
@@ -79,7 +78,6 @@ function PlayerInput({
 
     // Initialisierung der Komponente mit existierenden Daten oder für den aktuellen Benutzer
     useEffect(() => {
-        // Verhindere mehrfache Initialisierung
         if (isInitialized.current) return;
         
         let initialPrimaryValue = "";
@@ -100,12 +98,10 @@ function PlayerInput({
         // Fall 2: Es gibt existierende Daten für diesen Spieler
         else if (existingData) {
             if (existingData.email) {
-                // Es ist ein registrierter Benutzer oder neuer E-Mail-Benutzer
                 initialPrimaryValue = existingData.email;
                 initialNameValue = existingData.name || "";
                 initialShowNameField = true;
                 
-                // Prüfen, ob es ein registrierter Benutzer ist
                 const userInDb = availableEmails.find(
                     (item) => item.email === existingData.email
                 );
@@ -119,7 +115,6 @@ function PlayerInput({
                     hasError = !initialNameValue.trim();
                 }
             } else if (existingData.name) {
-                // Es ist ein Gast
                 initialPrimaryValue = existingData.name;
                 initialNameValue = "";
                 initialShowNameField = false;
@@ -128,13 +123,11 @@ function PlayerInput({
             }
         }
         
-        // State setzen
         setPrimaryValue(initialPrimaryValue);
         setNameValue(initialNameValue);
         setShowNameField(initialShowNameField);
         setBadge(initialBadge);
         
-        // Callback aufrufen, wenn Daten vorhanden sind
         if ((isCurrentUser && currentUser) || existingData) {
             if (onPlayerChangeRef.current) {
                 onPlayerChangeRef.current({
@@ -147,7 +140,6 @@ function PlayerInput({
             }
         }
         
-        // Markiere als initialisiert
         isInitialized.current = true;
     }, [isCurrentUser, currentUser, existingData, playerNumber, availableEmails]);
 
@@ -183,7 +175,6 @@ function PlayerInput({
 
         if (isCurrentUser) return;
 
-        // Reset
         setEmailError(null);
         setNameError(null);
         setNameWarning(null);
@@ -234,7 +225,6 @@ function PlayerInput({
         setNameValue(newNameValue);
         setBadge(newBadge);
 
-        // ✅ useRef statt direktem Aufruf
         if (onPlayerChangeRef.current) {
             onPlayerChangeRef.current({
                 playerNumber,
@@ -265,7 +255,6 @@ function PlayerInput({
             hasError = isDuplicate;
         }
 
-        // ✅ useRef statt direktem Aufruf
         if (onPlayerChangeRef.current) {
             onPlayerChangeRef.current({
                 playerNumber,
@@ -277,17 +266,18 @@ function PlayerInput({
         }
     };
 
-    // Handler für Name-Input
+    // ✅ Handler für Name-Input (auch für Spieler 1!)
     const handleNameChange = (e) => {
         const value = e.target.value;
         setNameValue(value);
 
         let hasError = false;
+        
+        // ✅ Validierung nur für "new"-Typ (nicht für "current")
         if (badge?.type === "new") {
             hasError = validateNameRequired(badge.type, value);
         }
 
-        // ✅ useRef statt direktem Aufruf
         if (onPlayerChangeRef.current) {
             onPlayerChangeRef.current({
                 playerNumber,
@@ -304,7 +294,6 @@ function PlayerInput({
         if (badge?.type === "new") {
             const hasError = validateNameRequired(badge.type, nameValue);
             
-            // ✅ useRef statt direktem Aufruf
             if (onPlayerChangeRef.current) {
                 onPlayerChangeRef.current({
                     playerNumber,
@@ -390,7 +379,7 @@ function PlayerInput({
                         value={nameValue}
                         onChange={handleNameChange}
                         onBlur={handleNameBlur}
-                        readOnly={isCurrentUser && !!currentUser?.name}
+                        readOnly={false} // ✅ GEÄNDERT: Immer bearbeitbar!
                         disabled={!showNameField}
                     />
                     

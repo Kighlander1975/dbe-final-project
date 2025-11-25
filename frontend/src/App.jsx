@@ -21,6 +21,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 
 // Pages - Geschützt
 import NewGame from "./pages/NewGame";
+import GameSummary from './pages/GameSummary';
 
 // Pages - Admin
 import Dashboard from "./pages/admin/Dashboard";
@@ -89,6 +90,8 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+
+                <Route path="/game-summary" element={<GameSummary />} />
 
                 <Route
                     path="/change-password"

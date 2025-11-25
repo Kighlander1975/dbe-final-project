@@ -1,24 +1,31 @@
 // src/pages/NewGame.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // ✅ useLocation hinzugefügt
 import { useAuth } from "../context/AuthContext";
-import { useLoading } from "../context/LoadingContext"; // ✅ NEU
+import { useLoading } from "../context/LoadingContext";
 import { userAPI } from "../services/api";
 import PlayerCountSelector from "../components/newgame/PlayerCountSelector";
 import PlayerInput from "../components/newgame/PlayerInput";
+import GameNameInput from "../components/newgame/GameNameInput";
 import "../styles/pages/newgame.css";
 
 function NewGame() {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { startLoading, stopLoading } = useLoading(); // ✅ NEU
+    const location = useLocation(); // ✅ NEU
+    const { startLoading, stopLoading } = useLoading();
+
+    // ✅ NEU: Daten aus Navigation State holen (falls vorhanden)
+    const restoredData = location.state || {};
 
     // State
-    const [playerCount, setPlayerCount] = useState(5);
-    const [players, setPlayers] = useState([]);
+    const [playerCount, setPlayerCount] = useState(restoredData.playerCount || 5); // ✅ Wiederhergestellt
+    const [players, setPlayers] = useState(restoredData.players || []); // ✅ Wiederhergestellt
     const [availableEmails, setAvailableEmails] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [gameName, setGameName] = useState(restoredData.gameName || ''); // ✅ Wiederhergestellt
+    const [gameNameInput, setGameNameInput] = useState(''); // ✅ Wird in GameNameInput gesetzt
     
     const MAX_PLAYERS_CACHE = 11;
 
@@ -28,8 +35,6 @@ function NewGame() {
             try {
                 setLoading(true);
                 setError(null);
-                
-                // ✅ Loading starten
                 startLoading('Lade Spielerdaten...');
 
                 const response = await userAPI.getAll();
@@ -44,21 +49,24 @@ function NewGame() {
 
                 setAvailableEmails(emailList);
                 setLoading(false);
-                
-                // ✅ Loading stoppen
                 stopLoading();
             } catch (err) {
                 console.error("❌ Fehler beim Laden der User:", err);
                 setError("Benutzerliste konnte nicht geladen werden");
                 setLoading(false);
-                
-                // ✅ Loading stoppen
                 stopLoading();
             }
         };
 
         fetchUsers();
     }, []);
+
+    // Handler für Spielname-Änderung
+    const handleGameNameChange = (fullName, inputPart) => {
+        setGameName(fullName);
+        setGameNameInput(inputPart);
+        console.log('🎮 Spielname:', fullName);
+    };
 
     // Handler für Spieleranzahl-Änderung
     const handlePlayerCountChange = (count) => {
@@ -145,9 +153,26 @@ function NewGame() {
 
     // Prüfe, ob Form valide ist (keine Fehler)
     const isFormValid = () => {
-        return players
+        const hasGameName = gameNameInput.trim().length > 0;
+        const playersValid = players
             .slice(0, playerCount)
             .every((p) => p && !p.hasError);
+        
+        return hasGameName && playersValid;
+    };
+
+    // Submit-Handler
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        // Navigiere zur Summary-Seite mit allen Daten
+        navigate('/game-summary', {
+            state: {
+                gameName,
+                playerCount,
+                players: players.slice(0, playerCount),
+            }
+        });
     };
 
     // Loading State
@@ -184,7 +209,7 @@ function NewGame() {
 
     return (
         <div className="newgame">
-            <form className="newgame__form">
+            <form className="newgame__form" onSubmit={handleSubmit}>
                 {/* Header */}
                 <div className="newgame__header">
                     <h1 className="newgame__title">🎮 Neues Spiel</h1>
@@ -194,32 +219,17 @@ function NewGame() {
                 <fieldset className="form-fieldset">
                     <legend className="form-legend">📋 Basisdaten</legend>
 
-                    {/* Spielname */}
-                    <div className="form-group">
-                        <label htmlFor="gameName" className="form-label">
-                            Spielname
-                        </label>
-                        <div className="gamename-wrapper">
-                            <input
-                                type="text"
-                                id="gameName"
-                                className="form-input form-input--gamename"
-                                placeholder="Mein Spiel"
-                                defaultValue=""
-                                required
-                            />
-                            <span className="gamename-suffix">
-                                _1732438620_a3f2c1d4
-                            </span>
-                        </div>
-                        <p className="form-hint">
-                            💡 Der Suffix wird automatisch generiert
-                        </p>
-                    </div>
+                    {/* ✅ GameNameInput mit restoredData */}
+                    <GameNameInput
+                        value={gameNameInput}
+                        onChange={handleGameNameChange}
+                        required={true}
+                        initialFullName={restoredData.gameName} // ✅ NEU: Vollständiger Name übergeben
+                    />
 
-                    {/* Anzahl Spieler */}
+                    {/* ✅ PlayerCountSelector mit restoredData */}
                     <PlayerCountSelector
-                        initialCount={5}
+                        initialCount={playerCount} // ✅ Bereits wiederhergestellt
                         onChange={handlePlayerCountChange}
                     />
                 </fieldset>
