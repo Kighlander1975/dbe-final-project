@@ -1,6 +1,7 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react'
 import { authAPI } from '../services/api'
+import heartbeatService from '../services/heartbeatService'
 
 const AuthContext = createContext(null)
 
@@ -25,6 +26,22 @@ export function AuthProvider({ children }) {
       setLoading(false)
     }
   }, [])
+
+  // 🆕 Heartbeat Management
+  useEffect(() => {
+    if (user) {
+      // User ist eingeloggt - Heartbeat starten
+      heartbeatService.start()
+    } else {
+      // User ist ausgeloggt - Heartbeat stoppen
+      heartbeatService.stop()
+    }
+
+    // Cleanup beim Unmount
+    return () => {
+      heartbeatService.stop()
+    }
+  }, [user])
 
   // Register Funktion
   const register = async (name, email, password, password_confirmation) => {
@@ -68,6 +85,7 @@ export function AuthProvider({ children }) {
     } finally {
       localStorage.removeItem('token')
       setUser(null)
+      // Heartbeat wird automatisch durch useEffect gestoppt
     }
   }
 

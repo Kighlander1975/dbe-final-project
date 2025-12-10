@@ -27,6 +27,9 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
+    // 🆕 Heartbeat für Session-Erneuerung
+    Route::get('/heartbeat', [AuthController::class, 'heartbeat']);
+    
     // Role-Check Endpoint (für alle authentifizierten User)
     Route::get('/user/role', [AuthController::class, 'checkRole']);
     Route::post('/user/change-password', [AuthController::class, 'changePassword']);

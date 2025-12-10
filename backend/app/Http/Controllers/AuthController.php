@@ -123,6 +123,20 @@ class AuthController extends Controller
         return response()->json($user);
     }
 
+    /**
+     * Heartbeat für Session-Erneuerung
+     * Erneuert die Session ohne zusätzliche Daten zurückzugeben
+     */
+    public function heartbeat(Request $request)
+    {
+        // Laravel erneuert automatisch die Session bei jedem Request
+        // Wir geben nur eine Bestätigung zurück
+        return response()->json([
+            'status' => 'ok',
+            'timestamp' => now()->toISOString()
+        ]);
+    }
+
     // ⭐ NEU: Check user role und permissions
     /**
      * Check user role and permissions
