@@ -1,6 +1,6 @@
 // src/App.jsx
 import React, { useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 
 // Layout
 import MainLayout from "./layouts/MainLayout";
@@ -39,84 +39,85 @@ function App() {
         setLoadingHandlers({ startLoading, stopLoading });
     }, [startLoading, stopLoading]);
 
-    return (
-        <Routes>
-            <Route element={<MainLayout />}>
-                {/* Öffentlich */}
-                <Route path="/" element={<Home />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
+    const router = createBrowserRouter([
+        {
+            path: "/",
+            element: <MainLayout />,
+            children: [
+                // Öffentlich
+                { path: "/", element: <Home /> },
+                { path: "/verify-email", element: <VerifyEmail /> },
 
-                {/* NUR für NICHT angemeldete User */}
-                <Route
-                    path="/login"
-                    element={
+                // NUR für NICHT angemeldete User
+                {
+                    path: "/login",
+                    element: (
                         <GuestRoute>
                             <Login />
                         </GuestRoute>
-                    }
-                />
-                <Route
-                    path="/register"
-                    element={
+                    ),
+                },
+                {
+                    path: "/register",
+                    element: (
                         <GuestRoute>
                             <Register />
                         </GuestRoute>
-                    }
-                />
-
-                <Route
-                    path="/forgot-password"
-                    element={
+                    ),
+                },
+                {
+                    path: "/forgot-password",
+                    element: (
                         <GuestRoute>
                             <ForgotPassword />
                         </GuestRoute>
-                    }
-                />
-                <Route
-                    path="/reset-password"
-                    element={
+                    ),
+                },
+                {
+                    path: "/reset-password",
+                    element: (
                         <GuestRoute>
                             <ResetPassword />
                         </GuestRoute>
-                    }
-                />
+                    ),
+                },
 
-                {/* NUR für angemeldete User */}
-                <Route
-                    path="/new-game"
-                    element={
+                // NUR für angemeldete User
+                {
+                    path: "/new-game",
+                    element: (
                         <ProtectedRoute>
                             <NewGame />
                         </ProtectedRoute>
-                    }
-                />
-
-                <Route path="/game-summary" element={<GameSummary />} />
-
-                <Route
-                    path="/change-password"
-                    element={
+                    ),
+                },
+                { path: "/game-summary", element: <GameSummary /> },
+                {
+                    path: "/change-password",
+                    element: (
                         <ProtectedRoute>
                             <ChangePassword />
                         </ProtectedRoute>
-                    }
-                />
+                    ),
+                },
 
-                {/* ⭐ Admin-Bereich mit Unterseiten */}
-                <Route
-                    path="/admin/*"
-                    element={
+                // Admin-Bereich
+                {
+                    path: "/admin/*",
+                    element: (
                         <AdminRoute>
                             <Dashboard />
                         </AdminRoute>
-                    }
-                />
+                    ),
+                },
 
-                {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-        </Routes>
-    );
+                // Fallback
+                { path: "*", element: <Navigate to="/" replace /> },
+            ],
+        },
+    ]);
+
+    return <RouterProvider router={router} />;
 }
 
 export default App;

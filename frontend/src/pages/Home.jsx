@@ -1,17 +1,24 @@
 // src/pages/Home.jsx
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
+import { useUserContext } from '../context/UserContext' // 🆕 UserContext
 import '../styles/pages/home.css'
 
 function Home() {
   const { user } = useAuth() // ✅ Nur 'user' verwenden
   const { showToast } = useToast()
   const navigate = useNavigate()
+  const { loadUsers } = useUserContext() // 🆕 UserContext
 
   // ✅ isAuthenticated basiert auf user
   const isAuthenticated = !!user
+
+  // 🆕 User-Liste beim Mount neu laden
+  useEffect(() => {
+    loadUsers(true); // force = true, um Cache zu überschreiben
+  }, [loadUsers]);
 
   // Handler für geschützte Links
   const handleProtectedLink = (e, path) => {

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useLoading } from '../../context/LoadingContext' // ✅ NEU
+import { useUserContext } from '../../context/UserContext' // 🆕 UserContext
 import { adminAPI } from '../../services/api'
 import '../../styles/pages/admin/user-management.css'
 
@@ -10,6 +11,7 @@ function UserManagement() {
   const { user } = useAuth()
   const { showToast } = useToast()
   const { startLoading, stopLoading } = useLoading() // ✅ NEU
+  const { loadUsers, lastLoaded } = useUserContext() // 🆕 UserContext
   
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -18,9 +20,17 @@ function UserManagement() {
   // Load users
   useEffect(() => {
     loadUsers()
+    loadAdminUsers()
   }, [filter])
 
-  const loadUsers = async () => {
+  // 🆕 Check for user updates (wenn Cache älter als 1 Minute, neu laden)
+  useEffect(() => {
+    if (lastLoaded && Date.now() - lastLoaded > 60 * 1000) {
+      loadUsers(true); // Force reload
+    }
+  }, [lastLoaded, loadUsers]);
+
+  const loadAdminUsers = async () => {
     setLoading(true)
     
     // ✅ Loading starten

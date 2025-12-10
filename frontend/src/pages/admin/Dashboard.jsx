@@ -1,12 +1,20 @@
 // src/pages/admin/Dashboard.jsx
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { useUserContext } from '../../context/UserContext' // 🆕 UserContext
 import AdminSidebar from '../../components/admin/AdminSidebar'
 import Overview from './Overview'
 import UserManagement from './UserManagement'
 import '../../styles/pages/admin/dashboard.css'
 
 function Dashboard() {
+  const { loadUsers } = useUserContext() // 🆕 UserContext
+
+  // 🆕 User-Liste beim Mount neu laden
+  useEffect(() => {
+    loadUsers(true); // force = true, um Cache zu überschreiben
+  }, [loadUsers]);
+
   return (
     <div className="admin-dashboard">
       <AdminSidebar />

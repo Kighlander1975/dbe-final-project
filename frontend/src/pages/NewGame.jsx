@@ -1,8 +1,9 @@
 // src/pages/NewGame.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // ✅ useLocation hinzugefügt
+import { useNavigate, useLocation, useBlocker } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLoading } from "../context/LoadingContext";
+import { useUserContext } from "../context/UserContext"; // 🆕 UserContext
 import { userAPI } from "../services/api";
 import PlayerCountSelector from "../components/newgame/PlayerCountSelector";
 import PlayerInput from "../components/newgame/PlayerInput";
@@ -14,6 +15,7 @@ function NewGame() {
     const navigate = useNavigate();
     const location = useLocation(); // ✅ NEU
     const { startLoading, stopLoading } = useLoading();
+    const { users: availableEmails, loading: usersLoading, loadUsers } = useUserContext(); // 🆕 UserContext
 
     // ✅ NEU: Daten aus Navigation State holen (falls vorhanden)
     const restoredData = location.state || {};
@@ -21,56 +23,63 @@ function NewGame() {
     // State
     const [playerCount, setPlayerCount] = useState(restoredData.playerCount || 5); // ✅ Wiederhergestellt
     const [players, setPlayers] = useState(restoredData.players || []); // ✅ Wiederhergestellt
-    const [availableEmails, setAvailableEmails] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [gameName, setGameName] = useState(restoredData.gameName || ''); // ✅ Wiederhergestellt
     const [gameNameInput, setGameNameInput] = useState(''); // ✅ Wird in GameNameInput gesetzt
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(!!restoredData.gameName || !!restoredData.players?.length); // 🆕 Schutz vor Datenverlust
     
     const MAX_PLAYERS_CACHE = 11;
 
-    // User-Liste beim Laden abrufen
+    // 🆕 User-Liste beim Mount laden (falls nicht schon geladen)
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                startLoading('Lade Spielerdaten...');
+        if (availableEmails.length === 0 && !usersLoading) {
+            loadUsers();
+        }
+        setLoading(false); // Entferne loading, da UserContext das handhabt
+    }, [availableEmails.length, usersLoading, loadUsers]);
 
-                const response = await userAPI.getAll();
-                console.log("📥 User-Liste geladen:", response);
-
-                const users = response.data || response;
-                const emailList = users.map((user) => ({
-                    email: user.email,
-                    name: user.name,
-                    id: user.id,
-                }));
-
-                setAvailableEmails(emailList);
-                setLoading(false);
-                stopLoading();
-            } catch (err) {
-                console.error("❌ Fehler beim Laden der User:", err);
-                setError("Benutzerliste konnte nicht geladen werden");
-                setLoading(false);
-                stopLoading();
+    // 🆕 Schutz vor Datenverlust: Warnung beim Verlassen der Seite
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'Du hast ungespeicherte Änderungen. Möchtest du wirklich die Seite verlassen? Alle Daten gehen verloren.';
             }
         };
 
-        fetchUsers();
-    }, []);
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [hasUnsavedChanges]);
+
+    // 🆕 Blocker für interne Navigation (z.B. Menüleiste)
+    const blocker = useBlocker(hasUnsavedChanges);
+
+    useEffect(() => {
+        if (blocker.state === 'blocked') {
+            const confirmLeave = window.confirm(
+                'Du hast ungespeicherte Änderungen. Möchtest du wirklich die Seite verlassen? Alle Daten gehen verloren.'
+            );
+            if (confirmLeave) {
+                blocker.proceed(); // Erlaube Navigation
+            } else {
+                blocker.reset(); // Blockiere Navigation
+            }
+        }
+    }, [blocker]);
 
     // Handler für Spielname-Änderung
     const handleGameNameChange = (fullName, inputPart) => {
         setGameName(fullName);
         setGameNameInput(inputPart);
+        setHasUnsavedChanges(true); // 🆕 Markiere als ungespeichert
         console.log('🎮 Spielname:', fullName);
     };
 
     // Handler für Spieleranzahl-Änderung
     const handlePlayerCountChange = (count) => {
         setPlayerCount(count);
+        setHasUnsavedChanges(true); // 🆕 Markiere als ungespeichert
     };
 
     // Handler für Spieler-Daten-Änderung
@@ -80,6 +89,7 @@ function NewGame() {
             updated[playerData.playerNumber - 1] = playerData;
             return updated;
         });
+        setHasUnsavedChanges(true); // 🆕 Markiere als ungespeichert
     };
 
     // Berechne bereits verwendete E-Mails (exkl. aktueller Spieler)
@@ -173,6 +183,9 @@ function NewGame() {
                 players: players.slice(0, playerCount),
             }
         });
+        
+        // 🆕 Daten sind nun "gespeichert" (navigiert weiter)
+        setHasUnsavedChanges(false);
     };
 
     // Loading State
