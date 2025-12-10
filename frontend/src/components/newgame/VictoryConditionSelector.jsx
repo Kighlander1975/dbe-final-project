@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 function VictoryConditionSelector({ onChange, initialValue = 100 }) {
-    const [selectedOption, setSelectedOption] = useState('100');
+    const [selectedOption, setSelectedOption] = useState('100'); // Default: 100
     const [customValue, setCustomValue] = useState('');
     const [calculatedPoints, setCalculatedPoints] = useState(0);
 
@@ -34,19 +34,22 @@ function VictoryConditionSelector({ onChange, initialValue = 100 }) {
         onChange(points);
     }, [selectedOption, customValue]);
 
-    // Initial setup
+    // Initial setup - nur wenn ein gespeicherter Wert vorhanden ist
     useEffect(() => {
-        if (initialValue) {
+        if (initialValue && initialValue !== 100) { // 100 ist der Default, keine Sonderbehandlung nötig
             const day = getCurrentDay();
-            // Finde passende Option oder setze individuell
+            // Berechne zurück: gespeicherte Punkte - aktueller Tag = Basiswert
+            const baseValue = initialValue - day;
+
+            // Prüfe ob Basiswert einer Standardoption entspricht
             const standardOptions = [100, 200, 300, 400, 500];
-            const matchingOption = standardOptions.find(opt => opt + day === initialValue);
+            const matchingOption = standardOptions.find(opt => opt === baseValue);
 
             if (matchingOption) {
                 setSelectedOption(matchingOption.toString());
             } else {
                 setSelectedOption('individuell');
-                setCustomValue((initialValue).toString());
+                setCustomValue(initialValue.toString());
             }
         }
     }, [initialValue]);
