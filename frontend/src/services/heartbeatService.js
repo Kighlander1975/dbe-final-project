@@ -1,6 +1,6 @@
 // src/services/heartbeatService.js
 
-import { apiRequest } from './api.js';
+import apiRequest from './api.js';
 
 class HeartbeatService {
     constructor() {
