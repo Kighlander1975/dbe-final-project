@@ -65,13 +65,22 @@ function VictoryConditionSelector({ onChange, initialValue = 100 }) {
 
     const handleCustomValueChange = (e) => {
         const value = e.target.value;
-        // Validierung: nur Zahlen, min 100, max 500 + tag
-        const numValue = parseInt(value) || 0;
-        const maxAllowed = 500 + getCurrentDay();
+        // Erlaube zunächst jede Eingabe, validiere erst beim Verlassen
+        setCustomValue(value);
+    };
 
-        if (numValue >= 100 && numValue <= maxAllowed) {
-            setCustomValue(value);
+    const handleCustomValueBlur = () => {
+        // Validierung beim Verlassen des Feldes
+        const numValue = parseInt(customValue) || 0;
+        const day = getCurrentDay();
+        const maxAllowed = 500 + day;
+
+        if (numValue < 100) {
+            setCustomValue('100');
+        } else if (numValue > maxAllowed) {
+            setCustomValue(maxAllowed.toString());
         }
+        // Bei gültigen Werten nichts ändern
     };
 
     const day = getCurrentDay();
@@ -103,6 +112,7 @@ function VictoryConditionSelector({ onChange, initialValue = 100 }) {
                     placeholder="Punkte eingeben..."
                     value={customValue}
                     onChange={handleCustomValueChange}
+                    onBlur={handleCustomValueBlur}
                     disabled={selectedOption !== 'individuell'}
                     min="100"
                     max={500 + day}
