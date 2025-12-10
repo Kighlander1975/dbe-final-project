@@ -31,6 +31,15 @@ function GameNameInput({ value, onChange, required = true, initialFullName = '' 
       const newSuffix = `_${timestamp}_${uuid}`;
       setSuffix(newSuffix);
       
+      // ✅ Default-Name setzen
+      const defaultName = 'Mein Spiel';
+      setInputValue(defaultName);
+      
+      // ✅ Initialen Callback mit Default-Name
+      if (onChange) {
+        onChange(defaultName + newSuffix, defaultName);
+      }
+      
       console.log('✨ Neuer Suffix:', newSuffix);
     }
   }, [initialFullName]); // ✅ Nur bei initialFullName-Änderung

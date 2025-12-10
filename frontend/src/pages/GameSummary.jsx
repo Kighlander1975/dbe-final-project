@@ -184,10 +184,13 @@ function GameSummary() {
             onClick={() => {
               // TODO: API-Call zum Erstellen des Spiels
               console.log('🎮 Spiel erstellen:', { gameName, playerCount, players });
-              alert('🚧 API-Call kommt noch!');
+              // Navigation zur Game-Seite mit Spieldaten
+              navigate('/game', {
+                state: { gameName, playerCount, players, victoryPoints }
+              });
             }}
           >
-            Spiel erstellen ✓
+            Spiel starten 🎮
           </button>
         </div>
       </div>
