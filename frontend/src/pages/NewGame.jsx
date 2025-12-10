@@ -27,9 +27,17 @@ function NewGame() {
     const [error, setError] = useState(null);
     const [gameName, setGameName] = useState(restoredData.gameName || ''); // ✅ Wiederhergestellt
     const [gameNameInput, setGameNameInput] = useState(''); // ✅ Wird in GameNameInput gesetzt
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(!!restoredData.gameName || !!restoredData.players?.length); // 🆕 Schutz vor Datenverlust
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false); // 🆕 Schutz nur bei Änderungen
     
     const MAX_PLAYERS_CACHE = 11;
+    const initialPlayerCount = restoredData.playerCount || 5; // 🆕 Ursprüngliche Spieleranzahl
+
+    // 🆕 Prüfe, ob ungespeicherte Änderungen vorliegen
+    const isDirty = () => {
+        return gameNameInput.trim() !== '' || 
+               playerCount !== initialPlayerCount || 
+               players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1 (currentUser)
+    };
 
     // 🆕 User-Liste beim Mount laden (falls nicht schon geladen)
     useEffect(() => {
@@ -70,16 +78,23 @@ function NewGame() {
 
     // Handler für Spielname-Änderung
     const handleGameNameChange = (fullName, inputPart) => {
+        const newIsDirty = inputPart.trim() !== '' || 
+                          playerCount !== initialPlayerCount || 
+                          players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
         setGameName(fullName);
         setGameNameInput(inputPart);
-        setHasUnsavedChanges(true); // 🆕 Markiere als ungespeichert
+        setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
         console.log('🎮 Spielname:', fullName);
     };
 
     // Handler für Spieleranzahl-Änderung
     const handlePlayerCountChange = (count) => {
+        const newIsDirty = count !== initialPlayerCount || 
+                          gameNameInput.trim() !== '' || 
+                          players.slice(1, count).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
+        console.log('🔢 handlePlayerCountChange:', { count, initialPlayerCount, gameNameInput: gameNameInput.trim(), playersSlice: players.slice(1, count), newIsDirty });
         setPlayerCount(count);
-        setHasUnsavedChanges(true); // 🆕 Markiere als ungespeichert
+        setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
     };
 
     // Handler für Spieler-Daten-Änderung
@@ -87,9 +102,13 @@ function NewGame() {
         setPlayers((prev) => {
             const updated = [...prev];
             updated[playerData.playerNumber - 1] = playerData;
+            const newPlayers = updated;
+            const newIsDirty = gameNameInput.trim() !== '' || 
+                              playerCount !== initialPlayerCount || 
+                              newPlayers.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
+            setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
             return updated;
         });
-        setHasUnsavedChanges(true); // 🆕 Markiere als ungespeichert
     };
 
     // Berechne bereits verwendete E-Mails (exkl. aktueller Spieler)

@@ -1,6 +1,6 @@
 // src/pages/GameSummary.jsx
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useBlocker } from 'react-router-dom';
 import '../styles/pages/newgame.css';
 
 function GameSummary() {
@@ -9,6 +9,37 @@ function GameSummary() {
   
   // Daten aus Navigation State holen
   const { gameName, playerCount, players } = location.state || {};
+
+  // 🆕 Schutz vor Datenverlust
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
+
+  // 🆕 Blocker für interne Navigation
+  const blocker = useBlocker(hasUnsavedChanges);
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      const confirmLeave = window.confirm(
+        'Du hast ein Spiel in Bearbeitung. Möchtest du wirklich die Seite verlassen? Die Spieldaten gehen verloren.'
+      );
+      if (confirmLeave) {
+        blocker.proceed();
+      } else {
+        blocker.reset();
+      }
+    }
+  }, [blocker]);
+
+  // 🆕 beforeunload für Browser-Exit
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'Du hast ein Spiel in Bearbeitung. Möchtest du wirklich die Seite verlassen? Die Spieldaten gehen verloren.';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   // Fallback: Wenn keine Daten vorhanden (direkter Zugriff auf URL)
   if (!gameName || !players) {
@@ -131,9 +162,12 @@ function GameSummary() {
           <button
             type="button"
             className="btn btn-secondary"
-            onClick={() => navigate('/new-game', { 
-              state: { gameName, playerCount, players } 
-            })}
+            onClick={() => {
+              setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Zurück-Navigation
+              navigate('/new-game', { 
+                state: { gameName, playerCount, players } 
+              });
+            }}
           >
             ← Zurück bearbeiten
           </button>
