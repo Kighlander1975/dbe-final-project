@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { useUnsavedChanges } from "../context/UnsavedChangesContext"; // 🆕 UnsavedChangesContext
 import LoadingOverlay from "../components/LoadingOverlay";
 import "../styles/layout.css";
 import "../components/OrientationGuard.css"; // Für die Sperre-Styles
@@ -12,6 +13,7 @@ function MainLayout() {
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
+    const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges(); // 🆕 UnsavedChangesContext
 
     // Orientation-Check
     const [deviceStatus, setDeviceStatus] = useState({ isAllowed: true, reason: null });
@@ -64,6 +66,21 @@ function MainLayout() {
         navigate("/login");
     };
 
+    // 🆕 Navigation mit Blocker-Check
+    const handleNavigate = (to) => {
+        if (hasUnsavedChanges) {
+            const confirmLeave = window.confirm(
+                'Du hast ungespeicherte Änderungen. Möchtest du wirklich die Seite verlassen? Alle Daten gehen verloren.'
+            );
+            if (confirmLeave) {
+                setHasUnsavedChanges(false); // Schutz deaktivieren
+                navigate(to);
+            }
+        } else {
+            navigate(to);
+        }
+    };
+
     return (
         <div className="main-layout">
             {/* Globaler Loading-Overlay */}
@@ -71,34 +88,38 @@ function MainLayout() {
 
             <header className="main-layout__header">
                 <nav className="main-layout__nav">
-                    <Link to="/" className="main-layout__logo">
+                    <button onClick={() => handleNavigate('/')} className="main-layout__logo">
                         🎯 Stechen Helper
-                    </Link>
+                    </button>
 
                     {!loading && (
                         <ul className="main-layout__menu">
                             <li>
-                                <Link to="/">🏠 Home</Link>
+                                <button onClick={() => handleNavigate('/')} className="main-layout__link-button">
+                                    🏠 Home
+                                </button>
                             </li>
 
                             {user ? (
                                 <>
                                     <li>
-                                        <Link to="/new-game">
+                                        <button onClick={() => handleNavigate('/new-game')} className="main-layout__link-button">
                                             🎮 Neues Spiel
-                                        </Link>
+                                        </button>
                                     </li>
 
                                     <li>
-                                        <Link to="/change-password">
+                                        <button onClick={() => handleNavigate('/change-password')} className="main-layout__link-button">
                                             🔐 Passwort ändern
-                                        </Link>
+                                        </button>
                                     </li>
 
                                     {/* ⭐ NEU: Admin-Link nur für Admins */}
                                     {isAdmin() && (
                                         <li>
-                                            <Link to="/admin">⚙️ Admin</Link>
+                                            <button onClick={() => handleNavigate('/admin')} className="main-layout__link-button">
+                                                ⚙️ Admin
+                                            </button>
                                         </li>
                                     )}
 

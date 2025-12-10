@@ -1,5 +1,6 @@
 // src/components/newgame/PlayerInput.jsx
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useToast } from "../../context/ToastContext"; // 🆕 Toast hinzufügen
 
 function PlayerInput({
     playerNumber,
@@ -11,7 +12,9 @@ function PlayerInput({
     onPlayerChange,
     isCurrentUser = false,
     existingData = null,
+    onRemovePlayer = null,
 }) {
+    const { showToast } = useToast(); // 🆕 Toast verwenden
     // State
     const [primaryValue, setPrimaryValue] = useState("");
     const [nameValue, setNameValue] = useState("");
@@ -50,11 +53,12 @@ function PlayerInput({
     const validateGuestNameDuplicate = useCallback((name) => {
         if (usedGuestNames.includes(name.toLowerCase())) {
             setNameError("Dieser Name wird bereits verwendet!");
+            showToast("Dieser Gast-Name wird bereits verwendet!", "error", 4000); // 🆕 Toast hinzufügen
             return true;
         }
         setNameError(null);
         return false;
-    }, [usedGuestNames]);
+    }, [usedGuestNames, showToast]); // 🆕 showToast in dependencies
 
     const validateNameOverlap = useCallback((guestName) => {
         if (allPlayerNames.includes(guestName.toLowerCase())) {
@@ -78,8 +82,6 @@ function PlayerInput({
 
     // Initialisierung der Komponente mit existierenden Daten oder für den aktuellen Benutzer
     useEffect(() => {
-        if (isInitialized.current) return;
-        
         let initialPrimaryValue = "";
         let initialNameValue = "";
         let initialShowNameField = false;
@@ -129,7 +131,7 @@ function PlayerInput({
         setBadge(initialBadge);
         
         if ((isCurrentUser && currentUser) || existingData) {
-            if (onPlayerChangeRef.current) {
+            if (!isInitialized.current && onPlayerChangeRef.current) {
                 onPlayerChangeRef.current({
                     playerNumber,
                     email: initialType !== "guest" ? initialPrimaryValue : null,
@@ -252,7 +254,7 @@ function PlayerInput({
         } else {
             const isDuplicate = validateGuestNameDuplicate(primaryValue);
             validateNameOverlap(primaryValue);
-            hasError = isDuplicate;
+            hasError = isDuplicate || primaryValue.trim().length === 0; // Name muss gefüllt sein
         }
 
         if (onPlayerChangeRef.current) {
@@ -332,7 +334,7 @@ function PlayerInput({
                         type="text"
                         className={`form-input ${
                             isCurrentUser ? "form-input--locked" : ""
-                        } ${emailError ? "form-input--error" : ""} ${
+                        } ${emailError || nameError ? "form-input--error" : ""} ${
                             nameWarning && !nameError && !emailError ? "form-input--warning" : ""
                         }`}
                         placeholder="E-Mail oder (Nick-)Name"
@@ -390,6 +392,17 @@ function PlayerInput({
 
                 <span className={getBadgeClass()}>{badge?.label || ""}</span>
             </div>
+
+            {!isCurrentUser && onRemovePlayer && (
+                <button
+                    type="button"
+                    className="btn btn-small btn-danger"
+                    onClick={() => onRemovePlayer(playerNumber)}
+                    title="Spieler entfernen"
+                >
+                    ❌ Entfernen
+                </button>
+            )}
         </fieldset>
     );
 }
