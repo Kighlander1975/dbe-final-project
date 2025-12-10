@@ -102,7 +102,7 @@ function VictoryConditionSelector({ onChange, initialValue = 100 }) {
                     onChange={handleCustomValueChange}
                     disabled={selectedOption !== 'individuell'}
                     min="100"
-                    max={500 + dateSum}
+                    max={500 + day}
                 />
 
                 <div className="victory-points-display">
