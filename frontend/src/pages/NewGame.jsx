@@ -197,7 +197,7 @@ function NewGame() {
 
     // Prüfe, ob Form valide ist (keine Fehler)
     const isFormValid = () => {
-        const hasGameName = gameNameInput.trim().length > 0;
+        const hasGameName = gameName.trim().length > 0;
         const playersValid = players
             .slice(0, playerCount)
             .every((p) => p && !p.hasError);

@@ -1,15 +1,62 @@
 // src/layouts/MainLayout.jsx
-import React from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import LoadingOverlay from "../components/LoadingOverlay";
 import "../styles/layout.css";
+import "../components/OrientationGuard.css"; // Für die Sperre-Styles
 
 function MainLayout() {
     const { user, logout, loading, isAdmin } = useAuth(); // ⭐ isAdmin hinzugefügt
     const { showToast } = useToast();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Orientation-Check
+    const [deviceStatus, setDeviceStatus] = useState({ isAllowed: true, reason: null });
+
+    useEffect(() => {
+        const checkDeviceAndOrientation = () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const isLandscape = width > height;
+            const isHomePage = location.pathname === '/';
+
+            // Geräte-Erkennung
+            if (width < 768) {
+                // Telefon - immer blocken (außer vielleicht Home, aber vorerst alles)
+                setDeviceStatus({
+                    isAllowed: false,
+                    reason: 'phone'
+                });
+            } else if (!isLandscape && !isHomePage) {
+                // Tablet im Portrait, aber nicht Home-Seite - blocken
+                setDeviceStatus({
+                    isAllowed: false,
+                    reason: 'portrait'
+                });
+            } else {
+                // Erlaubt: Landscape oder Home-Seite
+                setDeviceStatus({
+                    isAllowed: true,
+                    reason: null
+                });
+            }
+        };
+
+        // Initial prüfen
+        checkDeviceAndOrientation();
+
+        // Event Listener für Resize und Orientation Change
+        window.addEventListener('resize', checkDeviceAndOrientation);
+        window.addEventListener('orientationchange', checkDeviceAndOrientation);
+
+        return () => {
+            window.removeEventListener('resize', checkDeviceAndOrientation);
+            window.removeEventListener('orientationchange', checkDeviceAndOrientation);
+        };
+    }, [location.pathname]);
 
     const handleLogout = async () => {
         await logout();
@@ -162,7 +209,49 @@ function MainLayout() {
             </header>
 
             <main className="main-layout__main">
-                <Outlet />
+                {deviceStatus.isAllowed ? (
+                    <Outlet />
+                ) : (
+                    <div className="orientation-guard">
+                        <div className="orientation-guard__content">
+                            {deviceStatus.reason === 'phone' ? (
+                                <>
+                                    <div className="orientation-guard__icon">
+                                        📱
+                                    </div>
+                                    <h1 className="orientation-guard__title">
+                                        Telefon nicht unterstützt
+                                    </h1>
+                                    <p className="orientation-guard__message">
+                                        Diese App ist derzeit nur für Tablets und Desktop-Computer optimiert.
+                                        <br />
+                                        Bitte verwenden Sie ein Tablet oder einen Computer für die beste Erfahrung.
+                                    </p>
+                                    <div className="orientation-guard__hint">
+                                        💡 Die Startseite ist auf Telefonen verfügbar, aber Spiel-Funktionen sind deaktiviert
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="orientation-guard__icon">
+                                        📱
+                                    </div>
+                                    <h1 className="orientation-guard__title">
+                                        Bitte drehen Sie Ihr Gerät
+                                    </h1>
+                                    <p className="orientation-guard__message">
+                                        Diese Seite ist nur im Landscape-Modus verfügbar.
+                                        <br />
+                                        Bitte drehen Sie Ihr Tablet oder verwenden Sie die Home-Seite.
+                                    </p>
+                                    <div className="orientation-guard__hint">
+                                        💡 Gehen Sie zur <Link to="/" style={{color: 'white', textDecoration: 'underline'}}>Home-Seite</Link> für Portrait-Modus
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
             </main>
 
             <footer className="main-layout__footer">

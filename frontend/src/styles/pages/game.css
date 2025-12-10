@@ -1,0 +1,28 @@
+/* src/styles/pages/game.css */
+
+.game {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 1rem;
+}
+
+.game__container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.loading-state p {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    color: #333;
+}

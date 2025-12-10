@@ -1,0 +1,70 @@
+/* src/components/OrientationGuard.css */
+
+.orientation-guard {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    color: white;
+}
+
+.orientation-guard__content {
+    text-align: center;
+    max-width: 400px;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.orientation-guard__icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.orientation-guard__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.orientation-guard__message {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.orientation-guard__hint {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .orientation-guard__content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .orientation-guard__icon {
+        font-size: 3rem;
+    }
+
+    .orientation-guard__title {
+        font-size: 1.25rem;
+    }
+
+    .orientation-guard__message {
+        font-size: 0.9rem;
+    }
+}

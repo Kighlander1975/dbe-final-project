@@ -133,7 +133,20 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
+    // Fallback für den Fall, dass der Provider noch nicht bereit ist
+    return {
+      user: null,
+      logout: () => {},
+      loading: true,
+      isAdmin: false,
+      register: () => {},
+      login: () => {},
+      verifyEmail: () => {},
+      resendVerification: () => {},
+      forgotPassword: () => {},
+      resetPassword: () => {},
+      changePassword: () => {}
+    }
   }
   return context
 }

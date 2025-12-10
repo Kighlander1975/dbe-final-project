@@ -116,6 +116,7 @@
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  position: relative; /* Für absolute Positionierung der Sperre */
 }
 
 /* Footer Styles */

@@ -22,6 +22,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 // Pages - Geschützt
 import NewGame from "./pages/NewGame";
 import GameSummary from './pages/GameSummary';
+import Game from './pages/Game';
 
 // Pages - Admin
 import Dashboard from "./pages/admin/Dashboard";
@@ -92,6 +93,14 @@ function App() {
                     ),
                 },
                 { path: "/game-summary", element: <GameSummary /> },
+                {
+                    path: "/game",
+                    element: (
+                        <ProtectedRoute>
+                            <Game />
+                        </ProtectedRoute>
+                    ),
+                },
                 {
                     path: "/change-password",
                     element: (
