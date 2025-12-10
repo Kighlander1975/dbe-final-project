@@ -53,7 +53,7 @@ function NewGame() {
     // 🆕 Schutz vor Datenverlust: Warnung beim Verlassen der Seite
     useEffect(() => {
         const handleBeforeUnload = (e) => {
-            if (hasUnsavedChanges) {
+            if (hasUnsavedChanges && localStorage.getItem('gameActive') !== 'true') {
                 e.preventDefault();
                 e.returnValue = 'Du hast ungespeicherte Änderungen. Möchtest du wirklich die Seite verlassen? Alle Daten gehen verloren.';
             }
@@ -64,7 +64,7 @@ function NewGame() {
     }, [hasUnsavedChanges]);
 
     // 🆕 Blocker für interne Navigation (z.B. Menüleiste)
-    const blocker = useBlocker(hasUnsavedChanges);
+    const blocker = useBlocker(hasUnsavedChanges && localStorage.getItem('gameActive') !== 'true');
 
     useEffect(() => {
         if (blocker.state === 'blocked') {
@@ -209,6 +209,9 @@ function NewGame() {
     const handleSubmit = (e) => {
         e.preventDefault();
         
+        // 🆕 Schutz deaktivieren vor Navigation
+        setHasUnsavedChanges(false);
+        
         // Navigiere zur Summary-Seite mit allen Daten
         navigate('/game-summary', {
             state: {
@@ -218,9 +221,6 @@ function NewGame() {
                 victoryPoints, // 🆕 Siegbedingung hinzufügen
             }
         });
-        
-        // 🆕 Daten sind nun "gespeichert" (navigiert weiter)
-        setHasUnsavedChanges(false);
     };
 
     // Loading State

@@ -114,10 +114,10 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 
 ### Phase 2: Tabellen-Funktionalität
 - [x] Erste Runde ohne Daten hinzugefügt (Phase 2 Start)
-- [ ] Scrollbare Runden-Ansicht implementieren (bereits funktional)
-- [ ] Zell-Editierung mit Doppelklick/Tap aktivieren
-- [ ] Modal-Komponente für Eingabe erstellen (große Schrift, zentriert)
-- [ ] Validierung für Ansagen (0-9) und Ergebnisse (logische Verteilung)
+- [x] Scrollbare Runden-Ansicht implementieren (bereits funktional)
+- [x] Zell-Editierung mit Doppelklick/Tap aktivieren
+- [x] Modal-Komponente für Eingabe erstellen (große Schrift, zentriert)
+- [x] Validierung für Ansagen (0-9) und Ergebnisse (logische Verteilung)
 
 ### Phase 3: Spiel-Logik
 - [ ] Dealer-System implementieren (zufällige Auswahl, automatischer Wechsel)
@@ -151,6 +151,6 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 
 ---
 
-*Letzte Aktualisierung: 10. Dezember 2025 - Phase 1 abgeschlossen, Phase 2 gestartet*
+*Letzte Aktualisierung: 10. Dezember 2025 - Phase 2 abgeschlossen, Phase 3 gestartet*
 *Diese ToDo-Liste wird bei expliziter Aufforderung aktualisiert.*
 

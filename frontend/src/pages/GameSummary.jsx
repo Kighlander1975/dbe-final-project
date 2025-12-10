@@ -14,7 +14,7 @@ function GameSummary() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
 
   // 🆕 Blocker für interne Navigation
-  const blocker = useBlocker(hasUnsavedChanges);
+  const blocker = useBlocker(hasUnsavedChanges && localStorage.getItem('gameActive') !== 'true');
 
   useEffect(() => {
     if (blocker.state === 'blocked') {
@@ -32,7 +32,7 @@ function GameSummary() {
   // 🆕 beforeunload für Browser-Exit
   useEffect(() => {
     const handleBeforeUnload = (e) => {
-      if (hasUnsavedChanges) {
+      if (hasUnsavedChanges && localStorage.getItem('gameActive') !== 'true') {
         e.preventDefault();
         e.returnValue = 'Du hast ein Spiel in Bearbeitung. Möchtest du wirklich die Seite verlassen? Die Spieldaten gehen verloren.';
       }
@@ -185,6 +185,7 @@ function GameSummary() {
               // TODO: API-Call zum Erstellen des Spiels
               console.log('🎮 Spiel erstellen:', { gameName, playerCount, players });
               // Navigation zur Game-Seite mit Spieldaten
+              setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start
               navigate('/game', {
                 state: { gameName, playerCount, players, victoryPoints }
               });

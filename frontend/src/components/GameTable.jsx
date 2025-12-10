@@ -1,21 +1,17 @@
 // src/components/GameTable.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import RoundHeader from './rounds/RoundHeader';
 import RoundData from './rounds/RoundData';
 import './GameTable.css';
 
 // Funktion zum Generieren zufälliger Bids (0-7)
 const generateBids = (numPlayers) => {
-    return Array.from({ length: numPlayers }, () => Math.floor(Math.random() * 8));
+    return Array.from({ length: numPlayers }, () => "-");
 };
 
 // Funktion zum Generieren von Tricks, deren Summe 7 ergibt (jeder 0-7)
 const generateTricks = (numPlayers) => {
-    let tricks;
-    do {
-        tricks = Array.from({ length: numPlayers }, () => Math.floor(Math.random() * 8));
-    } while (tricks.reduce((sum, val) => sum + val, 0) !== 7);
-    return tricks;
+    return Array.from({ length: numPlayers }, () => "-");
 };
 
 // Funktion zum Generieren der Runden
@@ -86,8 +82,8 @@ function GameTable({ gameData: initialGameData }) {
         const numPlayers = players.length;
         const firstRound = {
             round: 1,
-            bids: Array(numPlayers).fill(0),
-            tricks: Array(numPlayers).fill(0),
+            bids: generateBids(numPlayers),
+            tricks: generateTricks(numPlayers),
             points: Array(numPlayers).fill(0),
         };
 
@@ -126,6 +122,30 @@ function GameTable({ gameData: initialGameData }) {
         }
     }, [initialGameData]);
 
+    // Funktion zum Aktualisieren von Runden-Daten
+    const updateRoundData = (roundIndex, playerIndex, field, value) => {
+        setGameData(prevData => {
+            const newRounds = [...prevData.rounds];
+            if (!newRounds[roundIndex]) return prevData;
+
+            if (field === 'bid') {
+                newRounds[roundIndex].bids[playerIndex] = value;
+            } else if (field === 'tricks') {
+                newRounds[roundIndex].tricks[playerIndex] = value;
+            }
+
+            const updatedData = {
+                ...prevData,
+                rounds: newRounds,
+            };
+
+            // Speichere in sessionStorage
+            sessionStorage.setItem('gameData', JSON.stringify(updatedData));
+
+            return updatedData;
+        });
+    };
+
     // Funktion zum Berechnen der Gesamtpunkte und Ränge
     const calculateTotals = () => {
         // Berechne totalPoints für jeden Spieler
@@ -134,7 +154,11 @@ function GameTable({ gameData: initialGameData }) {
                 const playerIndex = gameData.players.findIndex(
                     (p) => p.id === player.id
                 );
-                return sum + (round.points[playerIndex] || 0);
+                const bid = round.bids[playerIndex];
+                const tricks = round.tricks[playerIndex];
+                // Stechen-Punkte: Wenn Bid == Tricks, 10 + Bid, sonst Tricks
+                const points = (bid !== '-' && tricks !== '-' && bid === tricks) ? 10 + bid : (tricks !== '-' ? tricks : 0);
+                return sum + points;
             }, 0);
 
             return { ...player, totalPoints };
@@ -156,6 +180,13 @@ function GameTable({ gameData: initialGameData }) {
     };
 
     const currentTotals = calculateTotals();
+
+    // Prüfe, ob die aktuelle Runde vollständig ausgefüllt ist (nur Bids müssen gesetzt sein)
+    const isRoundComplete = useMemo(() => {
+        const currentRoundData = gameData.rounds[gameData.currentRound - 1];
+        if (!currentRoundData) return false;
+        return currentRoundData.bids.every(bid => bid !== '-');
+    }, [gameData]);
 
     return (
         <div className="game-table">
@@ -202,8 +233,16 @@ function GameTable({ gameData: initialGameData }) {
                             {player.name}
                         </div>
                         <div className="game-table__rounds-container">
-                            {gameData.rounds.map(r => (
-                                <RoundData key={r.round} bid={r.bids[playerIndex]} tricks={r.tricks[playerIndex]} />
+                            {gameData.rounds.map((r, roundIndex) => (
+                                <RoundData 
+                                    key={r.round} 
+                                    bid={r.bids[playerIndex]} 
+                                    tricks={r.tricks[playerIndex]} 
+                                    onUpdate={updateRoundData}
+                                    roundIndex={roundIndex}
+                                    playerIndex={playerIndex}
+                                    numPlayers={gameData.players.length}
+                                />
                             ))}
                         </div>
                         <div className="game-table__stats-container">
@@ -213,7 +252,7 @@ function GameTable({ gameData: initialGameData }) {
                                     : "-"}
                             </div>
                             <div className="game-table__rank-cell">
-                                {player.rank > 0 ? player.rank : "-"}
+                                -
                             </div>
                         </div>
                     </div>
@@ -221,7 +260,7 @@ function GameTable({ gameData: initialGameData }) {
                 </div>
 
                 <div className="game-table__actions">
-                    <button className="btn btn-primary">Eingaben bestätigen</button>
+                    <button className="btn btn-primary" disabled={!isRoundComplete}>Eingaben bestätigen?</button>
                     <button className="btn btn-secondary">Spiel abbrechen</button>
                 </div>
             </div>

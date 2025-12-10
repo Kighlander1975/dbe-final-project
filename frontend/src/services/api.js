@@ -1,6 +1,6 @@
 // src/services/api.js
 
-const API_BASE_URL = "http://localhost:8000/api";
+const API_BASE_URL = `http://${window.location.hostname}:8000/api`;
 
 // Diese Funktion wird später durch den tatsächlichen Import ersetzt
 // Sie dient nur als Platzhalter, damit wir die Datei nicht direkt importieren müssen
@@ -38,6 +38,7 @@ function getCSRFToken() {
  * Zentrale API-Funktion
  */
 async function apiRequest(endpoint, options = {}) {
+    console.log("API Request:", API_BASE_URL + endpoint, options);
     // Starte den globalen Ladevorgang
     const loadingMessage = options.loadingMessage || "Wird geladen...";
     loadingHandlers.startLoading(loadingMessage);
@@ -96,7 +97,7 @@ async function apiRequest(endpoint, options = {}) {
  */
 async function initCSRF() {
     try {
-        await fetch("http://localhost:8000/sanctum/csrf-cookie", {
+        await fetch(`http://${window.location.hostname}:8000/sanctum/csrf-cookie`, {
             method: "GET",
             credentials: "include",
         });
@@ -246,6 +247,7 @@ export const userAPI = {
         const data = await apiRequest(`/users?${params.toString()}`, {
             method: "GET",
             loadingMessage: "Benutzerliste wird geladen...",
+            credentials: "omit", // Öffentlicher Endpoint, keine Credentials nötig
         });
 
         // Cache die Daten, wenn Spiel aktiv

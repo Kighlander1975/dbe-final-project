@@ -176,3 +176,24 @@ input:focus, textarea:focus, select:focus {
 .btn-secondary:hover {
   background: var(--bg-subtle);
 }
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #ccc !important;
+  color: #666 !important;
+  border-color: #ccc !important;
+}
+
+.btn-primary:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  border-color: #ccc !important;
+}
+
+.btn-secondary:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  border-color: #ccc !important;
+}

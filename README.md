@@ -193,6 +193,33 @@ docker exec -it stechen_frontend npm install
   - Passwort: `stechen_password`
 - **Datenbank** (extern): `localhost:3307`
 
+#### Mobile Testing mit ngrok
+
+Für Tests auf echten Mobilgeräten (z.B. Tablet) oder externe Zugänglichkeit während der Entwicklung:
+
+1. **Ngrok installieren** (kostenlos): Lade von [https://ngrok.com](https://ngrok.com) herunter und installiere.
+
+2. **Docker-App starten**:
+   ```powershell
+   docker-compose up -d
+   ```
+
+3. **Ngrok-Tunnel erstellen**:
+   ```powershell
+   # Für Frontend (Port 3000)
+   ngrok http 3000
+
+   # Alternative: Für Backend (Port 8000)
+   ngrok http 8000
+   ```
+
+4. **Externe URL verwenden**: Ngrok zeigt eine temporäre HTTPS-URL (z.B. `https://abc123.ngrok.io`). Öffne diese auf deinem Mobilgerät.
+
+**Hinweise:**
+- Ngrok ist kostenlos für Basis-Tests (zeitlich begrenzt).
+- Verwende die lokale IP (`ipconfig` in CMD) für WLAN-Tests ohne ngrok.
+- Stelle sicher, dass dein Firewall ngrok erlaubt.
+
 #### Tägliche Nutzung
 
 **Projekt starten:**
