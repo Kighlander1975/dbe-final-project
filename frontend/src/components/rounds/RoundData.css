@@ -1,0 +1,34 @@
+/* src/components/rounds/RoundData.css */
+.round-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0;
+    grid-template-areas:
+        "r-ans r-erg";
+    width: 105px; /* Feste Breite für jede Runde */
+    height: 100%;
+}
+
+.r-ans {
+    grid-area: r-ans;
+    justify-self: stretch;
+    align-self: stretch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff3cd; /* Leicht gelb für Ansagen */
+    box-sizing: border-box;
+    border-right: 1px solid #e0e0e0;
+}
+
+.r-erg {
+    grid-area: r-erg;
+    justify-self: stretch;
+    align-self: stretch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #d4edda; /* Leicht grün für Ergebnisse */
+    box-sizing: border-box;
+}

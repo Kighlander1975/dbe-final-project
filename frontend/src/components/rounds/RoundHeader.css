@@ -1,0 +1,35 @@
+/* src/components/rounds/RoundHeader.css */
+.round-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0;
+    grid-template-areas:
+        "h-heading h-heading"
+        "h-ans h-erg";
+    width: 105px; /* Feste Breite für jede Runde */
+    height: 100%;
+    border: 1px solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.h-heading {
+    grid-area: h-heading;
+    justify-self: center;
+    align-self: center;
+    font-weight: bold;
+}
+
+.h-ans {
+    grid-area: h-ans;
+    justify-self: center;
+    align-self: center;
+    font-weight: bold;
+}
+
+.h-erg {
+    grid-area: h-erg;
+    justify-self: center;
+    align-self: center;
+    font-weight: bold;
+}
