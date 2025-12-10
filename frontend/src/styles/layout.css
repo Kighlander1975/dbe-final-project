@@ -33,10 +33,30 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .main-layout__logo:hover {
   transform: scale(1.05);
+}
+
+/* Link Button Styles */
+.main-layout__link-button {
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.main-layout__link-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Menu Container */

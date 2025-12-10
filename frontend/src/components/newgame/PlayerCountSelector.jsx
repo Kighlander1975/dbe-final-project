@@ -1,13 +1,18 @@
 // src/components/newgame/PlayerCountSelector.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 /**
  * Komponente zur Auswahl der Spieleranzahl (2-11)
- * @param {number} initialCount - Startwert (default: 5)
+ * @param {number} value - Aktueller Wert
  * @param {function} onChange - Callback-Funktion, die bei Änderung aufgerufen wird
  */
-function PlayerCountSelector({ initialCount = 5, onChange }) {
-    const [selectedCount, setSelectedCount] = useState(initialCount);
+function PlayerCountSelector({ value = 5, onChange }) {
+    const [selectedCount, setSelectedCount] = useState(value);
+
+    // Aktualisiere selectedCount, wenn value sich ändert
+    useEffect(() => {
+        setSelectedCount(value);
+    }, [value]);
 
     // Min/Max Spieleranzahl
     const MIN_PLAYERS = 2;

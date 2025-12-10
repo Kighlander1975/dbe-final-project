@@ -5,6 +5,7 @@ import { ToastProvider } from "./context/ToastContext"; // ⭐ ZUERST importiere
 import { AuthProvider } from "./context/AuthContext";   // ⭐ DANACH importieren
 import { LoadingProvider } from "./context/LoadingContext"; // ⭐ NEU: LoadingProvider
 import { UserProvider } from "./context/UserContext"; // 🆕 UserProvider
+import { UnsavedChangesProvider } from "./context/UnsavedChangesContext"; // 🆕 UnsavedChangesProvider
 import App from "./App";
 import "./styles/global.css";
 
@@ -13,9 +14,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <ToastProvider>      {/* ⭐ 1. ToastProvider AUSSEN */}
             <LoadingProvider> {/* ⭐ 2. LoadingProvider */}
                 <UserProvider>   {/* 🆕 4. UserProvider */}
-                    <AuthProvider>   {/* ⭐ 3. AuthProvider INNEN */}
-                        <App />
-                    </AuthProvider>
+                    <UnsavedChangesProvider> {/* 🆕 5. UnsavedChangesProvider */}
+                        <AuthProvider>   {/* ⭐ 3. AuthProvider INNEN */}
+                            <App />
+                        </AuthProvider>
+                    </UnsavedChangesProvider>
                 </UserProvider>
             </LoadingProvider>
         </ToastProvider>
