@@ -8,7 +8,7 @@ function GameSummary() {
   const navigate = useNavigate();
   
   // Daten aus Navigation State holen
-  const { gameName, playerCount, players } = location.state || {};
+  const { gameName, playerCount, players, victoryPoints } = location.state || {};
 
   // 🆕 Schutz vor Datenverlust
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
@@ -94,6 +94,13 @@ function GameSummary() {
           </div>
 
           <div className="summary-row">
+            <div className="summary-label">🏆 Siegbedingung:</div>
+            <div className="summary-value summary-value--highlight">
+              {victoryPoints} Punkte
+            </div>
+          </div>
+
+          <div className="summary-row">
             <div className="summary-label">Anzahl Spieler:</div>
             <div className="summary-value">
               {playerCount} Spieler
@@ -165,7 +172,7 @@ function GameSummary() {
             onClick={() => {
               setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Zurück-Navigation
               navigate('/new-game', { 
-                state: { gameName, playerCount, players } 
+                state: { gameName, playerCount, players, victoryPoints } 
               });
             }}
           >

@@ -8,6 +8,7 @@ import { userAPI } from "../services/api";
 import PlayerCountSelector from "../components/newgame/PlayerCountSelector";
 import PlayerInput from "../components/newgame/PlayerInput";
 import GameNameInput from "../components/newgame/GameNameInput";
+import VictoryConditionSelector from "../components/newgame/VictoryConditionSelector"; // 🆕 Siegbedingung
 import "../styles/pages/newgame.css";
 
 function NewGame() {
@@ -27,6 +28,7 @@ function NewGame() {
     const [error, setError] = useState(null);
     const [gameName, setGameName] = useState(restoredData.gameName || ''); // ✅ Wiederhergestellt
     const [gameNameInput, setGameNameInput] = useState(''); // ✅ Wird in GameNameInput gesetzt
+    const [victoryPoints, setVictoryPoints] = useState(restoredData.victoryPoints || 100); // 🆕 Siegbedingung
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false); // 🆕 Schutz nur bei Änderungen
     
     const MAX_PLAYERS_CACHE = 11;
@@ -36,6 +38,7 @@ function NewGame() {
     const isDirty = () => {
         return gameNameInput.trim() !== '' || 
                playerCount !== initialPlayerCount || 
+               victoryPoints !== 100 || // 🆕 Siegbedingung prüfen
                players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1 (currentUser)
     };
 
@@ -80,6 +83,7 @@ function NewGame() {
     const handleGameNameChange = (fullName, inputPart) => {
         const newIsDirty = inputPart.trim() !== '' || 
                           playerCount !== initialPlayerCount || 
+                          victoryPoints !== 100 || // 🆕 Siegbedingung prüfen
                           players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
         setGameName(fullName);
         setGameNameInput(inputPart);
@@ -91,13 +95,23 @@ function NewGame() {
     const handlePlayerCountChange = (count) => {
         const newIsDirty = count !== initialPlayerCount || 
                           gameNameInput.trim() !== '' || 
+                          victoryPoints !== 100 || // 🆕 Siegbedingung prüfen
                           players.slice(1, count).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
         console.log('🔢 handlePlayerCountChange:', { count, initialPlayerCount, gameNameInput: gameNameInput.trim(), playersSlice: players.slice(1, count), newIsDirty });
         setPlayerCount(count);
         setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
     };
 
-    // Handler für Spieler-Daten-Änderung
+    // Handler für Siegbedingung-Änderung
+    const handleVictoryConditionChange = (points) => {
+        const newIsDirty = gameNameInput.trim() !== '' || 
+                          playerCount !== initialPlayerCount || 
+                          points !== 100 || // 🆕 Siegbedingung prüfen
+                          players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
+        setVictoryPoints(points);
+        setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
+        console.log('🏆 Siegbedingung:', points);
+    };
     const handlePlayerChange = (playerData) => {
         setPlayers((prev) => {
             const updated = [...prev];
@@ -105,6 +119,7 @@ function NewGame() {
             const newPlayers = updated;
             const newIsDirty = gameNameInput.trim() !== '' || 
                               playerCount !== initialPlayerCount || 
+                              victoryPoints !== 100 || // 🆕 Siegbedingung prüfen
                               newPlayers.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
             setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
             return updated;
@@ -200,6 +215,7 @@ function NewGame() {
                 gameName,
                 playerCount,
                 players: players.slice(0, playerCount),
+                victoryPoints, // 🆕 Siegbedingung hinzufügen
             }
         });
         
@@ -257,6 +273,12 @@ function NewGame() {
                         onChange={handleGameNameChange}
                         required={true}
                         initialFullName={restoredData.gameName} // ✅ NEU: Vollständiger Name übergeben
+                    />
+
+                    {/* 🆕 VictoryConditionSelector */}
+                    <VictoryConditionSelector
+                        onChange={handleVictoryConditionChange}
+                        initialValue={restoredData.victoryPoints}
                     />
 
                     {/* ✅ PlayerCountSelector mit restoredData */}
