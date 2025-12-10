@@ -101,13 +101,20 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 ## 📋 Technische ToDo-Liste
 
 ### Phase 1: Grundgerüst
-- [ ] React-Komponente `GameTable` erstellen
-- [ ] Basis-Layout mit fixen und scrollbaren Spalten implementieren
-- [ ] Datenstruktur für Spieler, Runden und Punkte definieren
-- [ ] State-Management für Spiel-Status (aktiv, pausiert, beendet)
+- [x] React-Komponente `GameTable` erstellen
+- [x] Basis-Layout mit fixen und scrollbaren Spalten implementieren
+- [x] Datenstruktur für Spieler, Runden und Punkte definieren
+- [x] State-Management für Spiel-Status (aktiv, pausiert, beendet)
+- [x] Responsive Design für Desktop/Tablet/Mobile
+- [x] Sticky-Elemente (Header, Buttons, Spalten)
+- [x] Drag-to-Scroll für Desktop
+- [x] Touch-Scrolling für Mobile (versteckte Scrollbars)
+- [x] Dynamische Daten aus vorheriger Seite
+- [x] Caching für Spiel-Daten (keine API-Calls während Spiel)
 
 ### Phase 2: Tabellen-Funktionalität
-- [ ] Scrollbare Runden-Ansicht implementieren
+- [x] Erste Runde ohne Daten hinzugefügt (Phase 2 Start)
+- [ ] Scrollbare Runden-Ansicht implementieren (bereits funktional)
 - [ ] Zell-Editierung mit Doppelklick/Tap aktivieren
 - [ ] Modal-Komponente für Eingabe erstellen (große Schrift, zentriert)
 - [ ] Validierung für Ansagen (0-9) und Ergebnisse (logische Verteilung)
@@ -144,6 +151,6 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 
 ---
 
-*Letzte Aktualisierung: 10. Dezember 2025*
+*Letzte Aktualisierung: 10. Dezember 2025 - Phase 1 abgeschlossen, Phase 2 gestartet*
 *Diese ToDo-Liste wird bei expliziter Aufforderung aktualisiert.*
 

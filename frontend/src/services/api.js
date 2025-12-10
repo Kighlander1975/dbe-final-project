@@ -226,15 +226,35 @@ export const userAPI = {
      * Get all users (öffentlich, für Spielerauswahl)
      * GET /api/users
      * Optional: Filter nach Role → ?role=player
+     * Cached während aktiven Spiels
      */
     getAll: async (page = 1, role = null) => {
+        const isGameActive = localStorage.getItem('gameActive') === 'true';
+        const cacheKey = `users_${page}_${role || 'all'}`;
+
+        if (isGameActive) {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                console.log('📦 Loading users from cache');
+                return JSON.parse(cached);
+            }
+        }
+
         const params = new URLSearchParams({ page });
         if (role) params.append("role", role);
 
-        return apiRequest(`/users?${params.toString()}`, {
+        const data = await apiRequest(`/users?${params.toString()}`, {
             method: "GET",
             loadingMessage: "Benutzerliste wird geladen...",
         });
+
+        // Cache die Daten, wenn Spiel aktiv
+        if (isGameActive) {
+            localStorage.setItem(cacheKey, JSON.stringify(data));
+            console.log('💾 Users cached');
+        }
+
+        return data;
     },
 };
 

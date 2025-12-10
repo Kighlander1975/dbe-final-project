@@ -119,6 +119,14 @@
   position: relative; /* Für absolute Positionierung der Sperre */
 }
 
+/* Game-Seite spezielle Styles */
+.main-layout__main--game {
+  padding: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  max-width: none;
+  margin: 0;
+}
+
 /* Footer Styles */
 .main-layout__footer {
   background: white;

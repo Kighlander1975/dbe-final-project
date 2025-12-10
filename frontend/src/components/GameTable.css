@@ -1,22 +1,53 @@
 /* src/components/GameTable.css */
 
 .game-table {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
+    /* width: 100%; */
+    /* min-height: 100%; */
+    height: 73vh;
+    margin: 0;
+    padding: 0;
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.game-table__inner {
+    height: 100%;
+    /* padding: 1rem 1rem 1rem 1rem; */
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    scrollbar-width: none; /* Versteckt Scrollbar in Firefox */
+}
+
+.game-table__inner::-webkit-scrollbar {
+    display: none; /* Versteckt Scrollbar in Webkit (Safari, Chrome) */
+}
+
+.game-table__header-row {
+    display: flex;
+    position: sticky;
+    top: 69px;
+    left: 0;
+    z-index: 2;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .game-table__header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    background: white;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #e0e0e0;
+    /* margin-bottom: 1rem; */
+    padding-top: 14px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .game-table__header h2 {
@@ -31,76 +62,79 @@
     color: #666;
 }
 
-.game-table__container {
-    display: flex;
-    overflow: hidden;
+/* Neue zeilenbasierte Struktur */
+.game-table__rows {
     border: 1px solid #e0e0e0;
     border-radius: 4px;
+    flex: 1;
+    scrollbar-width: none; /* Versteckt Scrollbar in Firefox */
+    user-select: none; /* Verhindert Textselektion beim Ziehen */
 }
 
-/* Fixe linke Spalte */
-.game-table__fixed-left {
-    flex-shrink: 0;
-    width: 120px;
+.game-table__rows::-webkit-scrollbar {
+    display: none; /* Versteckt Scrollbar in Webkit (Safari, Chrome) */
+}
+
+.game-table__row {
+    display: flex;
+}
+
+.game-table__rounds-container {
+    display: flex;
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.game-table__player-cell {
+    width: 180px;
+    height: 50px;
     background: #f8f9fa;
     border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-weight: normal;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    flex-shrink: 0;
 }
 
-/* Scrollbare Mitte */
-.game-table__scrollable {
-    flex: 1;
-    overflow-x: auto;
-    overflow-y: hidden;
-    background: #fff;
+.game-table__stats-container {
     display: flex;
+    width: 150px;
+    height: 50px;
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    flex-shrink: 0;
 }
 
-.game-table__round-column {
-    display: flex;
-    flex-direction: column;
-    min-width: 80px;
+.game-table__points-cell, .game-table__rank-cell {
+    width: 75px;
+    height: 50px;
+    background: #f8f9fa;
     border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-weight: normal;
+    flex-shrink: 0;
 }
 
-.game-table__round-column:last-child {
+.game-table__rank-cell {
     border-right: none;
 }
 
-.game-table__placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 200px;
-    color: #999;
-    font-style: italic;
-    width: 100%;
-}
-
-/* Fixe rechte Spalten */
-.game-table__fixed-right {
-    flex-shrink: 0;
-    width: 120px;
-    background: #f8f9fa;
-    border-left: 1px solid #e0e0e0;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Zellen */
-.game-table__cell {
-    padding: 0.75rem;
-    border-bottom: 1px solid #e0e0e0;
-    text-align: center;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .game-table__header-cell {
-    background: #e9ecef;
+    background: #f8f9fa;
     font-weight: bold;
-    border-bottom: 2px solid #dee2e6;
+    border: 1px solid #dee2e6;
+    height: 50px;
 }
 
 /* Actions */
@@ -108,7 +142,14 @@
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin-top: 1.5rem;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 1;
+    padding: 1rem 0 1rem 0;
+    border-top: 1px solid #e0e0e0;
 }
 
 .btn {
@@ -144,13 +185,16 @@
         padding: 0.5rem;
     }
 
-    .game-table__cell {
-        padding: 0.5rem;
-        font-size: 0.9rem;
+    .game-table__player-cell {
+        width: 180px;
     }
 
-    .game-table__fixed-left,
-    .game-table__fixed-right {
-        width: 100px;
+    .game-table__stats-container {
+        width: 120px;
+    }
+
+    .game-table__points-cell,
+    .game-table__rank-cell {
+        width: 60px;
     }
 }

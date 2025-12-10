@@ -208,7 +208,7 @@ function MainLayout() {
                 </nav>
             </header>
 
-            <main className="main-layout__main">
+            <main className={`main-layout__main ${location.pathname === '/game' ? 'main-layout__main--game' : ''}`}>
                 {deviceStatus.isAllowed ? (
                     <Outlet />
                 ) : (
