@@ -133,6 +133,7 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
                         <input
                             ref={inputRef}
                             type="text"
+                            inputMode={isTouchDevice() ? 'numeric' : undefined}
                             defaultValue={editValue}
                             onInput={handleInputChange}
                             className={isInvalid ? 'invalid' : ''}
