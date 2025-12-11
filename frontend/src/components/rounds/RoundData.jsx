@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/context/ToastContext';
 import './RoundData.css';
 
-function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers }) {
+function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers, roundNumber, roundPhase, currentRound, validateTricksInput, maxCards, isEvaluated, isColorEvaluated, isCorrectBid, isGameFinished }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editField, setEditField] = useState(''); // 'bid' or 'tricks'
     const [editValue, setEditValue] = useState('');
@@ -13,7 +13,7 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers 
     const lastToastRef = useRef(0);
     const { showToast } = useToast();
 
-    const maxBid = numPlayers <= 5 ? 9 : 7; // Bis 5 Spieler: 9, ab 6: 7
+    const maxBid = numPlayers <= 6 ? 9 : 7; // 2-6 Spieler: 9 Karten, 7-11 Spieler: 7 Karten
 
     const isMobile = () => window.innerWidth < 768;
 
@@ -31,7 +31,15 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers 
     }, [isModalOpen]);
 
     const handleDoubleClick = (field) => {
-        if (field === 'tricks' && bid === '-') return; // Tricks nicht editierbar, wenn Bid nicht gesetzt
+        if (isGameFinished) return; // Spiel beendet - keine Bearbeitung möglich
+
+        // Phase 0: Nur Bids editierbar
+        if (roundPhase === 0 && field !== 'bid') return;
+        // Phase 1: Nur Tricks editierbar
+        if (roundPhase === 1 && field !== 'tricks') return;
+        // Tricks nicht editierbar, wenn Bid nicht gesetzt (aber in Phase 1 sollte Bid immer gesetzt sein)
+        if (field === 'tricks' && bid === '-') return;
+
         setEditField(field);
         const value = field === 'bid' ? bid : tricks;
         const displayValue = value === '-' ? '-' : value.toString();
@@ -42,21 +50,42 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers 
 
     const handleInputChange = (e) => {
         const newValue = e.target.value;
-        const maxValue = editField === 'bid' ? maxBid : (bid !== '-' ? parseInt(bid) : 9);
-        if (/^\d+$/.test(newValue)) {
-            const numValue = parseInt(newValue);
-            if (numValue >= 0 && numValue <= maxValue) {
-                // Gültige Zahl: Animation und schließen
-                if (inputRef.current) {
-                    inputRef.current.style.backgroundColor = '#d4edda'; // Grün
-                    setTimeout(() => {
-                        onUpdate(roundIndex, playerIndex, editField, numValue);
-                        setIsModalOpen(false);
-                    }, 300); // Kürzerer Delay
+        let maxValue = editField === 'bid' ? maxBid : maxCards;
+
+        if (editField === 'tricks') {
+            // Für Tricks: Prüfe die Summe aller Tricks in der Runde
+            if (/^\d+$/.test(newValue)) {
+                const numValue = parseInt(newValue);
+                if (numValue >= 0 && validateTricksInput(roundIndex, playerIndex, numValue)) {
+                    // Gültige Zahl: Animation und schließen
+                    if (inputRef.current) {
+                        inputRef.current.style.backgroundColor = '#d4edda'; // Grün
+                        setTimeout(() => {
+                            onUpdate(roundIndex, playerIndex, editField, numValue);
+                            setIsModalOpen(false);
+                        }, 300); // Kürzerer Delay
+                    }
+                    return;
                 }
-                return;
+            }
+        } else {
+            // Für Bids: Normale Validierung
+            if (/^\d+$/.test(newValue)) {
+                const numValue = parseInt(newValue);
+                if (numValue >= 0 && numValue <= maxValue) {
+                    // Gültige Zahl: Animation und schließen
+                    if (inputRef.current) {
+                        inputRef.current.style.backgroundColor = '#d4edda'; // Grün
+                        setTimeout(() => {
+                            onUpdate(roundIndex, playerIndex, editField, numValue);
+                            setIsModalOpen(false);
+                        }, 300); // Kürzerer Delay
+                    }
+                    return;
+                }
             }
         }
+
         // Ungültig: Vibration und Reset
         setIsInvalid(true);
         setTimeout(() => setIsInvalid(false), 500);
@@ -72,8 +101,30 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers 
 
     return (
         <div className="round-data">
-            <div className="r-ans" onDoubleClick={() => handleDoubleClick('bid')}>{bid}</div>
-            <div className="r-erg" onDoubleClick={() => handleDoubleClick('tricks')} style={{ cursor: bid === '-' ? 'not-allowed' : 'pointer' }}>{bid === '-' ? '-' : tricks}</div>
+            <div
+                className="r-ans"
+                onDoubleClick={() => handleDoubleClick('bid')}
+                style={{
+                    fontSize: (isEvaluated || roundPhase >= 1) ? '1.8rem' : '1rem',
+                    cursor: isGameFinished ? 'default' : (roundPhase === 0 ? 'pointer' : 'not-allowed'),
+                    opacity: roundPhase === 0 && !isGameFinished ? 1 : 0.7,
+                    backgroundColor: isColorEvaluated ? (isCorrectBid ? '#fff3cd' : '#f8d7da') : undefined
+                }}
+            >
+                {bid}
+            </div>
+            <div
+                className="r-erg"
+                onDoubleClick={() => handleDoubleClick('tricks')}
+                style={{
+                    fontSize: isEvaluated ? '1.8rem' : '1rem',
+                    cursor: isGameFinished ? 'default' : (roundPhase === 1 && bid !== '-' ? 'pointer' : 'not-allowed'),
+                    opacity: (roundPhase === 1 && bid !== '-' && !isGameFinished) ? 1 : 0.7,
+                    backgroundColor: isColorEvaluated ? (isCorrectBid ? '#fff3cd' : '#f8d7da') : undefined
+                }}
+            >
+                {bid === '-' ? '-' : tricks}
+            </div>
 
             {isModalOpen && (
                 <div className="modal-overlay" onClick={handleCancel}>
