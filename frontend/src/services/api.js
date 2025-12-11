@@ -1,6 +1,11 @@
 // src/services/api.js
 
-const API_BASE_URL = `http://${window.location.hostname}:8000/api`;
+// API immer auf dem gleichen Host wie das Frontend
+// Fallback für lokale Entwicklung: HTTP mit Port 8000
+// In Produktion: HTTPS ohne Port
+const API_BASE_URL = window.location.hostname === 'localhost'
+    ? `http://localhost:8000/api`
+    : `https://${window.location.hostname}/api`;
 
 // Diese Funktion wird später durch den tatsächlichen Import ersetzt
 // Sie dient nur als Platzhalter, damit wir die Datei nicht direkt importieren müssen
@@ -56,8 +61,16 @@ async function apiRequest(endpoint, options = {}) {
             ...options.headers,
         },
         credentials: "include",
-        ...options,
     };
+
+    // Body separat behandeln
+    if (options.body) {
+        config.body = typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
+    }
+
+    // Restliche Optionen hinzufügen (ohne body zu überschreiben)
+    const { body, ...otherOptions } = options;
+    Object.assign(config, otherOptions);
 
     console.log("📤 API Request:", {
         url: `${API_BASE_URL}${endpoint}`,
@@ -97,7 +110,9 @@ async function apiRequest(endpoint, options = {}) {
  */
 async function initCSRF() {
     try {
-        await fetch(`http://${window.location.hostname}:8000/sanctum/csrf-cookie`, {
+        // Verwende die gleiche Base-URL wie die API
+        const csrfUrl = API_BASE_URL.replace('/api', '/sanctum/csrf-cookie');
+        await fetch(csrfUrl, {
             method: "GET",
             credentials: "include",
         });
@@ -109,10 +124,9 @@ async function initCSRF() {
 /**
  * Auth API Endpoints
  */
-export const authAPI = {
+const authAPI = {
     // Register
     register: async (name, email, password, password_confirmation) => {
-        await initCSRF();
         return apiRequest("/register", {
             method: "POST",
             body: JSON.stringify({
@@ -299,4 +313,59 @@ export const adminAPI = {
     },
 };
 
+// ⭐ Game API Endpoints
+const gameAPI = {
+    // Create new game (Admin only)
+    createGame: async (gameData) => {
+        return apiRequest("/games", {
+            method: "POST",
+            body: gameData,
+            loadingMessage: "Spiel wird erstellt...",
+        });
+    },
+
+    // Get game data (for live view)
+    getGame: async (gameId) => {
+        return apiRequest(`/games/${gameId}`, {
+            loadingMessage: "Spiel-Daten werden geladen...",
+        });
+    },
+
+    // Update game (Admin only)
+    updateGame: async (gameId, gameData) => {
+        console.log('updateGame called with gameId:', gameId, 'gameData:', gameData);
+        return apiRequest(`/games/${gameId}`, {
+            method: "PATCH",
+            body: { game_data: gameData },
+            loadingMessage: "Spiel wird gespeichert...",
+        });
+    },
+
+    // Delete game (Admin only)
+    deleteGame: async (gameId) => {
+        return apiRequest(`/games/${gameId}`, {
+            method: "DELETE",
+            loadingMessage: "Spiel wird gelöscht...",
+        });
+    },
+};
+
+// ⭐ Stats API Endpoints
+const statsAPI = {
+    // Get all players stats
+    getPlayersStats: async () => {
+        return apiRequest("/stats/players", {
+            loadingMessage: "Statistiken werden geladen...",
+        });
+    },
+
+    // Get single player stats
+    getPlayerStats: async (playerId) => {
+        return apiRequest(`/stats/player/${playerId}`, {
+            loadingMessage: "Spieler-Statistiken werden geladen...",
+        });
+    },
+};
+
+export { authAPI, gameAPI, statsAPI };
 export default apiRequest;

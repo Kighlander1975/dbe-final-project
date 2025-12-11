@@ -1,5 +1,5 @@
 // src/components/GameTable.jsx
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import RoundHeader from './rounds/RoundHeader';
 import RoundData from './rounds/RoundData';
 import './GameTable.css';
@@ -30,7 +30,7 @@ const generateRounds = (numRounds, numPlayers) => {
     });
 };
 
-function GameTable({ gameData: initialGameData }) {
+function GameTable({ gameData: initialGameData, onGameUpdate }) {
     const tableRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -39,6 +39,7 @@ function GameTable({ gameData: initialGameData }) {
     const [scrollTop, setScrollTop] = useState(0);
     const [showTooltip, setShowTooltip] = useState(false);
     const [roundPhase, setRoundPhase] = useState(0); // 0 = bids, 1 = tricks
+    const saveTimeoutRef = useRef(null);
 
     // Handler für Drag-to-Scroll
     const handleMouseDown = (e) => {
@@ -163,23 +164,27 @@ function GameTable({ gameData: initialGameData }) {
 
         // NICHT auf 11 Spieler auffüllen - verwende nur die echten Spieler
 
-        // Erste Runde ohne Daten hinzufügen
-        const numPlayers = players.length;
-        const firstRound = {
-            round: 1,
-            bids: generateBids(numPlayers),
-            tricks: generateTricks(numPlayers),
-            points: Array(numPlayers).fill(0),
-        };
+        // Verwende die vorhandenen Runden aus den Daten, oder erstelle eine leere erste Runde
+        let rounds = data.rounds || [];
+        if (rounds.length === 0) {
+            const numPlayers = players.length;
+            const firstRound = {
+                round: 1,
+                bids: generateBids(numPlayers),
+                tricks: generateTricks(numPlayers),
+                points: Array(numPlayers).fill(0),
+            };
+            rounds = [firstRound];
+        }
 
         return {
             gameName: data.gameName,
             players: players,
-            rounds: [firstRound],
-            currentRound: 1,
-            gameStatus: "active",
-            victoryCondition: data.victoryPoints || 100,
-            dealerIndex: Math.floor(Math.random() * numPlayers),
+            rounds: rounds,
+            currentRound: data.currentRound || 1,
+            gameStatus: data.gameStatus || "active",
+            victoryCondition: data.victoryCondition || 100,
+            dealerIndex: data.dealerIndex || Math.floor(Math.random() * players.length),
         };
     };
 
@@ -200,6 +205,27 @@ function GameTable({ gameData: initialGameData }) {
             dealerIndex: 0,
         };
     });
+
+    // Debounced Speicher-Funktion
+    const debouncedSave = useCallback((data) => {
+        if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current);
+        }
+        saveTimeoutRef.current = setTimeout(() => {
+            if (onGameUpdate) {
+                onGameUpdate(data);
+            }
+        }, 1000); // 1 Sekunde warten nach der letzten Änderung
+    }, [onGameUpdate]);
+
+    // Cleanup beim Unmount
+    useEffect(() => {
+        return () => {
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+        };
+    }, []);
 
     const maxCards = gameData.players.length <= 6 ? 9 : 7;
 
@@ -238,6 +264,9 @@ function GameTable({ gameData: initialGameData }) {
 
             // Speichere in sessionStorage
             sessionStorage.setItem('gameData', JSON.stringify(updatedData));
+
+            // Debounced Speichern anstatt sofort
+            debouncedSave(updatedData);
 
             return updatedData;
         });
@@ -278,6 +307,9 @@ function GameTable({ gameData: initialGameData }) {
                         // Speichere in sessionStorage
                         sessionStorage.setItem('gameData', JSON.stringify(updatedData));
 
+                        // Debounced Speichern
+                        debouncedSave(updatedData);
+
                         return updatedData;
                     });
                 }
@@ -304,6 +336,8 @@ function GameTable({ gameData: initialGameData }) {
                             rounds: newRounds,
                         };
                         sessionStorage.setItem('gameData', JSON.stringify(updatedData));
+                        // Debounced Speichern
+                        debouncedSave(updatedData);
                         return updatedData;
                     });
                 }
@@ -406,6 +440,9 @@ function GameTable({ gameData: initialGameData }) {
 
             // Speichere in sessionStorage
             sessionStorage.setItem('gameData', JSON.stringify(newGameData));
+
+            // Debounced Speichern
+            debouncedSave(newGameData);
 
             return newGameData;
         });

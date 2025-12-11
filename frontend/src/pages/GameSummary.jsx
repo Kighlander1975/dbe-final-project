@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useBlocker } from 'react-router-dom';
 import '../styles/pages/newgame.css';
+import { gameAPI } from '../services/api';
 
 function GameSummary() {
   const location = useLocation();
@@ -13,9 +14,10 @@ function GameSummary() {
   // 🆕 Schutz vor Datenverlust
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
 
-  // 🆕 Blocker für interne Navigation
+  // Navigation-Blocker für interne Navigation
   const blocker = useBlocker(hasUnsavedChanges && localStorage.getItem('gameActive') !== 'true');
 
+  // useEffect für Blocker
   useEffect(() => {
     if (blocker.state === 'blocked') {
       const confirmLeave = window.confirm(
@@ -181,14 +183,38 @@ function GameSummary() {
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => {
-              // TODO: API-Call zum Erstellen des Spiels
-              console.log('🎮 Spiel erstellen:', { gameName, playerCount, players });
-              // Navigation zur Game-Seite mit Spieldaten
-              setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start
-              navigate('/game', {
-                state: { gameName, playerCount, players, victoryPoints }
-              });
+            onClick={async () => {
+              try {
+                console.log('🎮 Spiel starten Button geklickt');
+                // API-Call zum Erstellen des Spiels
+                const gameData = {
+                  gameName,
+                  players: players.map(p => ({ name: p.name })), // Nur name senden
+                  victoryCondition: victoryPoints
+                };
+                
+                // Spiel über API erstellen
+                const response = await gameAPI.createGame(gameData);
+                
+                if (!response || !response.id) {
+                  throw new Error('Spiel konnte nicht erstellt werden');
+                }
+                
+                // Navigation zur Game-Seite mit der Spiel-ID
+                console.log('🚀 Navigation starten...');
+                setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start
+                localStorage.setItem('gameActive', 'true'); // Spiel als aktiv markieren
+                console.log('📍 Navigate aufrufen...');
+                
+                // Navigation zur Game-Seite mit der Spiel-ID
+                setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start
+                localStorage.setItem('gameActive', 'true'); // Spiel als aktiv markieren
+                window.location.href = '/game?gameId=' + response.id;
+              } catch (error) {
+                console.error('❌ Fehler beim Erstellen des Spiels:', error);
+                console.error('❌ Error details:', error.message, error.response);
+                alert('Fehler beim Erstellen des Spiels: ' + error.message);
+              }
             }}
           >
             Spiel starten 🎮
