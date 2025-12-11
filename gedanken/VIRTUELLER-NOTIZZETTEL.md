@@ -131,25 +131,19 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 - [x] Korrekturmöglichkeit mit temporärer Überschreitung der Summe
 - [x] Zwei-Phasen-Runden: Ansagen → Ergebnisse
 
-### Phase 4: Touch-Gesten & Mobile
-- [x] Swipe-Gesten für Runden-Navigation (react-use-gesture)
-- [x] Touch-Feedback und Vibration hinzufügen
-- [x] Responsive Design für alle Bildschirmgrößen
-- [x] Mobile-Optimierung (Touch-Ziele mind. 44px, numerische Tastatur)
-
-### Phase 5: Daten & Persistenz
+### Phase 4: Daten & Persistenz
 - [ ] Lokale Speicherung mit IndexedDB
 - [ ] Automatisches Speichern bei Änderungen
 - [ ] Daten-Export/Import Funktionalität
 - [ ] Synchronisation mit Backend (falls online)
 
-### Phase 6: UX-Polish
+### Phase 5: UX-Polish
 - [ ] Ladezustände und Fehlerbehandlung
 - [ ] Undo/Redo Funktionalität
 - [ ] Statistiken und Spielzusammenfassung
 - [ ] Accessibility (Screenreader, Tastatur-Navigation)
 
-### Phase 7: Testing & Deployment
+### Phase 6: Testing & Deployment
 - [ ] Unit-Tests für Spiel-Logik
 - [ ] Integration-Tests für Touch-Gesten
 - [ ] Cross-Browser Testing
@@ -157,6 +151,6 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 
 ---
 
-*Letzte Aktualisierung: 11. Dezember 2025 - Phase 4 abgeschlossen, Phase 5 bereit*
+*Letzte Aktualisierung: 11. Dezember 2025 - Phase 4 entfernt, Phase 4 (Daten & Persistenz) bereit*
 *Diese ToDo-Liste wird bei expliziter Aufforderung aktualisiert.*
 

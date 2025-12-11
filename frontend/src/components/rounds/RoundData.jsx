@@ -17,6 +17,8 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
 
     const isMobile = () => window.innerWidth < 768;
 
+    const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
     useEffect(() => {
         if (isModalOpen && inputRef.current) {
             inputRef.current.focus();
@@ -132,8 +134,7 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
                         <h3>{editField === 'bid' ? 'Ansage eingeben' : 'Stiche eingeben'}</h3>
                         <input
                             ref={inputRef}
-                            type="text"
-                            inputMode={isTouchDevice() ? 'numeric' : undefined}
+                            type={isTouchDevice() ? 'number' : 'text'}
                             defaultValue={editValue}
                             onInput={handleInputChange}
                             className={isInvalid ? 'invalid' : ''}
