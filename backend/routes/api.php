@@ -1,26 +1,28 @@
 <?php
-// app/routes/api.php
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Middleware\EnsureEmailIsVerified;
-use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\StatsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerificationController;
+use App\Http\Middleware\EnsureEmailIsVerified;
 
-// Public routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+// Public routes (ohne CSRF für SPA-Login)
+Route::withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class])->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 
-// Verifizierungs-Routes (öffentlich)
-Route::post('/verify-email', [VerificationController::class, 'verify']);
-Route::post('/resend-verification', [VerificationController::class, 'resend']);
+    // Verifizierungs-Routes (öffentlich)
+    Route::post('/verify-email', [VerificationController::class, 'verify']);
+    Route::post('/resend-verification', [VerificationController::class, 'resend']);
 
-// ⭐ NEU: Public User List (ÖFFENTLICH, für Spielerauswahl)
-Route::get('/users', [UserController::class, 'index'])->name('users.public');
+    // ⭐ NEU: Public User List (ÖFFENTLICH, für Spielerauswahl)
+    Route::get('/users', [UserController::class, 'index'])->name('users.public');
 
-// Password Reset Routes (öffentlich)
-Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
-Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
+    // Password Reset Routes (öffentlich)
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
+});
 
 // Protected routes (Email verified required)
 Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(function () {
@@ -40,5 +42,21 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
         Route::patch('/users/{user}/ban', [UserController::class, 'banUser']);
         Route::patch('/users/{user}/unban', [UserController::class, 'unbanUser']);
+    });
+
+    // Game routes (für Persistenz während Spielen)
+    Route::prefix('games')->group(function () {
+        Route::middleware('role:admin')->group(function () {
+            Route::post('/', [GameController::class, 'store']); // Neues Spiel
+            Route::delete('/{id}', [GameController::class, 'destroy']); // Spiel beenden
+        });
+        Route::patch('/{id}', [GameController::class, 'update']); // Update Spiel (temporär ohne role)
+        Route::get('/{id}', [GameController::class, 'show']); // Spiel lesen (für alle auth User)
+    });
+
+    // Stats routes (für alle auth User, readonly)
+    Route::prefix('stats')->group(function () {
+        Route::get('/players', [StatsController::class, 'players']);
+        Route::get('/player/{id}', [StatsController::class, 'player']);
     });
 });
