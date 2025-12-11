@@ -129,6 +129,22 @@ function GameTable({ gameData: initialGameData }) {
         return playersWithIndex.map(({ originalIndex, ...p }) => p);
     };
 
+    // Funktion zur Bestimmung der Ranking-Farbe
+    const getRankingColor = (rank) => {
+        if (rank === 1) return 'rank-1';
+        if (rank === 2) return 'rank-2';
+        if (rank === 3) return 'rank-3';
+        return 'rank-other';
+    };
+
+    // Funktion zur Bestimmung des Ranking-Emojis
+    const getRankingEmoji = (rank) => {
+        if (rank === 1) return '🥇';
+        if (rank === 2) return '🥈';
+        if (rank === 3) return '🥉';
+        return '';
+    };
+
     // Funktion zum Beenden des Spiels
     const finishGame = () => {
         // Navigation zur GameSummary Seite
@@ -484,8 +500,8 @@ function GameTable({ gameData: initialGameData }) {
                             <div className="game-table__points-cell">
                                 {player.totalPoints}
                             </div>
-                            <div className="game-table__rank-cell">
-                                {player.rank}
+                            <div className={`game-table__rank-cell ${getRankingColor(player.rank)}`}>
+                                {getRankingEmoji(player.rank)} {player.rank}
                             </div>
                         </div>
                     </div>
