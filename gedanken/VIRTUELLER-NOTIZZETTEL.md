@@ -120,10 +120,16 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 - [x] Validierung für Ansagen (0-9) und Ergebnisse (logische Verteilung)
 
 ### Phase 3: Spiel-Logik
-- [ ] Dealer-System implementieren (zufällige Auswahl, automatischer Wechsel)
-- [ ] Runden-Status verwalten (aktiv, abgeschlossen, editierbar)
-- [ ] Siegbedingungs-Prüfung integrieren
-- [ ] Automatisches Hinzufügen neuer Runden
+- [x] Dealer-System implementieren (zufällige Auswahl, automatischer Wechsel)
+- [x] Runden-Status verwalten (aktiv, abgeschlossen, editierbar)
+- [x] Siegbedingungs-Prüfung integrieren
+- [x] Automatisches Hinzufügen neuer Runden
+- [x] Punkteberechnung nach Stechen-Regeln (exakte Ansage +10, 0-0=20)
+- [x] Live-Ranking mit übersprungenen Rängen bei Gleichstand
+- [x] Visuelle Evaluierung: FontSize 1.8rem für abgeschlossene Runden, Farben (gelb=korrekt, rot=falsch) nach Rundenabschluss
+- [x] Auto-Vervollständigung: Letztes Feld automatisch füllen, fehlende auf 0 setzen
+- [x] Korrekturmöglichkeit mit temporärer Überschreitung der Summe
+- [x] Zwei-Phasen-Runden: Ansagen → Ergebnisse
 
 ### Phase 4: Touch-Gesten & Mobile
 - [ ] Swipe-Gesten für Runden-Navigation (react-use-gesture)
@@ -151,6 +157,6 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 
 ---
 
-*Letzte Aktualisierung: 10. Dezember 2025 - Phase 2 abgeschlossen, Phase 3 gestartet*
+*Letzte Aktualisierung: 11. Dezember 2025 - Phase 3 abgeschlossen, Phase 4 bereit*
 *Diese ToDo-Liste wird bei expliziter Aufforderung aktualisiert.*
 
