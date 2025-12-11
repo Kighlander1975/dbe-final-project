@@ -132,10 +132,10 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 - [x] Zwei-Phasen-Runden: Ansagen → Ergebnisse
 
 ### Phase 4: Touch-Gesten & Mobile
-- [ ] Swipe-Gesten für Runden-Navigation (react-use-gesture)
-- [ ] Touch-Feedback und Vibration hinzufügen
-- [ ] Responsive Design für alle Bildschirmgrößen
-- [ ] Mobile-Optimierung (Touch-Ziele mind. 44px)
+- [x] Swipe-Gesten für Runden-Navigation (react-use-gesture)
+- [x] Touch-Feedback und Vibration hinzufügen
+- [x] Responsive Design für alle Bildschirmgrößen
+- [x] Mobile-Optimierung (Touch-Ziele mind. 44px, numerische Tastatur)
 
 ### Phase 5: Daten & Persistenz
 - [ ] Lokale Speicherung mit IndexedDB
@@ -157,6 +157,6 @@ Dieses Dokument beschreibt den **virtuellen Spiel-Notizzettel** für die Stechen
 
 ---
 
-*Letzte Aktualisierung: 11. Dezember 2025 - Phase 3 abgeschlossen, Phase 4 bereit*
+*Letzte Aktualisierung: 11. Dezember 2025 - Phase 4 abgeschlossen, Phase 5 bereit*
 *Diese ToDo-Liste wird bei expliziter Aufforderung aktualisiert.*
 
