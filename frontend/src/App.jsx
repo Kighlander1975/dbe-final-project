@@ -124,7 +124,11 @@ function App() {
                 { path: "*", element: <Navigate to="/" replace /> },
             ],
         },
-    ]);
+    ], {
+        future: {
+            v7_startTransition: true,
+        },
+    });
 
     return <RouterProvider router={router} />;
 }

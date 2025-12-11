@@ -103,6 +103,10 @@
     flex-shrink: 0;
 }
 
+.game-table__player-cell--dealer {
+    background: #e3f2fd;
+}
+
 .game-table__stats-container {
     display: flex;
     width: 150px;
@@ -198,4 +202,39 @@
     .game-table__rank-cell {
         width: 60px;
     }
+}
+
+.game-table__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-top: 1px solid #e0e0e0;
+    background: white;
+}
+
+.game-table__dealer-info {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.game-table__buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.game-table__tooltip {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #333;
+    color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    z-index: 1000;
+    font-size: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
