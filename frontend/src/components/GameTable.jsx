@@ -85,6 +85,13 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
         }, 0);
     };
 
+    // Funktion zur Prüfung, ob alle Tricks in einer Runde eingegeben sind
+    const areAllTricksEnteredForRound = (roundIndex) => {
+        const round = gameData.rounds[roundIndex];
+        if (!round) return false;
+        return round.tricks.every(tricks => tricks !== '-');
+    };
+
     // Funktion zur Berechnung der Punkte für eine Runde
     const calculateRoundPoints = (bids, tricks) => {
         return bids.map((bid, index) => {
@@ -528,7 +535,8 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
                                     maxCards={maxCards}
                                     isEvaluated={roundIndex < gameData.currentRound - 1 || gameData.gameStatus === 'finished'}
                                     isColorEvaluated={roundIndex < gameData.currentRound - 1 || gameData.gameStatus === 'finished'}
-                                    isCorrectBid={r.bids[playerIndex] !== '-' && r.tricks[playerIndex] !== '-' && r.bids[playerIndex] === r.tricks[playerIndex]}
+                                    isCorrectBid={playerIndex < r.bids.length && playerIndex < r.tricks.length && r.bids[playerIndex] !== '-' && r.tricks[playerIndex] !== '-' && r.bids[playerIndex] === r.tricks[playerIndex]}
+                                    playerName={player.name}
                                     isGameFinished={gameData.gameStatus === 'finished'}
                                 />
                             ))}

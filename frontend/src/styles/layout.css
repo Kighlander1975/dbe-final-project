@@ -22,6 +22,7 @@
   align-items: center;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative; /* Für absolutes Hamburger-Menü */
 }
 
 .main-layout__logo {
@@ -42,6 +43,94 @@
   transform: scale(1.05);
 }
 
+/* Right side container */
+.main-layout__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* User Info */
+.main-layout__user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+}
+
+.main-layout__role-badge {
+  background: #fbbf24;
+  color: #000;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.main-layout__user-name {
+  font-size: 1rem;
+}
+
+/* Hamburger Button */
+.main-layout__hamburger {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.main-layout__hamburger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Hamburger Menu */
+.main-layout__hamburger-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+}
+
+.main-layout__menu-item {
+  background: none;
+  border: none;
+  color: #000;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.main-layout__menu-item:hover {
+  background-color: #667eea;
+  color: black;
+}
+
+.main-layout__logout {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+}
+
 /* Link Button Styles */
 .main-layout__link-button {
   background: none;
@@ -59,40 +148,8 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Menu Container */
-.main-layout__menu {
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  align-items: center; /* ⭐ Vertikale Ausrichtung */
-}
-
-.main-layout__menu li {
-  display: flex;
-  align-items: center; /* ⭐ Alle Items zentrieren */
-}
-
-.main-layout__menu a {
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  white-space: nowrap; /* ⭐ Kein Zeilenumbruch */
-}
-
-.main-layout__menu a:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
-}
+/* Menu Container - REMOVED: Now using hamburger menu */
+/* .main-layout__menu { ... } */
 
 /* User Info Badge */
 .main-layout__user-info {

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/context/ToastContext';
 import './RoundData.css';
 
-function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers, roundNumber, roundPhase, currentRound, validateTricksInput, maxCards, isEvaluated, isColorEvaluated, isCorrectBid, isGameFinished }) {
+function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers, roundNumber, roundPhase, currentRound, validateTricksInput, maxCards, isEvaluated, isColorEvaluated, isCorrectBid, isGameFinished, playerName }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editField, setEditField] = useState(''); // 'bid' or 'tricks'
     const [editValue, setEditValue] = useState('');
@@ -131,7 +131,15 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
             {isModalOpen && (
                 <div className="modal-overlay" onClick={handleCancel}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>{editField === 'bid' ? 'Ansage eingeben' : 'Stiche eingeben'}</h3>
+                        <h3>
+
+                            {editField === 'bid' ? 'Ansage eingeben für:' : 'Stiche eingeben für:'}
+
+                            <br />
+
+                            {playerName}
+
+                        </h3>
                         <input
                             ref={inputRef}
                             type={isTouchDevice() ? 'number' : 'text'}

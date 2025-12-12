@@ -15,6 +15,9 @@ function MainLayout() {
     const location = useLocation();
     const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges(); // 🆕 UnsavedChangesContext
 
+    // Hamburger Menu State
+    const [menuOpen, setMenuOpen] = useState(false);
+
     // Orientation-Check
     const [deviceStatus, setDeviceStatus] = useState({ isAllowed: true, reason: null });
 
@@ -92,138 +95,68 @@ function MainLayout() {
                         🎯 Stechen Helper
                     </button>
 
-                    {!loading && (
-                        <ul className="main-layout__menu">
-                            <li>
-                                <button onClick={() => handleNavigate('/')} className="main-layout__link-button">
-                                    🏠 Home
-                                </button>
-                            </li>
+                    <div className="main-layout__right">
+                        {user && (
+                            <div className="main-layout__user-info">
+                                {/* ⭐ Role-Badge */}
+                                {isAdmin() && (
+                                    <span className="main-layout__role-badge">
+                                        ADMIN
+                                    </span>
+                                )}
+                                <span className="main-layout__user-name">
+                                    👤 {user.name}
+                                </span>
+                            </div>
+                        )}
+
+                        <button 
+                            className="main-layout__hamburger" 
+                            onClick={() => setMenuOpen(!menuOpen)}
+                            aria-label="Menü öffnen"
+                        >
+                            ☰
+                        </button>
+                    </div>
+
+                    {/* Hamburger Menu */}
+                    {menuOpen && (
+                        <div className="main-layout__hamburger-menu">
+                            <button onClick={() => { handleNavigate('/'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                🏠 Home
+                            </button>
 
                             {user ? (
                                 <>
-                                    <li>
-                                        <button onClick={() => handleNavigate('/new-game')} className="main-layout__link-button">
-                                            🎮 Neues Spiel
-                                        </button>
-                                    </li>
+                                    <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                        🎮 Neues Spiel
+                                    </button>
 
-                                    <li>
-                                        <button onClick={() => handleNavigate('/change-password')} className="main-layout__link-button">
-                                            🔐 Passwort ändern
-                                        </button>
-                                    </li>
+                                    <button onClick={() => { handleNavigate('/change-password'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                        🔐 Passwort ändern
+                                    </button>
 
-                                    {/* ⭐ NEU: Admin-Link nur für Admins */}
+                                    {/* ⭐ Admin-Link nur für Admins */}
                                     {isAdmin() && (
-                                        <li>
-                                            <button onClick={() => handleNavigate('/admin')} className="main-layout__link-button">
-                                                ⚙️ Admin
-                                            </button>
-                                        </li>
+                                        <button onClick={() => { handleNavigate('/admin'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                            ⚙️ Admin
+                                        </button>
                                     )}
 
-                                    <li>
-                                        <span
-                                            style={{
-                                                color: "rgba(255,255,255,0.9)",
-                                                padding: "0.5rem 1rem",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "0.5rem",
-                                            }}
-                                        >
-                                            {/* ⭐ NEU: Role-Badge */}
-                                            {isAdmin() && (
-                                                <span
-                                                    style={{
-                                                        background: "#fbbf24",
-                                                        color: "#000",
-                                                        padding:
-                                                            "0.2rem 0.5rem",
-                                                        borderRadius: "4px",
-                                                        fontSize: "0.75rem",
-                                                        fontWeight: "bold",
-                                                    }}
-                                                >
-                                                    ADMIN
-                                                </span>
-                                            )}
-                                            👤 {user.name}
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <button
-                                            onClick={handleLogout}
-                                            style={{
-                                                background:
-                                                    "rgba(255,255,255,0.2)",
-                                                border: "none",
-                                                padding: "0.5rem 1rem",
-                                                borderRadius:
-                                                    "var(--radius-md)",
-                                                color: "white",
-                                                cursor: "pointer",
-                                                fontSize: "0.9rem",
-                                                transition: "background 0.2s",
-                                            }}
-                                            onMouseEnter={(e) =>
-                                                (e.target.style.background =
-                                                    "rgba(255,255,255,0.3)")
-                                            }
-                                            onMouseLeave={(e) =>
-                                                (e.target.style.background =
-                                                    "rgba(255,255,255,0.2)")
-                                            }
-                                        >
-                                            🚪 Logout
-                                        </button>
-                                    </li>
+                                    <button onClick={handleLogout} className="main-layout__menu-item main-layout__logout">
+                                        🚪 Logout
+                                    </button>
                                 </>
                             ) : (
                                 <>
-                                    <li>
-                                        <Link to="/login">🔐 Login</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/register">
-                                            📝 Registrieren
-                                        </Link>
-                                    </li>
+                                    <Link to="/login" onClick={() => setMenuOpen(false)} className="main-layout__menu-item">
+                                        🔐 Login
+                                    </Link>
+                                    <Link to="/register" onClick={() => setMenuOpen(false)} className="main-layout__menu-item">
+                                        📝 Registrieren
+                                    </Link>
                                 </>
                             )}
-                        </ul>
-                    )}
-
-                    {loading && (
-                        <div
-                            style={{
-                                display: "flex",
-                                gap: "1rem",
-                                alignItems: "center",
-                                padding: "0.5rem 1rem",
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: "60px",
-                                    height: "20px",
-                                    background: "rgba(255,255,255,0.2)",
-                                    borderRadius: "4px",
-                                    animation:
-                                        "pulse 1.5s ease-in-out infinite",
-                                }}
-                            />
-                            <div
-                                style={{
-                                    width: "80px",
-                                    height: "20px",
-                                    background: "rgba(255,255,255,0.2)",
-                                    borderRadius: "4px",
-                                    animation:
-                                        "pulse 1.5s ease-in-out infinite",
-                                }}
-                            />
                         </div>
                     )}
                 </nav>
