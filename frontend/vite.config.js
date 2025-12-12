@@ -13,7 +13,11 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     watch: {
-      usePolling: true
+      usePolling: true,
+      interval: 1000, // Reduziere Polling-Intervall von default 300ms auf 1000ms
+    },
+    hmr: {
+      overlay: false, // Deaktiviere HMR Overlay für weniger Overhead
     }
   }
 })

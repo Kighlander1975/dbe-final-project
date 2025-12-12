@@ -17,9 +17,9 @@ services:
             - stechen_network
         healthcheck:
             test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-            interval: 10s
-            timeout: 5s
-            retries: 5
+            interval: 30s  # Erhöht von 10s
+            timeout: 10s  # Erhöht von 5s
+            retries: 3    # Reduziert von 5
 
     # phpMyAdmin
     phpmyadmin:
@@ -72,10 +72,16 @@ services:
             context: . # ← Root-Verzeichnis als Kontext!
             dockerfile: frontend.Dockerfile
         container_name: stechen_frontend
+        restart: unless-stopped
         ports:
             - "3000:3000"
         volumes:
             - ./frontend:/app
+            - /app/node_modules
+        environment:
+            - VITE_API_URL=http://backend/api
+        depends_on:
+            - backend
         networks:
             - stechen_network
 

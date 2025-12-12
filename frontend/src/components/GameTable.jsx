@@ -246,7 +246,7 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
             if (onGameUpdate) {
                 onGameUpdate(data);
             }
-        }, 1000); // 1 Sekunde warten nach der letzten Änderung
+        }, 800); // ⏱️ Erhöht auf 800ms für Development-Performance
     }, [onGameUpdate]);
 
     // Cleanup beim Unmount

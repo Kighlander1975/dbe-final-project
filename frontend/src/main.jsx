@@ -10,7 +10,7 @@ import App from "./App";
 import "./styles/global.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>
+    // <React.StrictMode>  // ❌ DEAKTIVIERT für bessere Dev-Performance
         <ToastProvider>      {/* ⭐ 1. ToastProvider AUSSEN */}
             <LoadingProvider> {/* ⭐ 2. LoadingProvider */}
                 <UserProvider>   {/* 🆕 4. UserProvider */}
@@ -22,5 +22,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 </UserProvider>
             </LoadingProvider>
         </ToastProvider>
-    </React.StrictMode>
+    // </React.StrictMode>
 );
