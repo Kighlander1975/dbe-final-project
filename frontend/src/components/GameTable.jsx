@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import RoundHeader from './rounds/RoundHeader';
 import RoundData from './rounds/RoundData';
+import GameCancelModal from './modals/GameCancelModal';
 import './GameTable.css';
 
 // Funktion zum Generieren zufälliger Bids (0-7)
@@ -40,6 +41,7 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
     const [showTooltip, setShowTooltip] = useState(false);
     const [roundPhase, setRoundPhase] = useState(0); // 0 = bids, 1 = tricks
     const saveTimeoutRef = useRef(null);
+    const [showCancelModal, setShowCancelModal] = useState(false);
 
     // Handler für Drag-to-Scroll
     const handleMouseDown = (e) => {
@@ -616,7 +618,7 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
                                 {roundPhase === 0 ? 'Eingaben bestätigen?' : 'Stiche bestätigen?'}
                             </button>
                         )}
-                        <button className="btn btn-secondary" disabled={gameData.gameStatus === 'finished'}>Spiel abbrechen</button>
+                        <button className="btn btn-secondary" onClick={() => setShowCancelModal(true)}>Spiel abbrechen</button>
                     </div>
                 </div>
 
@@ -625,6 +627,13 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
                         Dieser Spieler ist Dealer für diese Runde
                     </div>
                 )}
+
+                <GameCancelModal
+                    isOpen={showCancelModal}
+                    onClose={() => setShowCancelModal(false)}
+                    gameData={gameData}
+                    onGameUpdate={onGameUpdate}
+                />
             </div>
         </div>
     );

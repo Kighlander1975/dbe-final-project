@@ -150,6 +150,26 @@ class GameController extends Controller
     }
 
     /**
+     * ⭐ Pause a game (set status to paused)
+     */
+    public function pauseGame(Request $request, string $id)
+    {
+        $game = Game::where('admin_id', $request->user()->id)->findOrFail($id);
+
+        $game->update(['status' => 'paused']);
+
+        \Log::info('Game paused', [
+            'game_id' => $id,
+            'admin_id' => $request->user()->id
+        ]);
+
+        return response()->json([
+            'message' => 'Spiel erfolgreich pausiert',
+            'game' => $game
+        ]);
+    }
+
+    /**
      * ⭐ Finish a game (set status to finished)
      */
     public function finishGame(Request $request, string $id)

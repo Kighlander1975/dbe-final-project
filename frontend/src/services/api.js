@@ -358,6 +358,14 @@ const gameAPI = {
         });
     },
 
+    // ⭐ Pause game (set status to paused)
+    pauseGame: async (gameId) => {
+        return apiRequest(`/games/${gameId}/pause`, {
+            method: "PATCH",
+            loadingMessage: "Spiel wird pausiert...",
+        });
+    },
+
     // ⭐ Finish game (set status to finished)
     finishGame: async (gameId) => {
         return apiRequest(`/games/${gameId}/finish`, {

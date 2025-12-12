@@ -48,6 +48,7 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
     Route::prefix('games')->group(function () {
         Route::middleware('role:admin')->group(function () {
             Route::post('/', [GameController::class, 'store']); // Neues Spiel
+            Route::patch('/{id}/pause', [GameController::class, 'pauseGame']); // ⭐ Spiel pausieren
             Route::patch('/{id}/finish', [GameController::class, 'finishGame']); // ⭐ Spiel beenden (Status auf finished)
             Route::delete('/{id}', [GameController::class, 'destroy']); // Spiel löschen
             Route::get('/active', [GameController::class, 'hasActiveGame']); // ⭐ Prüfen ob Admin aktives Spiel hat
