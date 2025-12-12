@@ -30,7 +30,7 @@ const generateRounds = (numRounds, numPlayers) => {
     });
 };
 
-function GameTable({ gameData: initialGameData, onGameUpdate, gameCreatedAt, gameId }) {
+function GameTable({ gameData: initialGameData, onGameUpdate }) {
     const tableRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -508,13 +508,32 @@ function GameTable({ gameData: initialGameData, onGameUpdate, gameCreatedAt, gam
                  onMouseLeave={handleMouseLeave}
                  style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
                 <div className="game-table__header">
-                    <h3>{gameData.gameName || "Spiel-Tabelle"}</h3>
-                    {gameCreatedAt && (
-                        <div className="game-table__header-info">
-                            am <strong>{new Date(gameCreatedAt).toLocaleDateString('de-DE')}</strong>
-                            <span className="muted">({gameId})</span>
-                        </div>
-                    )}
+                    <h3>{(() => {
+                        // Parse gameName: Titel_TIMESTAMP_UUID
+                        const parts = (gameData.gameName || "Spiel-Tabelle").split('_');
+                        return parts[0]; // Nur der Titel vor dem ersten Unterstrich
+                    })()}</h3>
+                    {(() => {
+                        // Extrahiere Timestamp und UUID aus gameName
+                        const parts = (gameData.gameName || "").split('_');
+                        if (parts.length >= 3) {
+                            const timestamp = parts[1];
+                            const uuid = parts[2];
+                            // Konvertiere Timestamp zu Datum (Format: YYYYMMDD)
+                            const year = timestamp.substring(0, 4);
+                            const month = timestamp.substring(4, 6);
+                            const day = timestamp.substring(6, 8);
+                            const dateStr = `${day}.${month}.${year}`;
+                            
+                            return (
+                                <div className="game-table__header-info">
+                                    am <strong>{dateStr}</strong>
+                                    <span className="muted">({uuid})</span>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })()}
                 </div>
 
                 <div className="game-table__rows">

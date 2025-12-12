@@ -19,12 +19,7 @@ class GameController extends Controller
             'game_id' => $id,
             'game_data' => $game->game_data
         ]);
-        return response()->json([
-            'id' => $game->id,
-            'game_data' => $game->game_data,
-            'created_at' => $game->created_at,
-            'updated_at' => $game->updated_at,
-        ]);
+        return response()->json($game);
     }
 
     /**

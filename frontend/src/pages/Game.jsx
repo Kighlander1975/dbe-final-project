@@ -11,7 +11,6 @@ function Game() {
 
     const [gameData, setGameData] = useState(null);
     const [gameId, setGameId] = useState(null);
-    const [gameCreatedAt, setGameCreatedAt] = useState(null); // ⭐ Neuer State für Erstellungsdatum
     const [isInitialized, setIsInitialized] = useState(() => {
         // Bei neuem Laden der Game-Seite sessionStorage zurücksetzen
         sessionStorage.removeItem('gameInitialized');
@@ -34,7 +33,6 @@ function Game() {
                     const response = await gameAPI.getGame(gameId);
                     setGameData(response.game_data);
                     setGameId(response.id);
-                    setGameCreatedAt(response.created_at); // ⭐ Erstellungsdatum setzen
                     localStorage.setItem('currentGameId', response.id);
                     sessionStorage.setItem('gameInitialized', 'true');
                     setIsInitialized(true);
@@ -67,7 +65,6 @@ function Game() {
                         const response = await gameAPI.getGame(savedGameId);
                         setGameData(response.game_data);
                         setGameId(response.id);
-                        setGameCreatedAt(response.created_at); // ⭐ Erstellungsdatum setzen
                         sessionStorage.setItem('gameInitialized', 'true');
                         setIsInitialized(true);
                     } catch (error) {
@@ -102,7 +99,7 @@ function Game() {
 
     return (
         <div className="game-container">
-            <GameTable gameData={gameData} onGameUpdate={handleGameUpdate} gameCreatedAt={gameCreatedAt} gameId={gameId} />
+            <GameTable gameData={gameData} onGameUpdate={handleGameUpdate} />
         </div>
     );
 }
