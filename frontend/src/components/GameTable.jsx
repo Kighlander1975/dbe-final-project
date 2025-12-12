@@ -30,7 +30,7 @@ const generateRounds = (numRounds, numPlayers) => {
     });
 };
 
-function GameTable({ gameData: initialGameData, onGameUpdate, gameCreatedAt }) {
+function GameTable({ gameData: initialGameData, onGameUpdate, gameCreatedAt, gameId }) {
     const tableRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -182,7 +182,7 @@ function GameTable({ gameData: initialGameData, onGameUpdate, gameCreatedAt }) {
             rounds = [firstRound];
         }
 
-        // ⭐ PUNKTE UND RÄNGE NEU BERECHNEN beim Laden
+        // ⭐ PUNKTE UND RÄNGE NEU BERECHNEN beim Laden (NUR wenn Runde 1 abgeschlossen ist)
         const gameDataForCalculation = {
             gameName: data.gameName,
             players: players,
@@ -193,23 +193,29 @@ function GameTable({ gameData: initialGameData, onGameUpdate, gameCreatedAt }) {
             dealerIndex: data.dealerIndex || Math.floor(Math.random() * players.length),
         };
 
-        // Berechne Gesamtpunkte für alle Spieler neu
-        const playersWithTotalPoints = gameDataForCalculation.players.map((player, index) => {
-            const totalPoints = gameDataForCalculation.rounds.reduce((sum, round) => {
-                return sum + (round.points ? (round.points[index] || 0) : 0);
-            }, 0);
-            return {
-                ...player,
-                totalPoints,
-            };
-        });
+        // Berechne Gesamtpunkte für alle Spieler neu (NUR wenn Runde 1 abgeschlossen ist)
+        const shouldRecalculate = gameDataForCalculation.currentRound > 1;
+        
+        let playersWithCalculatedData = gameDataForCalculation.players;
+        
+        if (shouldRecalculate) {
+            const playersWithTotalPoints = gameDataForCalculation.players.map((player, index) => {
+                const totalPoints = gameDataForCalculation.rounds.reduce((sum, round) => {
+                    return sum + (round.points ? (round.points[index] || 0) : 0);
+                }, 0);
+                return {
+                    ...player,
+                    totalPoints,
+                };
+            });
 
-        // Berechne Ranking neu
-        const playersWithRanks = calculateRanking(playersWithTotalPoints);
+            // Berechne Ranking neu
+            playersWithCalculatedData = calculateRanking(playersWithTotalPoints);
+        }
 
         return {
             ...gameDataForCalculation,
-            players: playersWithRanks,
+            players: playersWithCalculatedData,
         };
     };
 
