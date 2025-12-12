@@ -1,0 +1,110 @@
+/* src/styles/pages/notfound.css */
+
+.notfound {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gradient);
+  padding: 2rem;
+}
+
+.notfound__container {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
+  width: 100%;
+}
+
+.notfound__icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.notfound__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.notfound__message {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.notfound__hint {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  line-height: 1.4;
+}
+
+.notfound__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.notfound__button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: none;
+}
+
+.notfound__button--primary {
+  background: var(--primary-green);
+  color: white;
+  border-color: var(--primary-green);
+}
+
+.notfound__button--primary:hover {
+  background: var(--primary-green-dark);
+  border-color: var(--primary-green-dark);
+  transform: translateY(-2px);
+}
+
+.notfound__button--secondary {
+  background: transparent;
+  color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.notfound__button--secondary:hover {
+  background: var(--primary-green);
+  color: white;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .notfound__container {
+    padding: 2rem 1.5rem;
+  }
+
+  .notfound__title {
+    font-size: 2rem;
+  }
+
+  .notfound__actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .notfound__button {
+    width: 100%;
+    max-width: 200px;
+  }
+}

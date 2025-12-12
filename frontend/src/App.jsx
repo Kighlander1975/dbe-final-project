@@ -19,6 +19,8 @@ import ResetPassword from "./pages/ResetPassword";
 import ChangePassword from './pages/ChangePassword'
 import VerifyEmail from "./pages/VerifyEmail";
 import Forbidden from "./pages/Forbidden";
+import NotFound from "./pages/NotFound";
+import ServerError from "./pages/ServerError";
 
 // Pages - Geschützt
 import NewGame from "./pages/NewGame";
@@ -121,6 +123,12 @@ function App() {
                         </AdminRoute>
                     ),
                 },
+
+                // Error Pages
+                { path: "/server-error", element: <ServerError /> },
+
+                // 404 - muss als letztes kommen
+                { path: "*", element: <NotFound /> },
 
                 // Fallback
                 { path: "*", element: <Navigate to="/" replace /> },

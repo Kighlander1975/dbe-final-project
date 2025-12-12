@@ -91,6 +91,15 @@ async function apiRequest(endpoint, options = {}) {
         });
 
         if (!response.ok) {
+            // Spezielle Behandlung für Server-Fehler (5xx)
+            if (response.status >= 500) {
+                console.error("Server Error detected, redirecting to error page");
+                // Kurze Verzögerung, damit der Loading-Overlay beendet wird
+                setTimeout(() => {
+                    window.location.href = '/server-error';
+                }, 100);
+                throw new Error("Server-Fehler aufgetreten");
+            }
             throw new Error(data.message || "API request failed");
         }
 

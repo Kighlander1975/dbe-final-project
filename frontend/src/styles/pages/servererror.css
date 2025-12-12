@@ -1,0 +1,148 @@
+/* src/styles/pages/servererror.css */
+
+.servererror {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gradient);
+  padding: 2rem;
+}
+
+.servererror__container {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  max-width: 600px;
+  width: 100%;
+}
+
+.servererror__icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.servererror__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.servererror__message {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.servererror__hint {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  line-height: 1.4;
+}
+
+.servererror__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.servererror__button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: none;
+}
+
+.servererror__button--primary {
+  background: var(--warning-orange, #f59e0b);
+  color: white;
+  border-color: var(--warning-orange, #f59e0b);
+}
+
+.servererror__button--primary:hover {
+  background: var(--warning-orange-dark, #d97706);
+  border-color: var(--warning-orange-dark, #d97706);
+  transform: translateY(-2px);
+}
+
+.servererror__button--secondary {
+  background: transparent;
+  color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.servererror__button--secondary:hover {
+  background: var(--primary-green);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.servererror__details {
+  border-top: 1px solid var(--bg-subtle);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.servererror__details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+.servererror__details summary:hover {
+  color: var(--text-dark);
+}
+
+.servererror__tech-info {
+  background: var(--bg-subtle);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  text-align: left;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.servererror__tech-info p {
+  margin: 0.25rem 0;
+  word-break: break-all;
+}
+
+@media (max-width: 768px) {
+  .servererror__container {
+    padding: 2rem 1.5rem;
+  }
+
+  .servererror__title {
+    font-size: 2rem;
+  }
+
+  .servererror__actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .servererror__button {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .servererror__tech-info {
+    font-size: 0.8rem;
+  }
+}
