@@ -320,22 +320,6 @@ export const adminAPI = {
         });
     },
 
-    // Ban user
-    banUser: async (userId) => {
-        return apiRequest(`/admin/users/${userId}/ban`, {
-            method: "PATCH",
-            loadingMessage: "Benutzer wird gesperrt...",
-        });
-    },
-
-    // Unban user
-    unbanUser: async (userId) => {
-        return apiRequest(`/admin/users/${userId}/unban`, {
-            method: "PATCH",
-            loadingMessage: "Benutzer wird entsperrt...",
-        });
-    },
-
     // Delete user
     deleteUser: async (userId) => {
         return apiRequest(`/admin/users/${userId}`, {

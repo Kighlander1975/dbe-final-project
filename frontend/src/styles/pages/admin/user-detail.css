@@ -227,24 +227,6 @@
   transition: all 0.2s;
 }
 
-.action-btn--ban {
-  background: #ef4444;
-  color: white;
-}
-
-.action-btn--ban:hover {
-  background: #dc2626;
-}
-
-.action-btn--unban {
-  background: #10b981;
-  color: white;
-}
-
-.action-btn--unban:hover {
-  background: #059669;
-}
-
 .action-btn--delete {
   background: #ef4444;
   color: white;

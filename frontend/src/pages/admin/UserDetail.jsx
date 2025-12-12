@@ -74,36 +74,6 @@ function UserDetail() {
     }
   }
 
-  const handleBan = async () => {
-    if (!confirm('Benutzer wirklich sperren?')) return
-
-    startLoading('Benutzer wird gesperrt...')
-
-    try {
-      await adminAPI.banUser(user.id)
-      showToast('Benutzer wurde gesperrt', 'success')
-      setUser({ ...user, role: 'banned' })
-    } catch (error) {
-      showToast(error.message || 'Fehler beim Sperren', 'error')
-    } finally {
-      stopLoading()
-    }
-  }
-
-  const handleUnban = async () => {
-    startLoading('Sperrung wird aufgehoben...')
-
-    try {
-      await adminAPI.unbanUser(user.id)
-      showToast('Sperrung wurde aufgehoben', 'success')
-      setUser({ ...user, role: 'player' })
-    } catch (error) {
-      showToast('Fehler beim Entsperren', 'error')
-    } finally {
-      stopLoading()
-    }
-  }
-
   const handleDelete = async () => {
     if (!confirm('Spieler wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden!')) return
 
@@ -280,24 +250,6 @@ function UserDetail() {
                   <option value="admin">Admin</option>
                   <option value="banned">Banned</option>
                 </select>
-              </div>
-
-              <div className="user-detail__action-group">
-                {user.role === 'banned' ? (
-                  <button
-                    onClick={handleUnban}
-                    className="action-btn action-btn--unban"
-                  >
-                    Sperrung aufheben
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleBan}
-                    className="action-btn action-btn--ban"
-                  >
-                    Benutzer sperren
-                  </button>
-                )}
               </div>
 
               <div className="user-detail__action-group">
