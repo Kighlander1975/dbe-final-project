@@ -517,8 +517,14 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
                         // Extrahiere Timestamp und UUID aus gameName
                         const parts = (gameData.gameName || "").split('_');
                         if (parts.length >= 3) {
-                            const timestamp = parseInt(parts[1]); // Timestamp als Zahl
+                            let timestamp = parseInt(parts[1]); // Timestamp als Zahl
                             const uuid = parts[2];
+                            
+                            // Prüfe ob es Millisekunden oder Sekunden sind
+                            // Wenn Timestamp unrealistisch alt ist (< 2000), dann * 1000 für Sekunden
+                            if (timestamp < 1577836800000) { // 2020-01-01 in MS
+                                timestamp *= 1000; // Konvertiere Sekunden zu Millisekunden
+                            }
                             
                             // Konvertiere Timestamp zu Datum
                             const date = new Date(timestamp);
