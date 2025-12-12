@@ -23,6 +23,24 @@ class GameController extends Controller
     }
 
     /**
+     * ⭐ Check if admin has an active game
+     */
+    public function hasActiveGame(Request $request)
+    {
+        $activeGame = Game::where('admin_id', $request->user()->id)
+                         ->where('status', 'active')
+                         ->first();
+
+        return response()->json([
+            'hasActiveGame' => $activeGame !== null,
+            'activeGame' => $activeGame ? [
+                'id' => $activeGame->id,
+                'gameName' => $activeGame->game_data['gameName'] ?? 'Unbenanntes Spiel'
+            ] : null
+        ]);
+    }
+
+    /**
      * Store a newly created game (nur Admins).
      */
     public function store(Request $request)
@@ -32,6 +50,21 @@ class GameController extends Controller
             'request_data' => $request->all(),
             'headers' => $request->headers->all()
         ]);
+
+        // ⭐ Check if admin already has an active game
+        $existingActiveGame = Game::where('admin_id', $request->user()->id)
+                                 ->where('status', 'active')
+                                 ->first();
+
+        if ($existingActiveGame) {
+            return response()->json([
+                'error' => 'Du hast bereits ein aktives Spiel. Beende es zuerst, bevor du ein neues erstellst.',
+                'activeGame' => [
+                    'id' => $existingActiveGame->id,
+                    'gameName' => $existingActiveGame->game_data['gameName'] ?? 'Unbenanntes Spiel'
+                ]
+            ], 409); // Conflict status code
+        }
 
         $validator = Validator::make($request->all(), [
             'gameName' => 'required|string|max:255',
@@ -113,6 +146,26 @@ class GameController extends Controller
         ]);
 
         return response()->json($game);
+    }
+
+    /**
+     * ⭐ Finish a game (set status to finished)
+     */
+    public function finishGame(Request $request, string $id)
+    {
+        $game = Game::where('admin_id', $request->user()->id)->findOrFail($id);
+
+        $game->update(['status' => 'finished']);
+
+        \Log::info('Game finished', [
+            'game_id' => $id,
+            'admin_id' => $request->user()->id
+        ]);
+
+        return response()->json([
+            'message' => 'Spiel erfolgreich beendet',
+            'game' => $game
+        ]);
     }
 
     /**

@@ -324,6 +324,14 @@ const gameAPI = {
         });
     },
 
+    // ⭐ Check if admin has active game
+    hasActiveGame: async () => {
+        return apiRequest("/games/active", {
+            method: "GET",
+            loadingMessage: "Spiel-Status wird überprüft...",
+        });
+    },
+
     // Get game data (for live view)
     getGame: async (gameId) => {
         return apiRequest(`/games/${gameId}`, {
@@ -338,6 +346,14 @@ const gameAPI = {
             method: "PATCH",
             body: { game_data: gameData },
             loadingMessage: "Spiel wird gespeichert...",
+        });
+    },
+
+    // ⭐ Finish game (set status to finished)
+    finishGame: async (gameId) => {
+        return apiRequest(`/games/${gameId}/finish`, {
+            method: "PATCH",
+            loadingMessage: "Spiel wird beendet...",
         });
     },
 

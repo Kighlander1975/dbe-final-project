@@ -7,6 +7,7 @@ import { useUnsavedChanges } from "../context/UnsavedChangesContext"; // 🆕 Un
 import LoadingOverlay from "../components/LoadingOverlay";
 import "../styles/layout.css";
 import "../components/OrientationGuard.css"; // Für die Sperre-Styles
+import { gameAPI } from "../services/api"; // ⭐ Game API import
 
 function MainLayout() {
     const { user, logout, loading, isAdmin } = useAuth(); // ⭐ isAdmin hinzugefügt
@@ -18,8 +19,31 @@ function MainLayout() {
     // Hamburger Menu State
     const [menuOpen, setMenuOpen] = useState(false);
 
-    // Orientation-Check
-    const [deviceStatus, setDeviceStatus] = useState({ isAllowed: true, reason: null });
+    // ⭐ Active Game State
+    const [activeGame, setActiveGame] = useState(null);
+
+    // ⭐ Function to refresh active game status
+    const refreshActiveGame = async () => {
+        if (user && isAdmin()) {
+            try {
+                const response = await gameAPI.hasActiveGame();
+                setActiveGame(response.hasActiveGame ? response.activeGame : null);
+            } catch (error) {
+                console.error('Failed to refresh active game:', error);
+                setActiveGame(null);
+            }
+        } else {
+            setActiveGame(null);
+        }
+    };
+
+    // ⭐ Expose refreshActiveGame globally for other components
+    useEffect(() => {
+        window.refreshActiveGame = refreshActiveGame;
+        return () => {
+            delete window.refreshActiveGame;
+        };
+    }, [user, isAdmin]);
 
     useEffect(() => {
         const checkDeviceAndOrientation = () => {
@@ -128,9 +152,15 @@ function MainLayout() {
 
                             {user ? (
                                 <>
-                                    <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">
-                                        🎮 Neues Spiel
-                                    </button>
+                                    {activeGame ? (
+                                        <button onClick={() => { handleNavigate(`/game/${activeGame.id}`); setMenuOpen(false); }} className="main-layout__menu-item">
+                                            🎯 Zum Spiel: {activeGame.gameName}
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                            🎮 Neues Spiel
+                                        </button>
+                                    )}
 
                                     <button onClick={() => { handleNavigate('/change-password'); setMenuOpen(false); }} className="main-layout__menu-item">
                                         🔐 Passwort ändern
