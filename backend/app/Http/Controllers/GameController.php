@@ -23,7 +23,7 @@ class GameController extends Controller
     }
 
     /**
-     * ⭐ Check if admin has an active or paused game
+     * ⭐ Check if user has an active or paused game
      */
     public function hasActiveGame(Request $request)
     {
@@ -150,7 +150,7 @@ class GameController extends Controller
     }
 
     /**
-     * ⭐ Pause a game (set status to paused)
+     * ⭐ Pause a game (set status to paused) - Host only
      */
     public function pauseGame(Request $request, string $id)
     {
@@ -170,7 +170,7 @@ class GameController extends Controller
     }
 
     /**
-     * ⭐ Finish a game (set status to finished)
+     * ⭐ Finish a game (set status to finished) - Host only
      */
     public function finishGame(Request $request, string $id)
     {
@@ -190,7 +190,7 @@ class GameController extends Controller
     }
 
     /**
-     * Remove the specified game (nur Admins, nur eigene Spiele).
+     * Remove the specified game (Host only, nur eigene Spiele).
      */
     public function destroy(Request $request, string $id)
     {
