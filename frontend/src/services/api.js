@@ -335,6 +335,14 @@ export const adminAPI = {
             loadingMessage: "Benutzer wird entsperrt...",
         });
     },
+
+    // Delete user
+    deleteUser: async (userId) => {
+        return apiRequest(`/admin/users/${userId}`, {
+            method: "DELETE",
+            loadingMessage: "Benutzer wird gelöscht...",
+        });
+    },
 };
 
 // ⭐ Game API Endpoints

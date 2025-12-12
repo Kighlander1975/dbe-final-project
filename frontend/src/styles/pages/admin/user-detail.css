@@ -125,8 +125,9 @@
 
 .user-detail__actions {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .user-detail__action-group {
@@ -142,8 +143,8 @@
 
 .user-detail__role-select {
   padding: 0.5rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  border: 1px solid gray;
+  border-radius: var(--radius-lg);
   background: var(--bg-input);
   color: var(--text-dark);
   max-width: 200px;
@@ -242,6 +243,15 @@
 
 .action-btn--unban:hover {
   background: #059669;
+}
+
+.action-btn--delete {
+  background: #ef4444;
+  color: white;
+}
+
+.action-btn--delete:hover {
+  background: #dc2626;
 }
 
 /* Responsive */

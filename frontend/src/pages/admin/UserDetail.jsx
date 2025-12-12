@@ -104,6 +104,22 @@ function UserDetail() {
     }
   }
 
+  const handleDelete = async () => {
+    if (!confirm('Spieler wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden!')) return
+
+    startLoading('Spieler wird gelöscht...')
+
+    try {
+      await adminAPI.deleteUser(user.id)
+      showToast('Spieler wurde gelöscht', 'success')
+      navigate('/admin/users')
+    } catch (error) {
+      showToast('Fehler beim Löschen', 'error')
+    } finally {
+      stopLoading()
+    }
+  }
+
   // Name editing handlers
   const handleNameDoubleClick = () => {
     setIsEditingName(true)
@@ -282,6 +298,15 @@ function UserDetail() {
                     Benutzer sperren
                   </button>
                 )}
+              </div>
+
+              <div className="user-detail__action-group">
+                <button
+                  onClick={handleDelete}
+                  className="action-btn action-btn--delete"
+                >
+                  Spieler löschen
+                </button>
               </div>
             </div>
           </div>
