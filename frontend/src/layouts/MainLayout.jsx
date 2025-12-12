@@ -28,7 +28,7 @@ function MainLayout() {
 
     // ⭐ Function to refresh active game status
     const refreshActiveGame = async () => {
-        if (user && isAdmin()) {
+        if (user) { // Für alle authentifizierten User, nicht nur Admins
             try {
                 const response = await gameAPI.hasActiveGame();
                 setActiveGame(response.hasActiveGame ? response.activeGame : null);
@@ -49,10 +49,10 @@ function MainLayout() {
         };
     }, [user, isAdmin]);
 
-    // ⭐ Load active game on mount and when user/admin status changes
+    // ⭐ Load active game on mount and when user status changes
     useEffect(() => {
         refreshActiveGame();
-    }, [user, isAdmin]);
+    }, [user]);
 
     // ⭐ Refresh active game when location changes (navigation)
     useEffect(() => {
@@ -183,36 +183,32 @@ function MainLayout() {
 
                             {user ? (
                                 <>
-                                    {/* ⭐ Spiel-Optionen nur für Admins (Host kommt später) */}
-                                    {isAdmin() && (
-                                        <>
-                                            {activeGame ? (
-                                                <button 
-                                                    onClick={() => { handleNavigate(`/game/${activeGame.id}`); setMenuOpen(false); }} 
-                                                    className={`main-layout__menu-item ${location.pathname === `/game/${activeGame.id}` ? 'main-layout__menu-item--active' : ''}`}
-                                                    disabled={location.pathname === `/game/${activeGame.id}`}
-                                                >
-                                                    🎯 Zum Spiel: {(() => {
-                                                        const parts = activeGame.gameName.split('_');
-                                                        const title = parts[0];
-                                                        if (parts.length >= 2) {
-                                                            let timestamp = parseInt(parts[1]);
-                                                            if (timestamp < 1577836800000) {
-                                                                timestamp *= 1000;
-                                                            }
-                                                            const date = new Date(timestamp);
-                                                            const dateStr = date.toLocaleDateString('de-DE');
-                                                            return `${title} (${dateStr})`;
-                                                        }
-                                                        return title;
-                                                    })()}
-                                                </button>
-                                            ) : (
-                                                <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">
-                                                    🎮 Neues Spiel
-                                                </button>
-                                            )}
-                                        </>
+                                    {/* ⭐ Spiel-Optionen für alle authentifizierten User */}
+                                    {activeGame ? (
+                                        <button 
+                                            onClick={() => { handleNavigate(`/game/${activeGame.id}`); setMenuOpen(false); }} 
+                                            className={`main-layout__menu-item ${location.pathname === `/game/${activeGame.id}` ? 'main-layout__menu-item--active' : ''}`}
+                                            disabled={location.pathname === `/game/${activeGame.id}`}
+                                        >
+                                            🎯 Zum aktiven Spiel: {(() => {
+                                                const parts = activeGame.gameName.split('_');
+                                                const title = parts[0];
+                                                if (parts.length >= 2) {
+                                                    let timestamp = parseInt(parts[1]);
+                                                    if (timestamp < 1577836800000) {
+                                                        timestamp *= 1000;
+                                                    }
+                                                    const date = new Date(timestamp);
+                                                    const dateStr = date.toLocaleDateString('de-DE');
+                                                    return `${title} (${dateStr})`;
+                                                }
+                                                return title;
+                                            })()}
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                            🎮 Neues Spiel
+                                        </button>
                                     )}
 
                                     <button onClick={() => { handleNavigate('/change-password'); setMenuOpen(false); }} className="main-layout__menu-item">

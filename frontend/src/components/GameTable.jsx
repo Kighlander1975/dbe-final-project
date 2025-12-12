@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom';
 import RoundHeader from './rounds/RoundHeader';
 import RoundData from './rounds/RoundData';
-import GameCancelModal from './modals/GameCancelModal';
 import { useToast } from '../context/ToastContext';
 import { gameAPI } from '../services/api';
 import './GameTable.css';
@@ -46,7 +45,6 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     const [showTooltip, setShowTooltip] = useState(false);
     const [roundPhase, setRoundPhase] = useState(0); // 0 = bids, 1 = tricks
     const saveTimeoutRef = useRef(null);
-    const [showCancelModal, setShowCancelModal] = useState(false);
 
     // Handler für Drag-to-Scroll
     const handleMouseDown = (e) => {
@@ -173,10 +171,27 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
             const parts = gameData.gameName.split('_');
             const gameTitle = parts[0];
             showToast(`⏸️ Spiel "${gameTitle}" wurde pausiert`, 'success', 3000);
-            navigate('/');
+            // Zur Startseite navigieren und Seite neu laden für aktualisierte Spiel-Liste
+            window.location.href = '/';
         } catch (error) {
             console.error('Failed to pause game:', error);
             showToast('❌ Fehler beim Pausieren des Spiels', 'error');
+        }
+    };
+
+    // Funktion zum Abbrechen des Spiels
+    const handleCancelGame = async () => {
+        if (window.confirm('⚠️ Spiel wirklich abbrechen und löschen? Alle Daten gehen verloren!')) {
+            try {
+                await gameAPI.deleteGame(gameId);
+                const parts = gameData.gameName.split('_');
+                const gameTitle = parts[0];
+                showToast(`🗑️ Spiel "${gameTitle}" wurde abgebrochen und gelöscht`, 'warning', 5000);
+                navigate('/');
+            } catch (error) {
+                console.error('Failed to cancel game:', error);
+                showToast('❌ Fehler beim Abbrechen des Spiels', 'error');
+            }
         }
     };
 
@@ -641,8 +656,8 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                         <button className="btn btn-warning" onClick={handlePauseGame}>
                             ⏸️ Spiel pausieren
                         </button>
-                        <button className="btn btn-secondary" onClick={() => setShowCancelModal(true)}>
-                            Spiel abbrechen
+                        <button className="btn btn-danger" onClick={handleCancelGame}>
+                            🗑️ Spiel abbrechen
                         </button>
                     </div>
                 </div>
@@ -652,13 +667,6 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                         Dieser Spieler ist Dealer für diese Runde
                     </div>
                 )}
-
-                <GameCancelModal
-                    isOpen={showCancelModal}
-                    onClose={() => setShowCancelModal(false)}
-                    gameData={{ ...gameData, id: gameId }}
-                    onGameUpdate={onGameUpdate}
-                />
             </div>
         </div>
     );

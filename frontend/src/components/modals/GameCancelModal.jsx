@@ -33,20 +33,6 @@ function GameCancelModal({ isOpen, onClose, gameData, onGameUpdate }) {
       onClose();
     }
   };
-    setIsLoading(true);
-    try {
-      await gameAPI.deleteGame(gameData.id);
-
-      showToast('🗑️ Spiel wurde abgebrochen und gelöscht', 'warning', 5000);
-      navigate('/');
-    } catch (error) {
-      console.error('Failed to delete game:', error);
-      showToast('❌ Fehler beim Löschen des Spiels', 'error');
-    } finally {
-      setIsLoading(false);
-      onClose();
-    }
-  };
 
   const handleClose = () => {
     if (!isLoading) {

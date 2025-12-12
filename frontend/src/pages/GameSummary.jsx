@@ -201,7 +201,6 @@ function GameSummary() {
                 }
                 
                 // Navigation zur Game-Seite mit der Spiel-ID
-                console.log('🚀 Navigation starten...');
                 setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start
                 localStorage.setItem('gameActive', 'true'); // Spiel als aktiv markieren
                 console.log('📍 Navigate aufrufen...');
@@ -209,7 +208,7 @@ function GameSummary() {
                 // Navigation zur Game-Seite mit der Spiel-ID
                 setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start
                 localStorage.setItem('gameActive', 'true'); // Spiel als aktiv markieren
-                window.location.href = '/game?gameId=' + response.id;
+                navigate(`/game/${response.id}`);
               } catch (error) {
                 console.error('❌ Fehler beim Erstellen des Spiels:', error);
                 console.error('❌ Error details:', error.message, error.response);

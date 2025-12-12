@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         });
         // ⭐ Host kann eigene Spiele verwalten
         Route::get('/user-games', [GameController::class, 'getUserGames']); // Alle Spiele des Users
+        Route::patch('/{id}/resume', [GameController::class, 'resumeGame']); // Spiel fortsetzen (Status auf active)
         Route::patch('/{id}/pause', [GameController::class, 'pauseGame']); // Spiel pausieren
         Route::patch('/{id}/finish', [GameController::class, 'finishGame']); // Spiel beenden (Status auf finished)
         Route::delete('/{id}', [GameController::class, 'destroy']); // Spiel löschen

@@ -44,9 +44,11 @@ function getCSRFToken() {
  */
 async function apiRequest(endpoint, options = {}) {
     console.log("API Request:", API_BASE_URL + endpoint, options);
-    // Starte den globalen Ladevorgang
-    const loadingMessage = options.loadingMessage || "Wird geladen...";
-    loadingHandlers.startLoading(loadingMessage);
+    // Starte den globalen Ladevorgang, falls nicht übersprungen
+    if (!options.skipLoading) {
+        const loadingMessage = options.loadingMessage || "Wird geladen...";
+        loadingHandlers.startLoading(loadingMessage);
+    }
 
     const token = localStorage.getItem("token");
     const csrfToken = getCSRFToken();
@@ -104,12 +106,16 @@ async function apiRequest(endpoint, options = {}) {
         }
 
         // Beende den globalen Ladevorgang
-        loadingHandlers.stopLoading();
+        if (!options.skipLoading) {
+            loadingHandlers.stopLoading();
+        }
         return data;
     } catch (error) {
         console.error("API Error:", error);
         // Beende den globalen Ladevorgang auch im Fehlerfall
-        loadingHandlers.stopLoading();
+        if (!options.skipLoading) {
+            loadingHandlers.stopLoading();
+        }
         throw error;
     }
 }
@@ -374,6 +380,14 @@ const gameAPI = {
         });
     },
 
+    // ⭐ Resume game (set status to active)
+    resumeGame: async (gameId) => {
+        return apiRequest(`/games/${gameId}/resume`, {
+            method: "PATCH",
+            skipLoading: true,
+        });
+    },
+
     // ⭐ Finish game (set status to finished)
     finishGame: async (gameId) => {
         return apiRequest(`/games/${gameId}/finish`, {
@@ -386,7 +400,7 @@ const gameAPI = {
     deleteGame: async (gameId) => {
         return apiRequest(`/games/${gameId}`, {
             method: "DELETE",
-            loadingMessage: "Spiel wird gelöscht...",
+            skipLoading: true,
         });
     },
 };

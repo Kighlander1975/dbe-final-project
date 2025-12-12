@@ -25,26 +25,27 @@ function Home() {
     loadUsers(true); // force = true, um Cache zu überschreiben
   }, [loadUsers]);
 
-  // ⭐ User-Spiele beim Mount laden (für alle authentifizierten User)
-  useEffect(() => {
-    const loadUserGames = async () => {
-      if (isAuthenticated) {
-        setLoadingGames(true);
-        try {
-          const response = await gameAPI.getUserGames();
-          setUserGames(response.games || []);
-        } catch (error) {
-          console.error('Failed to load user games:', error);
-          setUserGames([]);
-        } finally {
-          setLoadingGames(false);
-        }
-      } else {
+  // ⭐ User-Spiele laden Funktion (für alle authentifizierten User)
+  const loadUserGames = async () => {
+    if (isAuthenticated) {
+      setLoadingGames(true);
+      try {
+        const response = await gameAPI.getUserGames();
+        setUserGames(response.games || []);
+      } catch (error) {
+        console.error('Failed to load user games:', error);
         setUserGames([]);
+      } finally {
         setLoadingGames(false);
       }
-    };
+    } else {
+      setUserGames([]);
+      setLoadingGames(false);
+    }
+  };
 
+  // ⭐ User-Spiele beim Mount laden
+  useEffect(() => {
     loadUserGames();
   }, [isAuthenticated]);
 
@@ -60,18 +61,31 @@ function Home() {
   // ⭐ Handler für Spiel fortsetzen (jedes Spiel)
   const handleResumeGame = async (game) => {
     try {
-      // Wenn es bereits ein aktives Spiel gibt, kann kein anderes gestartet werden
-      const hasActiveGame = userGames.some(g => g.status === 'active');
-      if (hasActiveGame && game.status === 'paused') {
-        showToast('⚠️ Beende zuerst das aktive Spiel, bevor du ein pausiertes fortsetzt', 'warning', 5000);
+      // Prüfen, ob bereits ein anderes Spiel aktiv ist
+      const otherActiveGames = userGames.filter(g => g.status === 'active' && g.id !== game.id);
+      if (otherActiveGames.length > 0) {
+        showToast('⚠️ Ein anderes Spiel ist bereits aktiv. Bitte beende es zuerst.', 'warning', 5000);
         return;
       }
 
+      // Spiel aktivieren
+      await gameAPI.resumeGame(game.id);
+      showToast('✅ Spiel wurde aktiviert', 'success');
+
+      // Spiele im Hintergrund neu laden (für sofortige UI-Aktualisierung)
+      loadUserGames();
+
+      // Zur Game-Seite navigieren (sofort)
       navigate(`/game/${game.id}`);
     } catch (error) {
       console.error('Failed to resume game:', error);
-      showToast('❌ Fehler beim Fortsetzen des Spiels', 'error');
+      showToast('❌ Fehler beim Aktivieren des Spiels', 'error');
     }
+  }
+
+  // ⭐ Handler für aktives Spiel weiterführen
+  const handleContinueGame = (game) => {
+    navigate(`/game/${game.id}`);
   }
 
   return (
@@ -107,40 +121,88 @@ function Home() {
           {/* ⭐ Spiel-Buttons für alle authentifizierten User */}
           {isAuthenticated && !loadingGames && (
             <>
-              {/* Zeige alle User-Spiele */}
-              {userGames.map((game) => (
-                <li key={game.id}>
-                  <button
-                    onClick={() => handleResumeGame(game)}
-                    className="home__link--with-sub home__link-button"
-                    disabled={userGames.some(g => g.status === 'active') && game.status === 'paused'}
-                  >
-                    <div className="home__link-main">
-                      {game.status === 'active' ? '🎯 Spiel weiterführen' : '⏸️ Spiel fortsetzen'}
-                    </div>
-                    <div className="home__link-sub">
-                      {(() => {
-                        // Parse gameName: Titel_TIMESTAMP_UUID
-                        const parts = (game.gameName || "").split('_');
-                        if (parts.length >= 3) {
-                          let timestamp = parseInt(parts[1]);
-                          const uuid = parts[2];
+              {/* ⭐ Aktive Spiele (prominent zuerst) */}
+              {userGames.filter(game => game.status === 'active').length > 0 && (
+                <>
+                  <li className="home__section-header">
+                    <div className="home__link-main">🎯 Aktive Spiele</div>
+                    <div className="home__link-sub">Klicke zum Weiterspielen</div>
+                  </li>
+                  {userGames.filter(game => game.status === 'active').map((game) => (
+                    <li key={game.id}>
+                      <button
+                        onClick={() => handleContinueGame(game)}
+                        className="home__link--with-sub home__link-button home__link-button--active"
+                      >
+                        <div className="home__link-main">
+                          🎯 Spiel weiterführen
+                        </div>
+                        <div className="home__link-sub">
+                          {(() => {
+                            const parts = (game.gameName || "").split('_');
+                            if (parts.length >= 3) {
+                              let timestamp = parseInt(parts[1]);
+                              const uuid = parts[2];
 
-                          if (timestamp < 1577836800000) {
-                            timestamp *= 1000;
-                          }
+                              if (timestamp < 1577836800000) {
+                                timestamp *= 1000;
+                              }
 
-                          const date = new Date(timestamp);
-                          const dateStr = date.toLocaleDateString('de-DE');
+                              const date = new Date(timestamp);
+                              const dateStr = date.toLocaleDateString('de-DE');
 
-                          return `${parts[0]} • ${dateStr}`;
-                        }
-                        return game.gameName || "Unbekanntes Spiel";
-                      })()}
-                    </div>
-                  </button>
-                </li>
-              ))}
+                              return `${parts[0]} • ${dateStr}`;
+                            }
+                            return game.gameName || "Unbekanntes Spiel";
+                          })()}
+                        </div>
+                      </button>
+                    </li>
+                  ))}
+                </>
+              )}
+
+              {/* ⭐ Pausierte Spiele (separat) */}
+              {userGames.filter(game => game.status === 'paused').length > 0 && (
+                <>
+                  <li className="home__section-header">
+                    <div className="home__link-main">⏸️ Pausierte Spiele</div>
+                    <div className="home__link-sub">Klicke zum Fortsetzen</div>
+                  </li>
+                  {userGames.filter(game => game.status === 'paused').map((game) => (
+                    <li key={game.id}>
+                      <button
+                        onClick={() => handleResumeGame(game)}
+                        className="home__link--with-sub home__link-button"
+                        disabled={userGames.some(g => g.status === 'active')}
+                      >
+                        <div className="home__link-main">
+                          ⏸️ Spiel fortsetzen
+                        </div>
+                        <div className="home__link-sub">
+                          {(() => {
+                            const parts = (game.gameName || "").split('_');
+                            if (parts.length >= 3) {
+                              let timestamp = parseInt(parts[1]);
+                              const uuid = parts[2];
+
+                              if (timestamp < 1577836800000) {
+                                timestamp *= 1000;
+                              }
+
+                              const date = new Date(timestamp);
+                              const dateStr = date.toLocaleDateString('de-DE');
+
+                              return `${parts[0]} • ${dateStr}`;
+                            }
+                            return game.gameName || "Unbekanntes Spiel";
+                          })()}
+                        </div>
+                      </button>
+                    </li>
+                  ))}
+                </>
+              )}
 
               {/* Neues Spiel Button - nur wenn weniger als 3 Spiele */}
               {userGames.length < 3 ? (

@@ -177,6 +177,38 @@ class GameController extends Controller
     }
 
     /**
+     * ⭐ Resume a game (set status to active) - Host only
+     */
+    public function resumeGame(Request $request, string $id)
+    {
+        $game = Game::where('admin_id', $request->user()->id)->findOrFail($id);
+
+        // Prüfen, ob bereits ein anderes Spiel aktiv ist
+        $activeGame = Game::where('admin_id', $request->user()->id)
+                         ->where('status', 'active')
+                         ->where('id', '!=', $id)
+                         ->first();
+
+        if ($activeGame) {
+            return response()->json([
+                'error' => 'Ein anderes Spiel ist bereits aktiv. Bitte beende es zuerst.'
+            ], 409);
+        }
+
+        $game->update(['status' => 'active']);
+
+        \Log::info('Game resumed', [
+            'game_id' => $id,
+            'admin_id' => $request->user()->id
+        ]);
+
+        return response()->json([
+            'message' => 'Spiel erfolgreich aktiviert',
+            'game' => $game
+        ]);
+    }
+
+    /**
      * ⭐ Pause a game (set status to paused) - Host only
      */
     public function pauseGame(Request $request, string $id)
