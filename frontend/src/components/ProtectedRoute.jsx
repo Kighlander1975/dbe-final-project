@@ -41,29 +41,21 @@ export function NoActiveGameRoute({ children }) {
         const checkActiveGame = async () => {
             if (user && isAdmin()) {
                 try {
-                    // Verwende die globale refreshActiveGame Funktion falls verfügbar
-                    if (window.refreshActiveGame) {
-                        await window.refreshActiveGame();
-                        // Warte kurz, bis der State aktualisiert ist
-                        setTimeout(() => {
-                            // Hier könnten wir den State aus MainLayout lesen, aber das ist tricky
-                            // Stattdessen machen wir einen direkten API-Call
-                            setCheckingGame(false);
-                        }, 100);
-                    } else {
-                        setCheckingGame(false);
+                    const response = await gameAPI.hasActiveGame();
+                    if (response.hasActiveGame) {
+                        setActiveGame(response.activeGame);
                     }
                 } catch (error) {
                     console.error('Failed to check active game:', error);
-                    setCheckingGame(false);
                 }
-            } else {
-                setCheckingGame(false);
             }
+            setCheckingGame(false);
         };
 
         if (!loading && user) {
             checkActiveGame();
+        } else if (!loading && !user) {
+            setCheckingGame(false);
         }
     }, [user, loading, isAdmin]);
 
@@ -88,8 +80,8 @@ export function NoActiveGameRoute({ children }) {
     }
 
     // ⭐ Wenn Admin und aktives Spiel läuft, weiterleiten zum Spiel
-    if (isAdmin() && window.activeGame) {
-        return <Navigate to={`/game/${window.activeGame.id}`} replace />;
+    if (isAdmin() && activeGame) {
+        return <Navigate to={`/game/${activeGame.id}`} replace />;
     }
 
     return children;
