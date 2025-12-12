@@ -517,13 +517,12 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
                         // Extrahiere Timestamp und UUID aus gameName
                         const parts = (gameData.gameName || "").split('_');
                         if (parts.length >= 3) {
-                            const timestamp = parts[1];
+                            const timestamp = parseInt(parts[1]); // Timestamp als Zahl
                             const uuid = parts[2];
-                            // Konvertiere Timestamp zu Datum (Format: YYYYMMDD)
-                            const year = timestamp.substring(0, 4);
-                            const month = timestamp.substring(4, 6);
-                            const day = timestamp.substring(6, 8);
-                            const dateStr = `${day}.${month}.${year}`;
+                            
+                            // Konvertiere Timestamp zu Datum
+                            const date = new Date(timestamp);
+                            const dateStr = date.toLocaleDateString('de-DE');
                             
                             return (
                                 <div className="game-table__header-info">
