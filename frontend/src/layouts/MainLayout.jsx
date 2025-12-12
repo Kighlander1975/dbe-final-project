@@ -1,5 +1,5 @@
 // src/layouts/MainLayout.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -18,6 +18,7 @@ function MainLayout() {
 
     // Hamburger Menu State
     const [menuOpen, setMenuOpen] = useState(false);
+    const menuRef = useRef(null);
 
     // ⭐ Active Game State
     const [activeGame, setActiveGame] = useState(null);
@@ -47,6 +48,33 @@ function MainLayout() {
             delete window.refreshActiveGame;
         };
     }, [user, isAdmin]);
+
+    // ⭐ Load active game on mount and when user/admin status changes
+    useEffect(() => {
+        refreshActiveGame();
+    }, [user, isAdmin]);
+
+    // ⭐ Refresh active game when location changes (navigation)
+    useEffect(() => {
+        refreshActiveGame();
+    }, [location.pathname]);
+
+    // ⭐ Close hamburger menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuOpen && menuRef.current && !menuRef.current.contains(event.target)) {
+                setMenuOpen(false);
+            }
+        };
+
+        if (menuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [menuOpen]);
 
     useEffect(() => {
         const checkDeviceAndOrientation = () => {
@@ -148,7 +176,7 @@ function MainLayout() {
 
                     {/* Hamburger Menu */}
                     {menuOpen && (
-                        <div className="main-layout__hamburger-menu">
+                        <div className="main-layout__hamburger-menu" ref={menuRef}>
                             <button onClick={() => { handleNavigate('/'); setMenuOpen(false); }} className="main-layout__menu-item">
                                 🏠 Home
                             </button>
@@ -156,8 +184,25 @@ function MainLayout() {
                             {user ? (
                                 <>
                                     {activeGame ? (
-                                        <button onClick={() => { handleNavigate(`/game/${activeGame.id}`); setMenuOpen(false); }} className="main-layout__menu-item">
-                                            🎯 Zum Spiel: {activeGame.gameName}
+                                        <button 
+                                            onClick={() => { handleNavigate(`/game/${activeGame.id}`); setMenuOpen(false); }} 
+                                            className={`main-layout__menu-item ${location.pathname === `/game/${activeGame.id}` ? 'main-layout__menu-item--active' : ''}`}
+                                            disabled={location.pathname === `/game/${activeGame.id}`}
+                                        >
+                                            🎯 Zum Spiel: {(() => {
+                                                const parts = activeGame.gameName.split('_');
+                                                const title = parts[0];
+                                                if (parts.length >= 2) {
+                                                    let timestamp = parseInt(parts[1]);
+                                                    if (timestamp < 1577836800000) {
+                                                        timestamp *= 1000;
+                                                    }
+                                                    const date = new Date(timestamp);
+                                                    const dateStr = date.toLocaleDateString('de-DE');
+                                                    return `${title} (${dateStr})`;
+                                                }
+                                                return title;
+                                            })()}
                                         </button>
                                     ) : (
                                         <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">

@@ -1,6 +1,6 @@
 // src/pages/Game.jsx
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import GameTable from '../components/GameTable';
 import '../styles/pages/game.css';
 import { gameAPI } from '../services/api';
@@ -8,6 +8,7 @@ import { gameAPI } from '../services/api';
 function Game() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { id } = useParams(); // ⭐ Game ID aus URL-Parameter
 
     const [gameData, setGameData] = useState(null);
     const [gameId, setGameId] = useState(null);
@@ -21,16 +22,19 @@ function Game() {
         if (isInitialized) return; // Verhindere mehrfache Ausführung
 
         const initGame = async () => {
+            // ⭐ Verwende URL-Parameter als primäre Quelle
+            const gameIdFromParams = id;
             const stateData = location.state;
             
             // Prüfe auch Query-Parameter als Fallback
             const urlParams = new URLSearchParams(location.search);
             const gameIdFromUrl = urlParams.get('gameId');
             
-            if (stateData?.gameId || gameIdFromUrl) {
-                const gameId = stateData?.gameId || gameIdFromUrl;
+            const finalGameId = gameIdFromParams || stateData?.gameId || gameIdFromUrl;
+            
+            if (finalGameId) {
                 try {
-                    const response = await gameAPI.getGame(gameId);
+                    const response = await gameAPI.getGame(finalGameId);
                     setGameData(response.game_data);
                     setGameId(response.id);
                     localStorage.setItem('currentGameId', response.id);

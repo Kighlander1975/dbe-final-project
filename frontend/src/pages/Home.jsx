@@ -81,16 +81,22 @@ function Home() {
       <nav className="home__nav">
         <ul className="home__menu">
           <li>
-            <Link to="/">🏠 Startseite</Link>
+            <Link to="/">
+              <div className="home__link-main">🏠 Startseite</div>
+            </Link>
           </li>
           
           {!isAuthenticated ? (
             <>
               <li>
-                <Link to="/login">🔐 Login</Link>
+                <Link to="/login">
+                  <div className="home__link-main">🔐 Login</div>
+                </Link>
               </li>
               <li>
-                <Link to="/register">📝 Registrierung</Link>
+                <Link to="/register">
+                  <div className="home__link-main">📝 Registrierung</div>
+                </Link>
               </li>
             </>
           ) : null}
@@ -103,18 +109,39 @@ function Home() {
                   <li>
                     <Link 
                       to={`/game/${activeGame.id}`}
-                      className="home__link--game"
+                      className="home__link--with-sub"
                     >
-                      🎯 Spiel "{activeGame.gameName}" {activeGame.status === 'paused' ? 'fortsetzen' : 'weiterführen'}
+                      <div className="home__link-main">
+                        🎯 Spiel {activeGame.status === 'paused' ? 'fortsetzen' : 'weiterführen'}
+                      </div>
+                      <div className="home__link-sub">
+                        {(() => {
+                          // Parse gameName: Titel_TIMESTAMP_UUID
+                          const parts = (activeGame.gameName || "").split('_');
+                          if (parts.length >= 3) {
+                            let timestamp = parseInt(parts[1]);
+                            const uuid = parts[2];
+                            
+                            if (timestamp < 1577836800000) {
+                              timestamp *= 1000;
+                            }
+                            
+                            const date = new Date(timestamp);
+                            const dateStr = date.toLocaleDateString('de-DE');
+                            
+                            return `${parts[0]} • ${dateStr}`;
+                          }
+                          return activeGame.gameName || "Unbekanntes Spiel";
+                        })()}
+                      </div>
                     </Link>
                   </li>
                   {activeGame.status === 'paused' && (
                     <li>
                       <Link 
                         to="/new-game"
-                        className="home__link--new-game"
                       >
-                        🎮 Neues Spiel
+                        <div className="home__link-main">🎮 Neues Spiel</div>
                       </Link>
                     </li>
                   )}
@@ -123,9 +150,8 @@ function Home() {
                 <li>
                   <Link 
                     to="/new-game"
-                    className="home__link--new-game"
                   >
-                    🎮 Neues Spiel
+                    <div className="home__link-main">🎮 Neues Spiel</div>
                   </Link>
                 </li>
               )}
@@ -135,7 +161,9 @@ function Home() {
           {/* Admin Dashboard nur für Admins */}
           {isAuthenticated && isAdmin() && (
             <li>
-              <Link to="/admin">⚙️ Admin Dashboard</Link>
+              <Link to="/admin">
+                <div className="home__link-main">⚙️ Admin Dashboard</div>
+              </Link>
             </li>
           )}
         </ul>

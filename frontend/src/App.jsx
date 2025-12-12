@@ -95,7 +95,7 @@ function App() {
                 },
                 { path: "/game-summary", element: <GameSummary /> },
                 {
-                    path: "/game",
+                    path: "/game/:id",
                     element: (
                         <ProtectedRoute>
                             <Game />
