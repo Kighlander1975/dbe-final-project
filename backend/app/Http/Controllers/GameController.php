@@ -52,10 +52,44 @@ class GameController extends Controller
                     ->get();
 
         $formattedGames = $games->map(function ($game) {
+            $gameData = $game->game_data;
+            $players = $gameData['players'] ?? [];
+            $currentPoints = [];
+            $ranks = [];
+
+            // Berechne aktuelle Punkte und Ränge aus der letzten Runde
+            if (!empty($gameData['rounds'])) {
+                $lastRound = end($gameData['rounds']);
+                $currentPoints = $lastRound['points'] ?? [];
+                // Ränge berechnen
+                $pointsWithIndex = array_map(function($points, $index) {
+                    return ['points' => $points, 'index' => $index];
+                }, $currentPoints, array_keys($currentPoints));
+                usort($pointsWithIndex, function($a, $b) {
+                    return $b['points'] <=> $a['points'];
+                });
+                $rank = 1;
+                $prevPoints = null;
+                foreach ($pointsWithIndex as $item) {
+                    if ($prevPoints !== null && $item['points'] < $prevPoints) {
+                        $rank++;
+                    }
+                    $ranks[$item['index']] = $rank;
+                    $prevPoints = $item['points'];
+                }
+            }
+
             return [
                 'id' => $game->id,
-                'gameName' => $game->game_data['gameName'] ?? 'Unbenanntes Spiel',
+                'gameName' => $gameData['gameName'] ?? 'Unbenanntes Spiel',
                 'status' => $game->status,
+                'players' => array_map(function($player, $index) use ($currentPoints, $ranks) {
+                    return [
+                        'name' => $player['name'] ?? 'Unbekannt',
+                        'points' => $currentPoints[$index] ?? 0,
+                        'rank' => $ranks[$index] ?? 1
+                    ];
+                }, $players, array_keys($players)),
                 'created_at' => $game->created_at,
                 'updated_at' => $game->updated_at
             ];
@@ -115,7 +149,7 @@ class GameController extends Controller
                 'rounds' => [],
                 'currentRound' => 1,
                 'victoryCondition' => $request->victoryCondition,
-                'dealerIndex' => 0,
+                'dealerIndex' => rand(0, count($request->players) - 1), // Zufälliger Dealer
             ],
             'status' => 'active',
         ]);

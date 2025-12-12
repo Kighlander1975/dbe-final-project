@@ -42,6 +42,8 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
         Route::patch('/users/{user}/ban', [UserController::class, 'banUser']);
         Route::patch('/users/{user}/unban', [UserController::class, 'unbanUser']);
+        // ⭐ Admin Stats
+        Route::get('/stats', [StatsController::class, 'adminStats']);
     });
 
     // Game routes (für Persistenz während Spielen)

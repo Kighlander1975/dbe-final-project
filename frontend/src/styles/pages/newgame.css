@@ -211,6 +211,7 @@
     grid-template-columns: 1fr 1fr 120px;
     gap: 0.5rem;
     align-items: start;
+    margin-bottom: .5rem;
 }
 
 .player-input-wrapper {

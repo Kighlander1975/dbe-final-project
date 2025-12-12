@@ -169,12 +169,13 @@ function Home() {
                     <div className="home__link-main">⏸️ Pausierte Spiele</div>
                     <div className="home__link-sub">Klicke zum Fortsetzen</div>
                   </li>
-                  {userGames.filter(game => game.status === 'paused').map((game) => (
+                  {userGames.filter(game => game.status === 'paused').map((game, index) => (
                     <li key={game.id}>
                       <button
                         onClick={() => handleResumeGame(game)}
-                        className="home__link--with-sub home__link-button"
+                        className={`home__link--with-sub home__link-button home__link-button--paused-${(index % 3) + 1}`}
                         disabled={userGames.some(g => g.status === 'active')}
+                        title={`Spieler:\n${game.players?.map(p => `${p.rank}. ${p.name}: ${p.points} Pkt`).join('\n') || 'Keine Daten'}`}
                       >
                         <div className="home__link-main">
                           ⏸️ Spiel fortsetzen

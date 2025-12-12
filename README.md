@@ -21,6 +21,7 @@
    - [Benutzerrollen und Zugriffsrechte](#benutzerrollen-und-zugriffsrechte)
    - [Rollenmanagement und Zugriffslogik](#rollenmanagement-und-zugriffslogik)
    - [Erweiterbarkeit](#erweiterbarkeit)
+4. [Admin-Bereich](#admin-bereich)
 
 ## Einleitung
 Das **Stechen**-Helper Projekt ist eine Webanwendung, die entwickelt wird, um die Organisation und Verwaltung von dem Kartenspiel "**Stechen**" zu erleichtern. Die Anwendung soll Benutzern helfen, **Stechen**-Partien zu planen, zu verwalten und zu verfolgen, indem sie eine benutzerfreundliche Oberfläche und leistungsstarke Funktionen bietet. Diese Webanwendung wird für **Tablets und Desktop** entwickelt, aber geeignete, große Handys im Querformat werden ebenfalls unterstützt.
@@ -434,6 +435,57 @@ stechen-helper/
 ├── docker-compose.yml       # Docker-Konfiguration
 ├── .gitignore
 └── README.md
+```
+
+## Admin-Bereich
+
+Der Admin-Bereich bietet umfassende Verwaltungsfunktionen für Administratoren der Anwendung.
+
+### Dashboard-Übersicht
+
+Das Admin-Dashboard (`/admin`) zeigt wichtige Statistiken in animierten Karten an:
+
+- **👥 Benutzer**: Gesamtanzahl registrierter Benutzer
+- **🎮 Aktive Spiele**: Anzahl derzeit laufender Spiele
+- **⏸️ Pausierte Spiele**: Anzahl vorübergehend gestoppter Spiele
+- **🏆 Abgeschlossen**: Anzahl beendeter Spiele
+- **👑 Hosts-Anfragen**: Anzahl ausstehender Host-Berechtigungsanfragen
+
+#### Counter-Animation
+
+Die Zahlen in den Statistik-Karten werden nach dem Laden der Seite von 0 auf den tatsächlichen Wert hochgezählt. Die Animation dauert genau 2 Sekunden, unabhängig von der Größe der Zahl:
+
+- Bei kleinen Zahlen (z.B. 5) sind einzelne Schritte sichtbar
+- Bei großen Zahlen (z.B. 1000) erfolgt der Zuwachs schneller, aber die Gesamtdauer bleibt 2 Sekunden
+
+Dieses Verhalten wird als **"Animated Counter"** oder **"Counter Animation"** bezeichnet und verbessert die User Experience durch dynamische Visualisierung der Daten.
+
+### Benutzerverwaltung
+
+Im Bereich "Benutzerverwaltung" (`/admin/users`) können Administratoren:
+
+- Alle Benutzer auflisten und durchsuchen
+- Benutzerrollen ändern (user → host → admin)
+- Benutzer temporär sperren/entsperren
+- Host-Anfragen verwalten
+
+### API-Endpunkte
+
+#### Admin-Statistiken
+```
+GET /api/admin/stats
+```
+Gibt gecachte Statistiken zurück (Cache: 5 Minuten). Nur für Administratoren zugänglich.
+
+**Response:**
+```json
+{
+  "users": 42,
+  "active_games": 3,
+  "paused_games": 1,
+  "finished_games": 15,
+  "host_requests": 2
+}
 ```
 
 ---

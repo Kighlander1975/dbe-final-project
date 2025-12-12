@@ -227,7 +227,7 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
             currentRound: data.currentRound || 1,
             gameStatus: data.gameStatus || "active",
             victoryCondition: data.victoryCondition || 100,
-            dealerIndex: data.dealerIndex || Math.floor(Math.random() * players.length),
+            dealerIndex: data.dealerIndex || 0, // Fester Fallback auf 0 für bestehende Spiele
         };
 
         // Berechne Gesamtpunkte für alle Spieler neu (NUR wenn Runde 1 abgeschlossen ist)

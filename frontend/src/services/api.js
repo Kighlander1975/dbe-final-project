@@ -335,7 +335,7 @@ const gameAPI = {
         return apiRequest("/games", {
             method: "POST",
             body: gameData,
-            loadingMessage: "Spiel wird erstellt...",
+            skipLoading: true,
         });
     },
 
@@ -418,6 +418,13 @@ const statsAPI = {
     getPlayerStats: async (playerId) => {
         return apiRequest(`/stats/player/${playerId}`, {
             loadingMessage: "Spieler-Statistiken werden geladen...",
+        });
+    },
+
+    // ⭐ Admin Stats
+    getAdminStats: async () => {
+        return apiRequest("/admin/stats", {
+            loadingMessage: "Admin-Statistiken werden geladen...",
         });
     },
 };

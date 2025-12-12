@@ -207,6 +207,43 @@
   box-shadow: 0 0 0 3px rgba(45, 159, 94, 0.3);
 }
 
+/* ⭐ Pausierte Spiel-Buttons (Pastellfarben zur Unterscheidung) */
+.home__link-button--paused-1 {
+  background: #e3f2fd; /* Pastell-Blau */
+  border-color: #2196f3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.home__link-button--paused-1:hover:not(:disabled) {
+  background: #f3f9ff;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+}
+
+.home__link-button--paused-2 {
+  background: #f3e5f5; /* Pastell-Lila */
+  border-color: #9c27b0;
+  box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.2);
+}
+
+.home__link-button--paused-2:hover:not(:disabled) {
+  background: #faf3fb;
+  border-color: #7b1fa2;
+  box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.3);
+}
+
+.home__link-button--paused-3 {
+  background: #fff3e0; /* Pastell-Orange */
+  border-color: #ff9800;
+  box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+}
+
+.home__link-button--paused-3:hover:not(:disabled) {
+  background: #fff8f0;
+  border-color: #f57c00;
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+}
+
 .home__link-disabled::before {
   display: none;
 }

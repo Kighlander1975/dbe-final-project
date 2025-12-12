@@ -129,4 +129,20 @@ class StatsController extends Controller
         $rank = array_search($points, $sortedPoints) + 1;
         return $rank;
     }
+
+    /**
+     * Get admin statistics.
+     */
+    public function adminStats()
+    {
+        return Cache::remember('admin.stats', 300, function () { // 5min Cache
+            return [
+                'users' => User::count(),
+                'active_games' => Game::where('status', 'active')->count(),
+                'paused_games' => Game::where('status', 'paused')->count(),
+                'finished_games' => Game::where('status', 'finished')->count(),
+                'host_requests' => User::where('role', 'pending_host')->count(), // Assuming role for host requests
+            ];
+        });
+    }
 }
