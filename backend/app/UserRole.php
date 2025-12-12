@@ -5,6 +5,7 @@ namespace App;
 enum UserRole: string
 {
     case PLAYER = 'player';
+    case HOST = 'host';
     case ADMIN = 'admin';
     case BANNED = 'banned';
 
@@ -23,6 +24,7 @@ enum UserRole: string
     {
         return match ($this) {
             self::PLAYER => 'Spieler',
+            self::HOST => 'Host',
             self::ADMIN => 'Administrator',
             self::BANNED => 'Gesperrt',
         };
@@ -42,6 +44,14 @@ enum UserRole: string
     public function isPlayer(): bool
     {
         return $this === self::PLAYER;
+    }
+
+    /**
+     * Check if role is host
+     */
+    public function isHost(): bool
+    {
+        return $this === self::HOST;
     }
 
     /**

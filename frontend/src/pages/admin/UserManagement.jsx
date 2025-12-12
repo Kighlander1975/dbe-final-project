@@ -1,5 +1,6 @@
 // src/pages/admin/UserManagement.jsx
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useLoading } from '../../context/LoadingContext' // ✅ NEU
@@ -12,6 +13,7 @@ function UserManagement() {
   const { showToast } = useToast()
   const { startLoading, stopLoading } = useLoading() // ✅ NEU
   const { loadUsers, lastLoaded } = useUserContext() // 🆕 UserContext
+  const navigate = useNavigate()
   
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -113,7 +115,7 @@ function UserManagement() {
           
           {/* Filter */}
           <div className="user-management__filter">
-            {['all', 'player', 'admin', 'banned'].map(f => (
+            {['all', 'player', 'host', 'admin', 'banned'].map(f => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
@@ -141,7 +143,14 @@ function UserManagement() {
               <tbody>
                 {users.map(u => (
                   <tr key={u.id}>
-                    <td>{u.name}</td>
+                    <td>
+                      <button
+                        onClick={() => navigate(`/admin/users/${u.id}`)}
+                        className="user-management__name-link"
+                      >
+                        {u.name}
+                      </button>
+                    </td>
                     <td>{u.email}</td>
                     <td>{getRoleBadge(u.role)}</td>
                     <td>
@@ -154,6 +163,7 @@ function UserManagement() {
                             className="user-management__role-select"
                           >
                             <option value="player">Player</option>
+                            <option value="host">Host</option>
                             <option value="admin">Admin</option>
                             <option value="banned">Banned</option>
                           </select>

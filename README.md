@@ -268,6 +268,8 @@ docker-compose ps
 - Erstellung von Einzelspielen
 - Verwaltung mehrerer Spielgruppen
 - Einladungssystem für Spiele
+- **Visuelle Unterscheidung pausierter Spiele**: Auf der Startseite werden pausierte Spiele mit drei verschiedenen Pastellfarben (Blau, Lila, Orange) hervorgehoben, um Verwechslungen bei gleichen Spielnamen zu vermeiden
+- **Detaillierte Tooltips**: Hover über pausierte Spiel-Buttons zeigt Spielerliste mit aktuellen Punkten und Rängen
 
 #### 4. Statistik und Ranglisten
 - Globale Einzelspieler-Ranglisten

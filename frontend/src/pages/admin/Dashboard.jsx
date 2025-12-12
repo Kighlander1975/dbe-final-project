@@ -5,6 +5,7 @@ import { useUserContext } from '../../context/UserContext' // 🆕 UserContext
 import AdminSidebar from '../../components/admin/AdminSidebar'
 import Overview from './Overview'
 import UserManagement from './UserManagement'
+import UserDetail from './UserDetail'
 import '../../styles/pages/admin/dashboard.css'
 
 function Dashboard() {
@@ -23,6 +24,7 @@ function Dashboard() {
         <Routes>
           <Route index element={<Overview />} />
           <Route path="users" element={<UserManagement />} />
+          <Route path="users/:id" element={<UserDetail />} />
           {/* 🔧 Weitere Routen hier hinzufügen */}
           {/* <Route path="settings" element={<Settings />} /> */}
           

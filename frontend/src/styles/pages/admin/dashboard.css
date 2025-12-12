@@ -150,6 +150,11 @@
   color: #000;
 }
 
+.role-badge--host {
+  background: #10b981;
+  color: #fff;
+}
+
 .role-badge--player {
   background: #3b82f6;
   color: #fff;

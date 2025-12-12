@@ -1,0 +1,213 @@
+/* src/styles/pages/admin/user-detail.css */
+
+.user-detail {
+  max-width: 800px;
+}
+
+.user-detail__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.user-detail__back-btn {
+  background: var(--bg-button-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-dark);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.user-detail__back-btn:hover {
+  background: var(--bg-button-secondary-hover);
+}
+
+.user-detail__title {
+  font-size: 2rem;
+  color: var(--primary-green-dark);
+  margin: 0;
+}
+
+.user-detail__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.user-detail__card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+.user-detail__section-title {
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-detail__info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.user-detail__info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--bg-light);
+  border-radius: var(--radius-sm);
+}
+
+.user-detail__info-item strong {
+  color: var(--text-dark);
+}
+
+.user-detail__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.user-detail__action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.user-detail__action-group label {
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.user-detail__role-select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text-dark);
+  max-width: 200px;
+}
+
+.user-detail__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.user-detail__stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--bg-light);
+  border-radius: var(--radius-sm);
+}
+
+.user-detail__stat-label {
+  color: var(--text-medium);
+}
+
+.user-detail__stat-value {
+  font-weight: bold;
+  color: var(--primary-green-dark);
+}
+
+.user-detail__loading,
+.user-detail__error {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: var(--text-medium);
+}
+
+.user-detail__error {
+  color: var(--error-color);
+}
+
+/* Role Badges */
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.role-badge--admin {
+  background: #fbbf24;
+  color: #000;
+}
+
+.role-badge--host {
+  background: #10b981;
+  color: #fff;
+}
+
+.role-badge--player {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.role-badge--banned {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Action Buttons */
+.action-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.action-btn--ban {
+  background: #ef4444;
+  color: white;
+}
+
+.action-btn--ban:hover {
+  background: #dc2626;
+}
+
+.action-btn--unban {
+  background: #10b981;
+  color: white;
+}
+
+.action-btn--unban:hover {
+  background: #059669;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-detail__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-detail__info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-detail__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .user-detail__actions {
+    gap: 1rem;
+  }
+}

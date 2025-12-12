@@ -44,10 +44,19 @@
   flex-wrap: wrap;
 }
 
-.user-management__loading {
-  text-align: center;
-  padding: 2rem;
-  color: var(--text-medium);
+.user-management__name-link {
+  background: none;
+  border: none;
+  color: var(--primary-green);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+.user-management__name-link:hover {
+  color: var(--primary-green-dark);
+}
 }
 
 .user-management__table-wrapper {
