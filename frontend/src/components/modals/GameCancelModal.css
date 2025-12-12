@@ -244,3 +244,10 @@
     flex-direction: column !important;
   }
 }
+
+/* Auf sehr kleinen Bildschirmen (Smartphones) Modal verstecken */
+@media (max-width: 480px) {
+  .modal-overlay {
+    display: none !important;
+  }
+}
