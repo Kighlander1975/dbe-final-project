@@ -30,7 +30,7 @@ const generateRounds = (numRounds, numPlayers) => {
     });
 };
 
-function GameTable({ gameData: initialGameData, onGameUpdate }) {
+function GameTable({ gameData: initialGameData, onGameUpdate, gameCreatedAt }) {
     const tableRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -169,8 +169,6 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
             rank: 0,
         }));
 
-        // NICHT auf 11 Spieler auffüllen - verwende nur die echten Spieler
-
         // Verwende die vorhandenen Runden aus den Daten, oder erstelle eine leere erste Runde
         let rounds = data.rounds || [];
         if (rounds.length === 0) {
@@ -184,7 +182,8 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
             rounds = [firstRound];
         }
 
-        return {
+        // ⭐ PUNKTE UND RÄNGE NEU BERECHNEN beim Laden
+        const gameDataForCalculation = {
             gameName: data.gameName,
             players: players,
             rounds: rounds,
@@ -192,6 +191,25 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
             gameStatus: data.gameStatus || "active",
             victoryCondition: data.victoryCondition || 100,
             dealerIndex: data.dealerIndex || Math.floor(Math.random() * players.length),
+        };
+
+        // Berechne Gesamtpunkte für alle Spieler neu
+        const playersWithTotalPoints = gameDataForCalculation.players.map((player, index) => {
+            const totalPoints = gameDataForCalculation.rounds.reduce((sum, round) => {
+                return sum + (round.points ? (round.points[index] || 0) : 0);
+            }, 0);
+            return {
+                ...player,
+                totalPoints,
+            };
+        });
+
+        // Berechne Ranking neu
+        const playersWithRanks = calculateRanking(playersWithTotalPoints);
+
+        return {
+            ...gameDataForCalculation,
+            players: playersWithRanks,
         };
     };
 
@@ -484,12 +502,13 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
                  onMouseLeave={handleMouseLeave}
                  style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
                 <div className="game-table__header">
-                    <h2>{gameData.gameName || "Spiel-Tabelle"}</h2>
-                    <div className="game-table__info">
-                        <span>Aktuelle Runde: {gameData.currentRound}</span>
-                        <span>Status: {gameData.gameStatus}</span>
-                        <span>Siegbedingung: {gameData.victoryCondition}</span>
-                    </div>
+                    <h3>{gameData.gameName || "Spiel-Tabelle"}</h3>
+                    {gameCreatedAt && (
+                        <div className="game-table__header-info">
+                            am <strong>{new Date(gameCreatedAt).toLocaleDateString('de-DE')}</strong>
+                            <span className="muted">({gameId})</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="game-table__rows">

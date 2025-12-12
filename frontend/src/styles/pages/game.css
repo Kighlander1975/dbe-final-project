@@ -6,6 +6,22 @@
     margin: 0.5rem 0.5rem 0 0.5rem;
 }
 
+.game-table__header h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-dark);
+}
+
+.game-table__header-info {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.muted {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
 .loading-state {
     display: flex;
     justify-content: center;

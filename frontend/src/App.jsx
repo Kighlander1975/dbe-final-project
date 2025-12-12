@@ -9,6 +9,7 @@ import MainLayout from "./layouts/MainLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import AdminRoute from "./components/AdminRoute";
+import { NoActiveGameRoute } from "./components/ProtectedRoute"; // ⭐ Import hinzugefügt
 
 // Pages - Öffentlich
 import Home from "./pages/Home";
@@ -87,9 +88,9 @@ function App() {
                 {
                     path: "/new-game",
                     element: (
-                        <ProtectedRoute>
+                        <NoActiveGameRoute>
                             <NewGame />
-                        </ProtectedRoute>
+                        </NoActiveGameRoute>
                     ),
                 },
                 { path: "/game-summary", element: <GameSummary /> },

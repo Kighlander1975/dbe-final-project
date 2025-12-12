@@ -22,6 +22,9 @@ function MainLayout() {
     // ⭐ Active Game State
     const [activeGame, setActiveGame] = useState(null);
 
+    // Orientation-Check
+    const [deviceStatus, setDeviceStatus] = useState({ isAllowed: true, reason: null });
+
     // ⭐ Function to refresh active game status
     const refreshActiveGame = async () => {
         if (user && isAdmin()) {
