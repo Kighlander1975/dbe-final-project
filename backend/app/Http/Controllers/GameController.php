@@ -42,6 +42,33 @@ class GameController extends Controller
     }
 
     /**
+     * ⭐ Get all games for the authenticated user (Host only)
+     */
+    public function getUserGames(Request $request)
+    {
+        $games = Game::where('admin_id', $request->user()->id)
+                    ->whereIn('status', ['active', 'paused'])
+                    ->orderBy('updated_at', 'desc')
+                    ->get();
+
+        $formattedGames = $games->map(function ($game) {
+            return [
+                'id' => $game->id,
+                'gameName' => $game->game_data['gameName'] ?? 'Unbenanntes Spiel',
+                'status' => $game->status,
+                'created_at' => $game->created_at,
+                'updated_at' => $game->updated_at
+            ];
+        });
+
+        return response()->json([
+            'games' => $formattedGames,
+            'totalGames' => $formattedGames->count(),
+            'canCreateNewGame' => $formattedGames->count() < 3
+        ]);
+    }
+
+    /**
      * Store a newly created game (nur Admins).
      */
     public function store(Request $request)

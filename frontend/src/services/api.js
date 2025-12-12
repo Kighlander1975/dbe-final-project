@@ -341,6 +341,14 @@ const gameAPI = {
         });
     },
 
+    // ⭐ Get all user games (Host only)
+    getUserGames: async () => {
+        return apiRequest("/games/user-games", {
+            method: "GET",
+            loadingMessage: "Spiele werden geladen...",
+        });
+    },
+
     // Get game data (for live view)
     getGame: async (gameId) => {
         return apiRequest(`/games/${gameId}`, {

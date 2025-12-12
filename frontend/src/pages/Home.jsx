@@ -16,37 +16,37 @@ function Home() {
   // ✅ isAuthenticated basiert auf user
   const isAuthenticated = !!user
 
-  // ⭐ State für aktives Spiel
-  const [activeGame, setActiveGame] = useState(null)
-  const [checkingGame, setCheckingGame] = useState(false)
+  // ⭐ State für User-Spiele (für alle authentifizierten User)
+  const [userGames, setUserGames] = useState([])
+  const [loadingGames, setLoadingGames] = useState(false)
 
   // 🆕 User-Liste beim Mount neu laden
   useEffect(() => {
     loadUsers(true); // force = true, um Cache zu überschreiben
   }, [loadUsers]);
 
-  // ⭐ Aktives Spiel beim Mount laden (nur für Admins)
+  // ⭐ User-Spiele beim Mount laden (für alle authentifizierten User)
   useEffect(() => {
-    const loadActiveGame = async () => {
-      if (isAuthenticated && isAdmin()) {
-        setCheckingGame(true);
+    const loadUserGames = async () => {
+      if (isAuthenticated) {
+        setLoadingGames(true);
         try {
-          const response = await gameAPI.hasActiveGame();
-          setActiveGame(response.hasActiveGame ? response.activeGame : null);
+          const response = await gameAPI.getUserGames();
+          setUserGames(response.games || []);
         } catch (error) {
-          console.error('Failed to load active game:', error);
-          setActiveGame(null);
+          console.error('Failed to load user games:', error);
+          setUserGames([]);
         } finally {
-          setCheckingGame(false);
+          setLoadingGames(false);
         }
       } else {
-        setActiveGame(null);
-        setCheckingGame(false);
+        setUserGames([]);
+        setLoadingGames(false);
       }
     };
 
-    loadActiveGame();
-  }, [isAuthenticated, isAdmin]);
+    loadUserGames();
+  }, [isAuthenticated]);
 
   // Handler für geschützte Links
   const handleProtectedLink = (e, path) => {
@@ -57,14 +57,17 @@ function Home() {
     }
   }
 
-  // ⭐ Handler für Spiel fortsetzen
-  const handleResumeGame = async () => {
-    if (!activeGame) return;
-
+  // ⭐ Handler für Spiel fortsetzen (jedes Spiel)
+  const handleResumeGame = async (game) => {
     try {
-      // Hier würde man normalerweise eine API-Funktion aufrufen, um den Status zu ändern
-      // Aber da wir das noch nicht haben, navigieren wir einfach zum Spiel
-      navigate(`/game/${activeGame.id}`);
+      // Wenn es bereits ein aktives Spiel gibt, kann kein anderes gestartet werden
+      const hasActiveGame = userGames.some(g => g.status === 'active');
+      if (hasActiveGame && game.status === 'paused') {
+        showToast('⚠️ Beende zuerst das aktive Spiel, bevor du ein pausiertes fortsetzt', 'warning', 5000);
+        return;
+      }
+
+      navigate(`/game/${game.id}`);
     } catch (error) {
       console.error('Failed to resume game:', error);
       showToast('❌ Fehler beim Fortsetzen des Spiels', 'error');
@@ -101,61 +104,84 @@ function Home() {
             </>
           ) : null}
           
-          {/* ⭐ Dynamische Spiel-Buttons basierend auf Status */}
-          {isAuthenticated && isAdmin() && !checkingGame && (
+          {/* ⭐ Spiel-Buttons für alle authentifizierten User */}
+          {isAuthenticated && !loadingGames && (
             <>
-              {activeGame ? (
-                <>
-                  <li>
-                    <Link 
-                      to={`/game/${activeGame.id}`}
-                      className="home__link--with-sub"
-                    >
-                      <div className="home__link-main">
-                        🎯 Spiel {activeGame.status === 'paused' ? 'fortsetzen' : 'weiterführen'}
-                      </div>
-                      <div className="home__link-sub">
-                        {(() => {
-                          // Parse gameName: Titel_TIMESTAMP_UUID
-                          const parts = (activeGame.gameName || "").split('_');
-                          if (parts.length >= 3) {
-                            let timestamp = parseInt(parts[1]);
-                            const uuid = parts[2];
-                            
-                            if (timestamp < 1577836800000) {
-                              timestamp *= 1000;
-                            }
-                            
-                            const date = new Date(timestamp);
-                            const dateStr = date.toLocaleDateString('de-DE');
-                            
-                            return `${parts[0]} • ${dateStr}`;
+              {/* Zeige alle User-Spiele */}
+              {userGames.map((game) => (
+                <li key={game.id}>
+                  <button
+                    onClick={() => handleResumeGame(game)}
+                    className="home__link--with-sub home__link-button"
+                    disabled={userGames.some(g => g.status === 'active') && game.status === 'paused'}
+                  >
+                    <div className="home__link-main">
+                      {game.status === 'active' ? '🎯 Spiel weiterführen' : '⏸️ Spiel fortsetzen'}
+                    </div>
+                    <div className="home__link-sub">
+                      {(() => {
+                        // Parse gameName: Titel_TIMESTAMP_UUID
+                        const parts = (game.gameName || "").split('_');
+                        if (parts.length >= 3) {
+                          let timestamp = parseInt(parts[1]);
+                          const uuid = parts[2];
+
+                          if (timestamp < 1577836800000) {
+                            timestamp *= 1000;
                           }
-                          return activeGame.gameName || "Unbekanntes Spiel";
-                        })()}
+
+                          const date = new Date(timestamp);
+                          const dateStr = date.toLocaleDateString('de-DE');
+
+                          return `${parts[0]} • ${dateStr}`;
+                        }
+                        return game.gameName || "Unbekanntes Spiel";
+                      })()}
+                    </div>
+                  </button>
+                </li>
+              ))}
+
+              {/* Neues Spiel Button - nur wenn weniger als 3 Spiele */}
+              {userGames.length < 3 ? (
+                <li>
+                  <Link
+                    to="/new-game"
+                    className={userGames.some(g => g.status === 'active') ? 'home__link-disabled' : ''}
+                    onClick={(e) => {
+                      if (userGames.some(g => g.status === 'active')) {
+                        e.preventDefault();
+                        showToast('⚠️ Beende zuerst das aktive Spiel, bevor du ein neues erstellst', 'warning', 5000);
+                      }
+                    }}
+                  >
+                    <div className="home__link-main">
+                      🎮 Neues Spiel
+                      {userGames.length >= 3 && ' (Max. erreicht)'}
+                    </div>
+                    {userGames.length >= 3 && (
+                      <div className="home__link-sub" title="Maximum an offenen Spielen erreicht">
+                        Max. 3 Spiele erlaubt
                       </div>
-                    </Link>
-                  </li>
-                  {activeGame.status === 'paused' && (
-                    <li>
-                      <Link 
-                        to="/new-game"
-                      >
-                        <div className="home__link-main">🎮 Neues Spiel</div>
-                      </Link>
-                    </li>
-                  )}
-                </>
+                    )}
+                  </Link>
+                </li>
               ) : (
                 <li>
-                  <Link 
-                    to="/new-game"
-                  >
-                    <div className="home__link-main">🎮 Neues Spiel</div>
-                  </Link>
+                  <span className="home__link-disabled" title="Maximum an offenen Spielen erreicht">
+                    <div className="home__link-main">🎮 Neues Spiel (Max. erreicht)</div>
+                    <div className="home__link-sub">Max. 3 Spiele erlaubt</div>
+                  </span>
                 </li>
               )}
             </>
+          )}
+
+          {/* Lade-Status für Spiele */}
+          {isAuthenticated && loadingGames && (
+            <li>
+              <div className="home__link-main">⏳ Spiele werden geladen...</div>
+            </li>
           )}
           
           {/* Admin Dashboard nur für Admins */}

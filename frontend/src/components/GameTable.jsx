@@ -618,7 +618,9 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                                 {roundPhase === 0 ? 'Eingaben bestätigen?' : 'Stiche bestätigen?'}
                             </button>
                         )}
-                        <button className="btn btn-secondary" onClick={() => setShowCancelModal(true)}>Spiel abbrechen</button>
+                        <button className="btn btn-secondary" onClick={() => setShowCancelModal(true)}>
+                            Spiel abbrechen
+                        </button>
                     </div>
                 </div>
 
