@@ -103,7 +103,7 @@ function Game() {
 
     return (
         <div className="game-container">
-            <GameTable gameData={gameData} onGameUpdate={handleGameUpdate} />
+            <GameTable gameData={gameData} gameId={gameId} onGameUpdate={handleGameUpdate} />
         </div>
     );
 }

@@ -31,7 +31,7 @@ const generateRounds = (numRounds, numPlayers) => {
     });
 };
 
-function GameTable({ gameData: initialGameData, onGameUpdate }) {
+function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     const tableRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -631,7 +631,7 @@ function GameTable({ gameData: initialGameData, onGameUpdate }) {
                 <GameCancelModal
                     isOpen={showCancelModal}
                     onClose={() => setShowCancelModal(false)}
-                    gameData={gameData}
+                    gameData={{ ...gameData, id: gameId }}
                     onGameUpdate={onGameUpdate}
                 />
             </div>
