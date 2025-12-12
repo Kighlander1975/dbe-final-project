@@ -1,8 +1,11 @@
 // src/components/GameTable.jsx
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RoundHeader from './rounds/RoundHeader';
 import RoundData from './rounds/RoundData';
 import GameCancelModal from './modals/GameCancelModal';
+import { useToast } from '../context/ToastContext';
+import { gameAPI } from '../services/api';
 import './GameTable.css';
 
 // Funktion zum Generieren zufälliger Bids (0-7)
@@ -32,6 +35,8 @@ const generateRounds = (numRounds, numPlayers) => {
 };
 
 function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
+    const navigate = useNavigate();
+    const { showToast } = useToast();
     const tableRef = useRef(null);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -160,6 +165,21 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         // Navigation zur GameSummary Seite
         window.location.href = '/game-summary';
     };
+
+    // Funktion zum Pausieren des Spiels
+    const handlePauseGame = async () => {
+        try {
+            await gameAPI.pauseGame(gameId);
+            const parts = gameData.gameName.split('_');
+            const gameTitle = parts[0];
+            showToast(`⏸️ Spiel "${gameTitle}" wurde pausiert`, 'success', 3000);
+            navigate('/');
+        } catch (error) {
+            console.error('Failed to pause game:', error);
+            showToast('❌ Fehler beim Pausieren des Spiels', 'error');
+        }
+    };
+
     // Konvertiere initialGameData in internes Format
     const convertGameData = (data) => {
         if (!data) return null;
@@ -618,6 +638,9 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                                 {roundPhase === 0 ? 'Eingaben bestätigen?' : 'Stiche bestätigen?'}
                             </button>
                         )}
+                        <button className="btn btn-warning" onClick={handlePauseGame}>
+                            ⏸️ Spiel pausieren
+                        </button>
                         <button className="btn btn-secondary" onClick={() => setShowCancelModal(true)}>
                             Spiel abbrechen
                         </button>

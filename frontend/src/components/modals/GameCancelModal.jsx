@@ -8,45 +8,31 @@ import './GameCancelModal.css';
 function GameCancelModal({ isOpen, onClose, gameData, onGameUpdate }) {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [selectedAction, setSelectedAction] = useState('pause');
   const [isLoading, setIsLoading] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleAction = async () => {
-    if (selectedAction === 'pause') {
-      await handlePause();
-    } else if (selectedAction === 'delete') {
-      if (!showConfirmDelete) {
-        setShowConfirmDelete(true);
-        return;
-      }
-      await handleDelete();
+  const handleDelete = async () => {
+    if (!showConfirmDelete) {
+      setShowConfirmDelete(true);
+      return;
     }
-  };
 
-  const handlePause = async () => {
     setIsLoading(true);
     try {
-      await gameAPI.pauseGame(gameData.id);
+      await gameAPI.deleteGame(gameData.id);
 
-      // Parse game name for toast
-      const parts = gameData.gameName.split('_');
-      const gameTitle = parts[0];
-
-      showToast(`🎯 Spiel "${gameTitle}" unterbrochen`, 'info', 5000);
+      showToast('🗑️ Spiel wurde abgebrochen und gelöscht', 'warning', 5000);
       navigate('/');
     } catch (error) {
-      console.error('Failed to pause game:', error);
-      showToast('❌ Fehler beim Pausieren des Spiels', 'error');
+      console.error('Failed to delete game:', error);
+      showToast('❌ Fehler beim Löschen des Spiels', 'error');
     } finally {
       setIsLoading(false);
       onClose();
     }
   };
-
-  const handleDelete = async () => {
     setIsLoading(true);
     try {
       await gameAPI.deleteGame(gameData.id);
@@ -73,7 +59,7 @@ function GameCancelModal({ isOpen, onClose, gameData, onGameUpdate }) {
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3 className="modal-title">Spiel beenden</h3>
+          <h3 className="modal-title">Spiel abbrechen</h3>
           <button
             className="modal-close"
             onClick={handleClose}
@@ -87,43 +73,19 @@ function GameCancelModal({ isOpen, onClose, gameData, onGameUpdate }) {
           {!showConfirmDelete ? (
             <>
               <p className="modal-description">
-                Was möchten Sie mit dem aktuellen Spiel machen?
+                Möchten Sie das aktuelle Spiel wirklich abbrechen?
               </p>
 
               <div className="modal-options">
-                <label className="modal-option">
-                  <input
-                    type="radio"
-                    name="action"
-                    value="pause"
-                    checked={selectedAction === 'pause'}
-                    onChange={(e) => setSelectedAction(e.target.value)}
-                  />
+                <div className="modal-option">
                   <div className="option-content">
-                    <div className="option-title">🎯 Spiel pausieren</div>
-                    <div className="option-description">
-                      Das Spiel wird unterbrochen und kann später fortgesetzt werden.
-                      Alle bisherigen Eingaben bleiben erhalten.
-                    </div>
-                  </div>
-                </label>
-
-                <label className="modal-option">
-                  <input
-                    type="radio"
-                    name="action"
-                    value="delete"
-                    checked={selectedAction === 'delete'}
-                    onChange={(e) => setSelectedAction(e.target.value)}
-                  />
-                  <div className="option-content">
-                    <div className="option-title">🗑️ Spiel abbrechen</div>
+                    <div className="option-title">🗑️ Spiel abbrechen und löschen</div>
                     <div className="option-description">
                       Das Spiel wird endgültig gelöscht. Alle Daten gehen verloren
                       und fließen nicht in Wertungen ein.
                     </div>
                   </div>
-                </label>
+                </div>
               </div>
             </>
           ) : (
@@ -147,13 +109,12 @@ function GameCancelModal({ isOpen, onClose, gameData, onGameUpdate }) {
             Abbrechen
           </button>
           <button
-            className={`btn ${selectedAction === 'delete' ? 'btn-danger' : 'btn-warning'}`}
-            onClick={handleAction}
+            className="btn btn-danger"
+            onClick={handleDelete}
             disabled={isLoading}
           >
-            {isLoading ? '⏳ Wird ausgeführt...' :
+            {isLoading ? '⏳ Wird gelöscht...' :
              showConfirmDelete ? '🗑️ Ja, endgültig löschen' :
-             selectedAction === 'pause' ? '🎯 Spiel pausieren' :
              '🗑️ Spiel abbrechen'}
           </button>
         </div>
