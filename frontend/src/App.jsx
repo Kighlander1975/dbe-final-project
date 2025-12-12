@@ -6,10 +6,9 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import MainLayout from "./layouts/MainLayout";
 
 // Components
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute, { GameCreatorRoute } from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import AdminRoute from "./components/AdminRoute";
-import { NoActiveGameRoute } from "./components/ProtectedRoute"; // ⭐ Import hinzugefügt
 
 // Pages - Öffentlich
 import Home from "./pages/Home";
@@ -19,6 +18,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ChangePassword from './pages/ChangePassword'
 import VerifyEmail from "./pages/VerifyEmail";
+import Forbidden from "./pages/Forbidden";
 
 // Pages - Geschützt
 import NewGame from "./pages/NewGame";
@@ -49,6 +49,7 @@ function App() {
                 // Öffentlich
                 { path: "/", element: <Home /> },
                 { path: "/verify-email", element: <VerifyEmail /> },
+                { path: "/forbidden", element: <Forbidden /> },
 
                 // NUR für NICHT angemeldete User
                 {
@@ -88,9 +89,9 @@ function App() {
                 {
                     path: "/new-game",
                     element: (
-                        <NoActiveGameRoute>
+                        <GameCreatorRoute>
                             <NewGame />
-                        </NoActiveGameRoute>
+                        </GameCreatorRoute>
                     ),
                 },
                 { path: "/game-summary", element: <GameSummary /> },

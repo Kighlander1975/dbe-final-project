@@ -87,4 +87,36 @@ export function NoActiveGameRoute({ children }) {
     return children;
 }
 
+// ⭐ Neue Route-Komponente: Nur für Game-Creator (Admin/Host)
+export function GameCreatorRoute({ children }) {
+    const { user, loading, isAdmin } = useAuth();
+
+    if (loading) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    minHeight: "60vh",
+                    fontSize: "1.5rem",
+                }}
+            >
+                ⏳ Laden...
+            </div>
+        );
+    }
+
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+
+    // ⭐ Nur Admin darf Spiele erstellen (Host-Rolle kommt später)
+    if (!isAdmin()) {
+        return <Navigate to="/forbidden" replace />;
+    }
+
+    return children;
+}
+
 export default ProtectedRoute;
