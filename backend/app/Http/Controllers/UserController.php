@@ -42,6 +42,24 @@ class UserController extends Controller
     }
 
     /**
+     * Update user name (Admin only)
+     */
+    public function updateName(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100', 'regex:/^[a-zA-Z0-9äöüÄÖÜß!^()<>éøåçñàèìòùâêîôûëïüÿæœÀÈÌÒÙÂÊÎÔÛËÏÜŸÆŒ\s]+$/']
+        ]);
+
+        $user->name = $validated['name'];
+        $user->save();
+
+        return response()->json([
+            'message' => 'Name erfolgreich aktualisiert.',
+            'user' => $user
+        ]);
+    }
+
+    /**
      * Ban user (Admin only)
      */
     public function banUser(User $user)

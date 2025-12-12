@@ -71,6 +71,48 @@
   color: var(--text-dark);
 }
 
+.user-detail__name-display {
+  cursor: pointer;
+  user-select: none;
+}
+
+.user-detail__name-display:hover {
+  background: var(--bg-light);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem;
+}
+
+.user-detail__name-editor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-detail__name-input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text-dark);
+  font-size: inherit;
+  flex: 1;
+}
+
+.user-detail__name-submit {
+  background: var(--primary-green);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.user-detail__name-submit:hover {
+  background: var(--primary-green-dark);
+}
+
 .user-detail__actions {
   display: flex;
   flex-direction: column;

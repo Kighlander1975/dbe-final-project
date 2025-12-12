@@ -311,6 +311,15 @@ export const adminAPI = {
         });
     },
 
+    // Update user name
+    updateUserName: async (userId, name) => {
+        return apiRequest(`/admin/users/${userId}/name`, {
+            method: "PATCH",
+            body: JSON.stringify({ name }),
+            loadingMessage: "Benutzername wird aktualisiert...",
+        });
+    },
+
     // Ban user
     banUser: async (userId) => {
         return apiRequest(`/admin/users/${userId}/ban`, {

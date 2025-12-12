@@ -17,6 +17,8 @@ function UserDetail() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [editName, setEditName] = useState('')
 
   // Load user details
   useEffect(() => {
@@ -102,6 +104,55 @@ function UserDetail() {
     }
   }
 
+  // Name editing handlers
+  const handleNameDoubleClick = () => {
+    setIsEditingName(true)
+    setEditName(user.name)
+  }
+
+  const handleNameSubmit = async () => {
+    const trimmedName = editName.trim()
+    
+    // Validation: Required after trim
+    if (!trimmedName) {
+      showToast('Name darf nicht leer sein', 'error')
+      return
+    }
+
+    // XSS protection: Basic validation for allowed characters
+    const allowedChars = /^[a-zA-Z0-9äöüÄÖÜß!^()<>éøåçñàèìòùâêîôûëïüÿæœÀÈÌÒÙÂÊÎÔÛËÏÜŸÆŒ\s]+$/
+    if (!allowedChars.test(trimmedName)) {
+      showToast('Name enthält ungültige Zeichen', 'error')
+      return
+    }
+
+    startLoading('Name wird geändert...')
+
+    try {
+      await adminAPI.updateUserName(user.id, trimmedName)
+      showToast('Name erfolgreich geändert!', 'success')
+      setUser({ ...user, name: trimmedName })
+      setIsEditingName(false)
+    } catch (error) {
+      showToast('Fehler beim Ändern des Namens', 'error')
+    } finally {
+      stopLoading()
+    }
+  }
+
+  const handleNameCancel = () => {
+    setIsEditingName(false)
+    setEditName('')
+  }
+
+  const handleNameKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleNameSubmit()
+    } else if (e.key === 'Escape') {
+      handleNameCancel()
+    }
+  }
+
   const getRoleBadge = (role) => {
     return (
       <span className={`role-badge role-badge--${role}`}>
@@ -149,7 +200,33 @@ function UserDetail() {
             </div>
             <div className="user-detail__info-item">
               <strong>Name:</strong>
-              <span>{user.name}</span>
+              {isEditingName ? (
+                <div className="user-detail__name-editor">
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    onKeyDown={handleNameKeyDown}
+                    onBlur={handleNameCancel}
+                    className="user-detail__name-input"
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleNameSubmit}
+                    className="user-detail__name-submit"
+                  >
+                    ✓
+                  </button>
+                </div>
+              ) : (
+                <span
+                  onDoubleClick={handleNameDoubleClick}
+                  className="user-detail__name-display"
+                  title="Doppelklick zum Bearbeiten"
+                >
+                  {user.name}
+                </span>
+              )}
             </div>
             <div className="user-detail__info-item">
               <strong>E-Mail:</strong>

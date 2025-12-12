@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.admin');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
+        Route::patch('/users/{user}/name', [UserController::class, 'updateName']);
         Route::patch('/users/{user}/ban', [UserController::class, 'banUser']);
         Route::patch('/users/{user}/unban', [UserController::class, 'unbanUser']);
         // ⭐ Admin Stats
