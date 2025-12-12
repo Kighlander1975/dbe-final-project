@@ -65,6 +65,11 @@
   padding: 0.75rem;
   background: var(--bg-light);
   border-radius: var(--radius-sm);
+  height: 3.5rem;
+}
+
+.user-detail__info-item--editable {
+  cursor: pointer;
 }
 
 .user-detail__info-item strong {
@@ -74,12 +79,15 @@
 .user-detail__name-display {
   cursor: pointer;
   user-select: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  min-width: 100px;
+  display: inline-block;
+  text-align: left;
 }
 
 .user-detail__name-display:hover {
   background: var(--bg-light);
-  border-radius: var(--radius-sm);
-  padding: 0.25rem;
 }
 
 .user-detail__name-editor {
@@ -95,7 +103,9 @@
   background: var(--bg-input);
   color: var(--text-dark);
   font-size: inherit;
-  flex: 1;
+  width: auto;
+  min-width: 100px;
+  max-width: 200px;
 }
 
 .user-detail__name-submit {

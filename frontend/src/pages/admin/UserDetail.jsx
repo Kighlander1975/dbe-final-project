@@ -198,7 +198,7 @@ function UserDetail() {
               <strong>ID:</strong>
               <span>{user.id}</span>
             </div>
-            <div className="user-detail__info-item">
+            <div className="user-detail__info-item user-detail__info-item--editable" onDoubleClick={handleNameDoubleClick}>
               <strong>Name:</strong>
               {isEditingName ? (
                 <div className="user-detail__name-editor">
@@ -212,7 +212,8 @@ function UserDetail() {
                     autoFocus
                   />
                   <button
-                    onClick={handleNameSubmit}
+                    type="button"
+                    onMouseDown={handleNameSubmit}
                     className="user-detail__name-submit"
                   >
                     ✓
@@ -220,7 +221,6 @@ function UserDetail() {
                 </div>
               ) : (
                 <span
-                  onDoubleClick={handleNameDoubleClick}
                   className="user-detail__name-display"
                   title="Doppelklick zum Bearbeiten"
                 >
