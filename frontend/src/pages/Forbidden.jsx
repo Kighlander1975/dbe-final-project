@@ -19,9 +19,6 @@ function Forbidden() {
           <Link to="/" className="forbidden__button forbidden__button--primary">
             🏠 Zur Startseite
           </Link>
-          <Link to="/login" className="forbidden__button forbidden__button--secondary">
-            🔐 Login
-          </Link>
         </div>
       </div>
     </div>
