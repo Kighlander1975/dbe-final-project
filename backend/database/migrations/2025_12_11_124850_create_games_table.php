@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('admin_id')->constrained('users')->onDelete('cascade');
             $table->json('game_data'); // Flexible Speicherung für Spiel-Details (Spieler, Runden, etc.)
-            $table->enum('status', ['active', 'finished'])->default('active');
+            $table->enum('status', ['active', 'paused', 'finished'])->default('active');
             $table->timestamps();
         });
     }

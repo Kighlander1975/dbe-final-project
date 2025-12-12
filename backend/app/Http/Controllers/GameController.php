@@ -23,19 +23,20 @@ class GameController extends Controller
     }
 
     /**
-     * ⭐ Check if admin has an active game
+     * ⭐ Check if admin has an active or paused game
      */
     public function hasActiveGame(Request $request)
     {
         $activeGame = Game::where('admin_id', $request->user()->id)
-                         ->where('status', 'active')
+                         ->whereIn('status', ['active', 'paused'])
                          ->first();
 
         return response()->json([
             'hasActiveGame' => $activeGame !== null,
             'activeGame' => $activeGame ? [
                 'id' => $activeGame->id,
-                'gameName' => $activeGame->game_data['gameName'] ?? 'Unbenanntes Spiel'
+                'gameName' => $activeGame->game_data['gameName'] ?? 'Unbenanntes Spiel',
+                'status' => $activeGame->status
             ] : null
         ]);
     }
