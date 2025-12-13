@@ -9,6 +9,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    cssMinify: false, // Deaktiviere CSS-Minify um Syntaxfehler zu vermeiden
+  },
   server: {
     host: '0.0.0.0',
     port: 5173,

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { adminAPI } from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import { useLoading } from '../../context/LoadingContext';
+import '../../styles/pages/admin/test-email.css';
 
 const TestEmail = () => {
     const [email, setEmail] = useState('');
