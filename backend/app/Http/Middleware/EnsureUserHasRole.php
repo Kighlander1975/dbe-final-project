@@ -25,10 +25,20 @@ class EnsureUserHasRole
             ], 401);
         }
 
-        // User ist gebannt
+        // Bei schreibenden Operationen (POST, PUT, PATCH, DELETE) Rolle frisch aus DB laden
+        // um DB-Manipulationen zu erkennen
+        if (in_array($request->method(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
+            $user->refresh(); // Lädt User frisch aus DB
+        }
+
+        // User ist gebannt - sofort ausloggen
         if ($user->isBanned()) {
+            // Token invalidieren
+            $request->user()->currentAccessToken()->delete();
+            
             return response()->json([
-                'message' => 'Ihr Account wurde gesperrt.'
+                'message' => 'Ihr Account wurde gesperrt und Sie wurden ausgeloggt.',
+                'logout' => true
             ], 403);
         }
 

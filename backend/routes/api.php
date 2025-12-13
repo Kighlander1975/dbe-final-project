@@ -6,6 +6,7 @@ use App\Http\Controllers\StatsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\EnsureEmailIsVerified;
+use Illuminate\Support\Facades\Route;
 
 // Public routes (ohne CSRF für SPA-Login)
 Route::withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class])->group(function () {
@@ -45,6 +46,8 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         Route::patch('/users/{user}/unban', [UserController::class, 'unbanUser']);
         // ⭐ Admin Stats
         Route::get('/stats', [StatsController::class, 'adminStats']);
+        // ⭐ Test Email
+        Route::post('/test-email', [UserController::class, 'sendTestEmail']);
     });
 
     // Game routes (für Persistenz während Spielen)

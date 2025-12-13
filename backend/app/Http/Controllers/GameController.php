@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Game;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
@@ -15,7 +16,7 @@ class GameController extends Controller
     public function show(string $id)
     {
         $game = Game::findOrFail($id);
-        \Log::info('GameController@show called', [
+        Log::info('GameController@show called', [
             'game_id' => $id,
             'game_data' => $game->game_data
         ]);
@@ -107,7 +108,7 @@ class GameController extends Controller
      */
     public function store(Request $request)
     {
-        \Log::info('GameController@store called', [
+        Log::info('GameController@store called', [
             'user' => $request->user() ? $request->user()->id : 'no user',
             'request_data' => $request->all(),
             'headers' => $request->headers->all()
@@ -136,8 +137,8 @@ class GameController extends Controller
         ]);
 
         if ($validator->fails()) {
-            \Log::error('Game validation failed:', $validator->errors()->toArray());
-            \Log::error('Request data:', $request->all());
+            Log::error('Game validation failed:', $validator->errors()->toArray());
+            Log::error('Request data:', $request->all());
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
@@ -164,14 +165,14 @@ class GameController extends Controller
     {
         $game = Game::where('admin_id', $request->user()->id)->findOrFail($id);
 
-        \Log::info('Game found for update', [
+        Log::info('Game found for update', [
             'game_id' => $id,
             'found_game_id' => $game->id,
             'admin_id' => $game->admin_id,
             'user_id' => $request->user()->id
         ]);
 
-        \Log::info('GameController@update called', [
+        Log::info('GameController@update called', [
             'game_id' => $id,
             'user_id' => $request->user()->id,
             'request_data' => $request->all()
@@ -183,11 +184,11 @@ class GameController extends Controller
         ]);
 
         if ($validator->fails()) {
-            \Log::error('Game update validation failed:', $validator->errors()->toArray());
+            Log::error('Game update validation failed:', $validator->errors()->toArray());
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        \Log::info('About to update game', [
+        Log::info('About to update game', [
             'game_id' => $id,
             'old_game_data' => $game->game_data,
             'new_game_data' => $request->game_data
@@ -202,7 +203,7 @@ class GameController extends Controller
         // Reload das Game
         $game->refresh();
 
-        \Log::info('Game updated successfully', [
+        Log::info('Game updated successfully', [
             'game_id' => $id,
             'updated_game_data' => $game->game_data
         ]);
@@ -231,7 +232,7 @@ class GameController extends Controller
 
         $game->update(['status' => 'active']);
 
-        \Log::info('Game resumed', [
+        Log::info('Game resumed', [
             'game_id' => $id,
             'admin_id' => $request->user()->id
         ]);
@@ -251,7 +252,7 @@ class GameController extends Controller
 
         $game->update(['status' => 'paused']);
 
-        \Log::info('Game paused', [
+        Log::info('Game paused', [
             'game_id' => $id,
             'admin_id' => $request->user()->id
         ]);
@@ -271,7 +272,7 @@ class GameController extends Controller
 
         $game->update(['status' => 'finished']);
 
-        \Log::info('Game finished', [
+        Log::info('Game finished', [
             'game_id' => $id,
             'admin_id' => $request->user()->id
         ]);

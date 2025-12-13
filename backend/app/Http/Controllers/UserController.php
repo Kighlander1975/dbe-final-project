@@ -6,6 +6,8 @@ use App\UserRole;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -89,5 +91,31 @@ class UserController extends Controller
             'message' => 'Sperrung wurde aufgehoben.',
             'user' => $user
         ]);
+    }
+
+    /**
+     * Send test email (Admin only)
+     */
+    public function sendTestEmail(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        try {
+            Mail::raw('Dies ist eine Test-E-Mail von Stechen-Helper. Wenn du diese E-Mail erhältst, funktioniert die E-Mail-Konfiguration korrekt!', function ($message) use ($validated) {
+                $message->to($validated['email'])
+                        ->subject('Stechen-Helper Test-E-Mail');
+            });
+
+            return response()->json([
+                'message' => 'Test-E-Mail wurde erfolgreich gesendet.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Test email failed: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Fehler beim Senden der Test-E-Mail: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
