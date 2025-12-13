@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Game;
-use App\Models\User;
-use Illuminate\Support\Facades\Cache;
+use App\Models\HostRequest;
 
 class StatsController extends Controller
 {
@@ -141,7 +139,8 @@ class StatsController extends Controller
                 'active_games' => Game::where('status', 'active')->count(),
                 'paused_games' => Game::where('status', 'paused')->count(),
                 'finished_games' => Game::where('status', 'finished')->count(),
-                'host_requests' => User::where('role', 'pending_host')->count(), // Assuming role for host requests
+                'host_requests_total' => HostRequest::count(),
+                'host_requests_unseen' => HostRequest::whereNull('seen_at')->count(),
             ];
         });
     }

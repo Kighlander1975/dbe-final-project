@@ -3,8 +3,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\StatsController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\HostRequestController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +47,24 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         Route::get('/stats', [StatsController::class, 'adminStats']);
         // ⭐ Test Email
         Route::post('/test-email', [UserController::class, 'sendTestEmail']);
+
+        // Host Request routes
+        Route::post('/host-requests', [HostRequestController::class, 'store']); // Player: Anfrage stellen
+    });
+
+    // Admin only routes
+    Route::middleware('role:admin')->group(function () {
+        // User management
+        Route::get('/users', [UserController::class, 'index']);
+        Route::patch('/users/{user}', [UserController::class, 'update']);
+        Route::delete('/users/{user}', [UserController::class, 'destroy']);
+
+        // Host Request admin routes
+        Route::get('/host-requests', [HostRequestController::class, 'index']);
+        Route::post('/host-requests/mark-seen', [HostRequestController::class, 'markAsSeen']);
+        Route::post('/host-requests/{hostRequest}/approve', [HostRequestController::class, 'approve']);
+        Route::post('/host-requests/{hostRequest}/reject', [HostRequestController::class, 'reject']);
+        Route::post('/host-requests/{hostRequest}/revoke', [HostRequestController::class, 'revoke']);
     });
 
     // Game routes (für Persistenz während Spielen)
