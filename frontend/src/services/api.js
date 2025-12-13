@@ -327,6 +327,15 @@ export const adminAPI = {
             loadingMessage: "Benutzer wird gelöscht...",
         });
     },
+
+    // Send test email
+    sendTestEmail: async (email) => {
+        return apiRequest("/admin/test-email", {
+            method: "POST",
+            body: JSON.stringify({ email }),
+            loadingMessage: "Sende Test-E-Mail...",
+        });
+    },
 };
 
 // ⭐ Game API Endpoints

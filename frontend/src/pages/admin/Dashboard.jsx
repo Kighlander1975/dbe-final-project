@@ -6,6 +6,7 @@ import AdminSidebar from '../../components/admin/AdminSidebar'
 import Overview from './Overview'
 import UserManagement from './UserManagement'
 import UserDetail from './UserDetail'
+import TestEmail from './TestEmail'
 import '../../styles/pages/admin/dashboard.css'
 
 function Dashboard() {
@@ -25,6 +26,7 @@ function Dashboard() {
           <Route index element={<Overview />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="users/:id" element={<UserDetail />} />
+          <Route path="test-email" element={<TestEmail />} />
           {/* 🔧 Weitere Routen hier hinzufügen */}
           {/* <Route path="settings" element={<Settings />} /> */}
           

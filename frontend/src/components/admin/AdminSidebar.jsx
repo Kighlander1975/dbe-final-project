@@ -16,6 +16,11 @@ function AdminSidebar() {
       icon: '👥',
       label: 'Benutzerverwaltung'
     },
+    {
+      path: '/admin/test-email',
+      icon: '📧',
+      label: 'Test E-Mail'
+    },
     // 🔧 Hier können weitere Menüpunkte hinzugefügt werden
     // {
     //   path: '/admin/settings',
