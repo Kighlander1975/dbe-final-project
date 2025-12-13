@@ -17,7 +17,7 @@ function NewGame() {
     const navigate = useNavigate();
     const location = useLocation(); // ✅ NEU
     const { startLoading, stopLoading } = useLoading();
-    const { users: availableEmails, loading: usersLoading, loadUsers } = useUserContext(); // 🆕 UserContext
+    const { users: availableEmails, loading: usersLoading, loadUsers, clearCache } = useUserContext(); // 🆕 clearCache hinzugefügt
     const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges(); // 🆕 UnsavedChangesContext
 
     // ✅ NEU: Daten aus Navigation State holen (falls vorhanden)
@@ -44,13 +44,14 @@ function NewGame() {
                players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1 (currentUser)
     };
 
-    // 🆕 User-Liste beim Mount laden (falls nicht schon geladen)
+    // 🆕 User-Liste beim Mount laden (falls nicht schon geladen) - FORCE RELOAD für Cache-Problem
     useEffect(() => {
         if (availableEmails.length === 0 && !usersLoading) {
-            loadUsers();
+            clearCache(); // Cache leeren für frische Daten
+            loadUsers(true); // Force reload to bypass cache
         }
         setLoading(false); // Entferne loading, da UserContext das handhabt
-    }, [availableEmails.length, usersLoading, loadUsers]);
+    }, [availableEmails.length, usersLoading, loadUsers, clearCache]);
 
     // 🆕 Schutz vor Datenverlust: Warnung beim Verlassen der Seite
     useEffect(() => {

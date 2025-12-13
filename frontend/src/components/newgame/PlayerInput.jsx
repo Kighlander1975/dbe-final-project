@@ -23,7 +23,7 @@ function PlayerInput({
     const [emailError, setEmailError] = useState(null);
     const [nameError, setNameError] = useState(null);
     const [nameWarning, setNameWarning] = useState(null);
-    
+
     const isInitialized = useRef(false);
 
     // ✅ useRef für onPlayerChange (verhindert Loop)
@@ -38,38 +38,55 @@ function PlayerInput({
         return emailRegex.test(value);
     }, []);
 
-    const validateEmailDuplicate = useCallback((email) => {
-        if (usedEmails.includes(email)) {
-            setEmailError("Diese E-Mail wird bereits verwendet!");
-            setShowNameField(false);
-            setNameValue("");
-            setBadge(null);
-            return true;
-        }
-        setEmailError(null);
-        return false;
-    }, [usedEmails]);
+    const validateEmailDuplicate = useCallback(
+        (email) => {
+            if (usedEmails.includes(email)) {
+                setEmailError("Diese E-Mail wird bereits verwendet!");
+                setShowNameField(false);
+                setNameValue("");
+                setBadge(null);
+                return true;
+            }
+            setEmailError(null);
+            return false;
+        },
+        [usedEmails]
+    );
 
-    const validateGuestNameDuplicate = useCallback((name) => {
-        if (usedGuestNames.includes(name.toLowerCase())) {
-            setNameError("Dieser Name wird bereits verwendet!");
-            showToast("Dieser Gast-Name wird bereits verwendet!", "error", 4000); // 🆕 Toast hinzufügen
-            return true;
-        }
-        setNameError(null);
-        return false;
-    }, [usedGuestNames, showToast]); // 🆕 showToast in dependencies
+    const validateGuestNameDuplicate = useCallback(
+        (name) => {
+            if (usedGuestNames.includes(name.toLowerCase())) {
+                setNameError("Dieser Name wird bereits verwendet!");
+                showToast(
+                    "Dieser Gast-Name wird bereits verwendet!",
+                    "error",
+                    4000
+                ); // 🆕 Toast hinzufügen
+                return true;
+            }
+            setNameError(null);
+            return false;
+        },
+        [usedGuestNames, showToast]
+    ); // 🆕 showToast in dependencies
 
-    const validateNameOverlap = useCallback((guestName) => {
-        if (allPlayerNames.includes(guestName.toLowerCase())) {
-            setNameWarning(
-                'Ein anderer Spieler heißt ebenfalls "' + guestName + '". Tipp: Verwende einen Nicknamen (z.B. "' + guestName + ' 2"), um Verwechslungen zu vermeiden.'
-            );
-            return true;
-        }
-        setNameWarning(null);
-        return false;
-    }, [allPlayerNames]);
+    const validateNameOverlap = useCallback(
+        (guestName) => {
+            if (allPlayerNames.includes(guestName.toLowerCase())) {
+                setNameWarning(
+                    'Ein anderer Spieler heißt ebenfalls "' +
+                        guestName +
+                        '". Tipp: Verwende einen Nicknamen (z.B. "' +
+                        guestName +
+                        ' 2"), um Verwechslungen zu vermeiden.'
+                );
+                return true;
+            }
+            setNameWarning(null);
+            return false;
+        },
+        [allPlayerNames]
+    );
 
     const validateNameRequired = useCallback((type, name) => {
         if (type === "new" && !name.trim()) {
@@ -88,7 +105,7 @@ function PlayerInput({
         let initialBadge = null;
         let initialType = "guest";
         let hasError = false;
-        
+
         // Fall 1: Es handelt sich um den aktuellen Benutzer (Spieler 1)
         if (isCurrentUser && currentUser) {
             initialPrimaryValue = currentUser.email || "";
@@ -103,13 +120,16 @@ function PlayerInput({
                 initialPrimaryValue = existingData.email;
                 initialNameValue = existingData.name || "";
                 initialShowNameField = true;
-                
+
                 const userInDb = availableEmails.find(
                     (item) => item.email === existingData.email
                 );
-                
+
                 if (userInDb) {
-                    initialBadge = { type: "registered", label: "✅ Registriert" };
+                    initialBadge = {
+                        type: "registered",
+                        label: "✅ Registriert",
+                    };
                     initialType = "registered";
                 } else {
                     initialBadge = { type: "new", label: "⚠️ Neu" };
@@ -124,33 +144,48 @@ function PlayerInput({
                 initialType = "guest";
             }
         }
-        
+
         setPrimaryValue(initialPrimaryValue);
         setNameValue(initialNameValue);
         setShowNameField(initialShowNameField);
         setBadge(initialBadge);
-        
+
         if ((isCurrentUser && currentUser) || existingData) {
             if (!isInitialized.current && onPlayerChangeRef.current) {
                 onPlayerChangeRef.current({
                     playerNumber,
                     email: initialType !== "guest" ? initialPrimaryValue : null,
-                    name: initialType !== "guest" ? initialNameValue : initialPrimaryValue,
+                    name:
+                        initialType !== "guest"
+                            ? initialNameValue
+                            : initialPrimaryValue,
                     type: initialType,
                     hasError: hasError,
                 });
             }
         }
-        
+
         isInitialized.current = true;
-    }, [isCurrentUser, currentUser, existingData, playerNumber, availableEmails]);
+    }, [
+        isCurrentUser,
+        currentUser,
+        existingData,
+        playerNumber,
+        availableEmails,
+    ]);
 
     // ✅ Reaktive Validierung: E-Mail-Duplikate
     useEffect(() => {
         if (!isCurrentUser && primaryValue && isValidEmail(primaryValue)) {
             validateEmailDuplicate(primaryValue);
         }
-    }, [usedEmails, isCurrentUser, primaryValue, isValidEmail, validateEmailDuplicate]);
+    }, [
+        usedEmails,
+        isCurrentUser,
+        primaryValue,
+        isValidEmail,
+        validateEmailDuplicate,
+    ]);
 
     // ✅ Reaktive Validierung: Gast-Name-Duplikate
     useEffect(() => {
@@ -159,7 +194,13 @@ function PlayerInput({
                 validateGuestNameDuplicate(primaryValue);
             }
         }
-    }, [usedGuestNames, isCurrentUser, primaryValue, isValidEmail, validateGuestNameDuplicate]);
+    }, [
+        usedGuestNames,
+        isCurrentUser,
+        primaryValue,
+        isValidEmail,
+        validateGuestNameDuplicate,
+    ]);
 
     // ✅ Reaktive Validierung: Name-Overlap
     useEffect(() => {
@@ -168,7 +209,13 @@ function PlayerInput({
                 validateNameOverlap(primaryValue);
             }
         }
-    }, [allPlayerNames, isCurrentUser, primaryValue, isValidEmail, validateNameOverlap]);
+    }, [
+        allPlayerNames,
+        isCurrentUser,
+        primaryValue,
+        isValidEmail,
+        validateNameOverlap,
+    ]);
 
     // Handler für Primary-Input
     const handlePrimaryChange = (e) => {
@@ -246,9 +293,12 @@ function PlayerInput({
 
         if (isValidEmail(primaryValue)) {
             hasError = validateEmailDuplicate(primaryValue);
-            
+
             if (badge?.type === "new") {
-                const nameRequired = validateNameRequired(badge.type, nameValue);
+                const nameRequired = validateNameRequired(
+                    badge.type,
+                    nameValue
+                );
                 hasError = hasError || nameRequired;
             }
         } else {
@@ -274,7 +324,7 @@ function PlayerInput({
         setNameValue(value);
 
         let hasError = false;
-        
+
         // ✅ Validierung nur für "new"-Typ (nicht für "current")
         if (badge?.type === "new") {
             hasError = validateNameRequired(badge.type, value);
@@ -295,7 +345,7 @@ function PlayerInput({
     const handleNameBlur = () => {
         if (badge?.type === "new") {
             const hasError = validateNameRequired(badge.type, nameValue);
-            
+
             if (onPlayerChangeRef.current) {
                 onPlayerChangeRef.current({
                     playerNumber,
@@ -316,12 +366,25 @@ function PlayerInput({
 
     // Gefilterte E-Mail-Liste
     const getFilteredEmails = () => {
-        return availableEmails.filter((item) => {
-            if (item.email === currentUser?.email) return false;
-            if (usedEmails.includes(item.email) && item.email !== primaryValue)
+        console.log("🎯 getFilteredEmails called for player", playerNumber);
+        console.log("📧 Available emails:", availableEmails.length, availableEmails.map(u => u.email));
+        console.log("👤 Current user:", currentUser?.email);
+        console.log("🚫 Used emails:", usedEmails);
+        
+        const filtered = availableEmails.filter((item) => {
+            if (item.email === currentUser?.email) {
+                console.log("🚫 Filter: currentUser", item.email);
                 return false;
+            }
+            if (usedEmails.includes(item.email) && item.email !== primaryValue) {
+                console.log("🚫 Filter: usedEmail", item.email);
+                return false;
+            }
             return true;
         });
+        
+        console.log("✅ Filtered emails:", filtered.length, filtered.map(u => u.email));
+        return filtered;
     };
 
     return (
@@ -334,8 +397,12 @@ function PlayerInput({
                         type="text"
                         className={`form-input ${
                             isCurrentUser ? "form-input--locked" : ""
-                        } ${emailError || nameError ? "form-input--error" : ""} ${
-                            nameWarning && !nameError && !emailError ? "form-input--warning" : ""
+                        } ${
+                            emailError || nameError ? "form-input--error" : ""
+                        } ${
+                            nameWarning && !nameError && !emailError
+                                ? "form-input--warning"
+                                : ""
                         }`}
                         placeholder="E-Mail oder (Nick-)Name"
                         value={primaryValue}
@@ -362,7 +429,9 @@ function PlayerInput({
                     {nameWarning && !nameError && !emailError && (
                         <div className="input-info">
                             <span className="input-info__icon">ℹ️</span>
-                            <span className="input-info__text">{nameWarning}</span>
+                            <span className="input-info__text">
+                                {nameWarning}
+                            </span>
                         </div>
                     )}
                 </div>
@@ -375,7 +444,9 @@ function PlayerInput({
                     <input
                         type="text"
                         className={`form-input ${
-                            nameError && showNameField ? "form-input--error" : ""
+                            nameError && showNameField
+                                ? "form-input--error"
+                                : ""
                         }`}
                         placeholder="(Nick-)Name"
                         value={nameValue}
@@ -384,7 +455,7 @@ function PlayerInput({
                         readOnly={false} // ✅ GEÄNDERT: Immer bearbeitbar!
                         disabled={!showNameField}
                     />
-                    
+
                     {nameError && showNameField && (
                         <span className="input-error">❌ {nameError}</span>
                     )}

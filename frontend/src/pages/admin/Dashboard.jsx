@@ -12,11 +12,6 @@ import '../../styles/pages/admin/dashboard.css'
 function Dashboard() {
   const { loadUsers } = useUserContext() // 🆕 UserContext
 
-  // 🆕 User-Liste beim Mount neu laden
-  useEffect(() => {
-    loadUsers(true); // force = true, um Cache zu überschreiben
-  }, [loadUsers]);
-
   return (
     <div className="admin-dashboard">
       <AdminSidebar />

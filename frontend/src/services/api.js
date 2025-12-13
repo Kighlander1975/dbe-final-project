@@ -258,14 +258,16 @@ export const userAPI = {
      * Optional: Filter nach Role → ?role=player
      * Cached während aktiven Spiels
      */
-    getAll: async (page = 1, role = null) => {
+    getAll: async (page = 1, role = null, force = false) => {
         const isGameActive = localStorage.getItem('gameActive') === 'true';
         const cacheKey = `users_${page}_${role || 'all'}`;
 
-        if (isGameActive) {
+        console.log("getAll called with force:", force, "isGameActive:", isGameActive);
+
+        if (!force && isGameActive) {
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
-                console.log('📦 Loading users from cache');
+                console.log('📦 Loading users from localStorage cache');
                 return JSON.parse(cached);
             }
         }
@@ -278,6 +280,8 @@ export const userAPI = {
             loadingMessage: "Benutzerliste wird geladen...",
             credentials: "omit", // Öffentlicher Endpoint, keine Credentials nötig
         });
+
+        console.log("🔍 API Response /users:", data);
 
         // Cache die Daten, wenn Spiel aktiv
         if (isGameActive) {

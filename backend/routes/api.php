@@ -18,7 +18,7 @@ Route::withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequest
     Route::post('/resend-verification', [VerificationController::class, 'resend']);
 
     // ⭐ NEU: Public User List (ÖFFENTLICH, für Spielerauswahl)
-    Route::get('/users', [UserController::class, 'index'])->name('users.public');
+    Route::get('/users', [UserController::class, 'publicIndex'])->name('users.public');
 
     // Password Reset Routes (öffentlich)
     Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);

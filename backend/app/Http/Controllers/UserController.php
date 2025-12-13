@@ -27,6 +27,26 @@ class UserController extends Controller
     }
 
     /**
+     * Get public user list (for game player selection)
+     * Shows all users except banned ones
+     */
+    public function publicIndex(Request $request)
+    {
+        $users = User::query()
+            ->where('role', '!=', UserRole::BANNED->value)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name', 'email']);
+
+        return response()->json([
+            'data' => $users,
+            'current_page' => 1,
+            'last_page' => 1,
+            'per_page' => $users->count(),
+            'total' => $users->count()
+        ]);
+    }
+
+    /**
      * Update user role (Admin only)
      */
     public function updateRole(Request $request, User $user)

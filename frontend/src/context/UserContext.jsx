@@ -17,14 +17,21 @@ export const UserProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [lastLoaded, setLastLoaded] = useState(null);
 
+    const clearCache = useCallback(() => {
+        sessionStorage.removeItem('availableEmails');
+        localStorage.removeItem('users_1_all'); // Auch localStorage leeren
+        console.log("🗑️ User-Cache geleert");
+    }, []);
+
     const loadUsers = useCallback(async (force = false) => {
+        console.log("Loading users with force:", force);
         // Cache prüfen (sessionStorage)
         const cached = sessionStorage.getItem('availableEmails');
         const now = Date.now();
 
         if (!force && cached) {
             const { data, timestamp } = JSON.parse(cached);
-            // Cache gültig für 5 Minuten
+            // Cache gültig für 5 Minuten (wiederhergestellt)
             if (now - timestamp < 5 * 60 * 1000) {
                 console.log("📥 User-Liste aus Cache geladen");
                 setUsers(data);
@@ -63,6 +70,7 @@ export const UserProvider = ({ children }) => {
         loading,
         lastLoaded,
         loadUsers,
+        clearCache, // 🆕 Cache leeren Funktion
     };
 
     return (

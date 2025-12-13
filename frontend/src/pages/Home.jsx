@@ -20,11 +20,6 @@ function Home() {
   const [userGames, setUserGames] = useState([])
   const [loadingGames, setLoadingGames] = useState(false)
 
-  // 🆕 User-Liste beim Mount neu laden
-  useEffect(() => {
-    loadUsers(true); // force = true, um Cache zu überschreiben
-  }, [loadUsers]);
-
   // ⭐ User-Spiele laden Funktion (für alle authentifizierten User)
   const loadUserGames = async () => {
     if (isAuthenticated) {
