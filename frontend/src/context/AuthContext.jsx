@@ -94,6 +94,14 @@ export function AuthProvider({ children }) {
     return user?.role === 'admin'
   }
 
+  const isHost = () => {
+    return user?.role === 'host'
+  }
+
+  const isGameCreator = () => {
+    return user?.role === 'admin' || user?.role === 'host'
+  }
+
   const isPlayer = () => {
     return user?.role === 'player'
   }
@@ -121,6 +129,8 @@ export function AuthProvider({ children }) {
     loading,
     isAuthenticated,      // ⭐ NEU
     isAdmin,              // ⭐ NEU
+    isHost,               // ⭐ NEU
+    isGameCreator,        // ⭐ NEU
     isPlayer,             // ⭐ NEU
     isBanned,             // ⭐ NEU
     hasRole,              // ⭐ NEU

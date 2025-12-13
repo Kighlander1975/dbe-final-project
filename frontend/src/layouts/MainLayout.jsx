@@ -10,7 +10,7 @@ import "../components/OrientationGuard.css"; // Für die Sperre-Styles
 import { gameAPI } from "../services/api"; // ⭐ Game API import
 
 function MainLayout() {
-    const { user, logout, loading, isAdmin } = useAuth(); // ⭐ isAdmin hinzugefügt
+    const { user, logout, loading, isAdmin, isGameCreator } = useAuth(); // ⭐ isAdmin und isGameCreator hinzugefügt
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
@@ -183,32 +183,36 @@ function MainLayout() {
 
                             {user ? (
                                 <>
-                                    {/* ⭐ Spiel-Optionen für alle authentifizierten User */}
-                                    {activeGame ? (
-                                        <button 
-                                            onClick={() => { handleNavigate(`/game/${activeGame.id}`); setMenuOpen(false); }} 
-                                            className={`main-layout__menu-item ${location.pathname === `/game/${activeGame.id}` ? 'main-layout__menu-item--active' : ''}`}
-                                            disabled={location.pathname === `/game/${activeGame.id}`}
-                                        >
-                                            🎯 Zum aktiven Spiel: {(() => {
-                                                const parts = activeGame.gameName.split('_');
-                                                const title = parts[0];
-                                                if (parts.length >= 2) {
-                                                    let timestamp = parseInt(parts[1]);
-                                                    if (timestamp < 1577836800000) {
-                                                        timestamp *= 1000;
-                                                    }
-                                                    const date = new Date(timestamp);
-                                                    const dateStr = date.toLocaleDateString('de-DE');
-                                                    return `${title} (${dateStr})`;
-                                                }
-                                                return title;
-                                            })()}
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">
-                                            🎮 Neues Spiel
-                                        </button>
+                                    {/* ⭐ Spiel-Optionen nur für GameCreator (Admin/Host) */}
+                                    {isGameCreator() && (
+                                        <>
+                                            {activeGame ? (
+                                                <button 
+                                                    onClick={() => { handleNavigate(`/game/${activeGame.id}`); setMenuOpen(false); }} 
+                                                    className={`main-layout__menu-item ${location.pathname === `/game/${activeGame.id}` ? 'main-layout__menu-item--active' : ''}`}
+                                                    disabled={location.pathname === `/game/${activeGame.id}`}
+                                                >
+                                                    🎯 Zum aktiven Spiel: {(() => {
+                                                        const parts = activeGame.gameName.split('_');
+                                                        const title = parts[0];
+                                                        if (parts.length >= 2) {
+                                                            let timestamp = parseInt(parts[1]);
+                                                            if (timestamp < 1577836800000) {
+                                                                timestamp *= 1000;
+                                                            }
+                                                            const date = new Date(timestamp);
+                                                            const dateStr = date.toLocaleDateString('de-DE');
+                                                            return `${title} (${dateStr})`;
+                                                        }
+                                                        return title;
+                                                    })()}
+                                                </button>
+                                            ) : (
+                                                <button onClick={() => { handleNavigate('/new-game'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                                    🎮 Neues Spiel
+                                                </button>
+                                            )}
+                                        </>
                                     )}
 
                                     <button onClick={() => { handleNavigate('/change-password'); setMenuOpen(false); }} className="main-layout__menu-item">

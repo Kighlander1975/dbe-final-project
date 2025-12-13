@@ -52,7 +52,7 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
 
     // Game routes (für Persistenz während Spielen)
     Route::prefix('games')->group(function () {
-        Route::middleware('role:admin')->group(function () {
+        Route::middleware('role:admin,host')->group(function () {
             Route::post('/', [GameController::class, 'store']); // Neues Spiel
             Route::get('/active', [GameController::class, 'hasActiveGame']); // ⭐ Prüfen ob User aktives Spiel hat
         });

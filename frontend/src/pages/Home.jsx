@@ -8,7 +8,7 @@ import { gameAPI } from '../services/api' // ⭐ Game API
 import '../styles/pages/home.css'
 
 function Home() {
-  const { user, isAdmin } = useAuth() // ✅ isAdmin hinzugefügt
+  const { user, isAdmin, isGameCreator } = useAuth() // ✅ isAdmin und isGameCreator hinzugefügt
   const { showToast } = useToast()
   const navigate = useNavigate()
   const { loadUsers } = useUserContext() // 🆕 UserContext
@@ -118,8 +118,8 @@ function Home() {
             </>
           ) : null}
           
-          {/* ⭐ Spiel-Buttons für alle authentifizierten User */}
-          {isAuthenticated && !loadingGames && (
+          {/* ⭐ Spiel-Buttons nur für GameCreator (Admin/Host) */}
+          {isAuthenticated && isGameCreator() && !loadingGames && (
             <>
               {/* ⭐ Aktive Spiele (prominent zuerst) */}
               {userGames.filter(game => game.status === 'active').length > 0 && (
