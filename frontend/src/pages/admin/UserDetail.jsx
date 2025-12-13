@@ -19,6 +19,7 @@ function UserDetail() {
   const [stats, setStats] = useState(null)
   const [isEditingName, setIsEditingName] = useState(false)
   const [editName, setEditName] = useState('')
+  const [pendingRoleChange, setPendingRoleChange] = useState(null) // 🆕 Für ausstehende Rollenänderung
 
   // Load user details
   useEffect(() => {
@@ -60,18 +61,29 @@ function UserDetail() {
     }
   }
 
-  const handleRoleChange = async (newRole) => {
+  const handleRoleSelectChange = (newRole) => {
+    setPendingRoleChange(newRole)
+  }
+
+  const handleRoleConfirm = async () => {
+    if (!pendingRoleChange) return
+
     startLoading('Rolle wird geändert...')
 
     try {
-      await adminAPI.updateUserRole(user.id, newRole)
+      await adminAPI.updateUserRole(user.id, pendingRoleChange)
       showToast('Rolle erfolgreich geändert!', 'success')
-      setUser({ ...user, role: newRole })
+      setUser({ ...user, role: pendingRoleChange })
+      setPendingRoleChange(null)
     } catch (error) {
       showToast('Fehler beim Ändern der Rolle', 'error')
     } finally {
       stopLoading()
     }
+  }
+
+  const handleRoleCancel = () => {
+    setPendingRoleChange(null)
   }
 
   const handleDelete = async () => {
@@ -240,16 +252,39 @@ function UserDetail() {
             <div className="user-detail__actions">
               <div className="user-detail__action-group">
                 <label>Rolle ändern:</label>
-                <select
-                  value={user.role}
-                  onChange={(e) => handleRoleChange(e.target.value)}
-                  className="user-detail__role-select"
-                >
-                  <option value="player">Player</option>
-                  <option value="host">Host</option>
-                  <option value="admin">Admin</option>
-                  <option value="banned">Banned</option>
-                </select>
+                <div className="role-change-container">
+                  <select
+                    value={pendingRoleChange || user.role}
+                    onChange={(e) => handleRoleSelectChange(e.target.value)}
+                    className="user-detail__role-select"
+                  >
+                    <option value="player">Player</option>
+                    <option value="host">Host</option>
+                    <option value="admin">Admin</option>
+                    <option value="banned">Banned</option>
+                  </select>
+                  
+                  {/* Bestätigungs-Button immer sichtbar, aber disabled wenn keine Änderung */}
+                  <button
+                    onClick={handleRoleConfirm}
+                    disabled={!pendingRoleChange || pendingRoleChange === user.role}
+                    className="action-btn action-btn--confirm"
+                    title={(!pendingRoleChange || pendingRoleChange === user.role) ? "Wähle eine andere Rolle aus" : "Rolle ändern bestätigen"}
+                  >
+                    ✓ Bestätigen
+                  </button>
+                  
+                  {/* Abbrechen-Button nur wenn Änderung aussteht */}
+                  {pendingRoleChange && pendingRoleChange !== user.role && (
+                    <button
+                      onClick={handleRoleCancel}
+                      className="action-btn action-btn--cancel"
+                      title="Änderung abbrechen"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="user-detail__action-group">

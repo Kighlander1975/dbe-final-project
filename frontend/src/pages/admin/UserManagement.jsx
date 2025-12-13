@@ -18,6 +18,7 @@ function UserManagement() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+  const [pendingRoleChanges, setPendingRoleChanges] = useState({}) // 🆕 Für ausstehende Rollenänderungen
 
   // Load users
   useEffect(() => {
@@ -50,48 +51,46 @@ function UserManagement() {
     }
   }
 
-  const handleRoleChange = async (userId, newRole) => {
+  const handleRoleSelectChange = (userId, newRole) => {
+    setPendingRoleChanges(prev => ({
+      ...prev,
+      [userId]: newRole
+    }))
+  }
+
+  const handleRoleChangeConfirm = async (userId) => {
+    const newRole = pendingRoleChanges[userId]
+    if (!newRole) return
+
     // ✅ Loading starten
     startLoading('Rolle wird geändert...')
     
     try {
       await adminAPI.updateUserRole(userId, newRole)
       showToast('Rolle erfolgreich geändert!', 'success')
+      
+      // Ausstehende Änderung entfernen
+      setPendingRoleChanges(prev => {
+        const updated = { ...prev }
+        delete updated[userId]
+        return updated
+      })
+      
+      // Beide Funktionen aufrufen für vollständige Synchronisation
       loadUsers()
+      loadAdminUsers()
     } catch (error) {
       showToast('Fehler beim Ändern der Rolle', 'error')
       stopLoading() // ✅ Bei Fehler stoppen
     }
   }
 
-  const handleBan = async (userId) => {
-    if (!confirm('Benutzer wirklich sperren?')) return
-    
-    // ✅ Loading starten
-    startLoading('Benutzer wird gesperrt...')
-    
-    try {
-      await adminAPI.banUser(userId)
-      showToast('Benutzer wurde gesperrt', 'success')
-      loadUsers()
-    } catch (error) {
-      showToast(error.message || 'Fehler beim Sperren', 'error')
-      stopLoading() // ✅ Bei Fehler stoppen
-    }
-  }
-
-  const handleUnban = async (userId) => {
-    // ✅ Loading starten
-    startLoading('Sperrung wird aufgehoben...')
-    
-    try {
-      await adminAPI.unbanUser(userId)
-      showToast('Sperrung wurde aufgehoben', 'success')
-      loadUsers()
-    } catch (error) {
-      showToast('Fehler beim Entsperren', 'error')
-      stopLoading() // ✅ Bei Fehler stoppen
-    }
+  const handleRoleChangeCancel = (userId) => {
+    setPendingRoleChanges(prev => {
+      const updated = { ...prev }
+      delete updated[userId]
+      return updated
+    })
   }
 
   const getRoleBadge = (role) => {
@@ -157,35 +156,39 @@ function UserManagement() {
                       <div className="user-management__actions">
                         {/* Role ändern */}
                         {u.id !== user?.id && (
-                          <select
-                            value={u.role}
-                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                            className="user-management__role-select"
-                          >
-                            <option value="player">Player</option>
-                            <option value="host">Host</option>
-                            <option value="admin">Admin</option>
-                            <option value="banned">Banned</option>
-                          </select>
-                        )}
-                        
-                        {/* Ban/Unban */}
-                        {u.id !== user?.id && (
-                          u.role === 'banned' ? (
-                            <button
-                              onClick={() => handleUnban(u.id)}
-                              className="action-btn action-btn--unban"
+                          <div className="role-change-container">
+                            <select
+                              value={pendingRoleChanges[u.id] || u.role}
+                              onChange={(e) => handleRoleSelectChange(u.id, e.target.value)}
+                              className="user-management__role-select"
                             >
-                              Entsperren
-                            </button>
-                          ) : (
+                              <option value="player">Player</option>
+                              <option value="host">Host</option>
+                              <option value="admin">Admin</option>
+                              <option value="banned">Banned</option>
+                            </select>
+                            
+                            {/* Bestätigungs-Button immer sichtbar, aber disabled wenn keine Änderung */}
                             <button
-                              onClick={() => handleBan(u.id)}
-                              className="action-btn action-btn--ban"
+                              onClick={() => handleRoleChangeConfirm(u.id)}
+                              disabled={!pendingRoleChanges[u.id] || pendingRoleChanges[u.id] === u.role}
+                              className="action-btn action-btn--confirm"
+                              title={(!pendingRoleChanges[u.id] || pendingRoleChanges[u.id] === u.role) ? "Wähle eine andere Rolle aus" : "Rolle ändern bestätigen"}
                             >
-                              Sperren
+                              ✓ Bestätigen
                             </button>
-                          )
+                            
+                            {/* Abbrechen-Button nur wenn Änderung aussteht */}
+                            {pendingRoleChanges[u.id] && pendingRoleChanges[u.id] !== u.role && (
+                              <button
+                                onClick={() => handleRoleChangeCancel(u.id)}
+                                className="action-btn action-btn--cancel"
+                                title="Änderung abbrechen"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
                         )}
                       </div>
                     </td>
