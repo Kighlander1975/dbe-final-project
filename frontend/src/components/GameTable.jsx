@@ -491,6 +491,7 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
             setRoundPhase(1);
 
             // ✅ Validierung erfolgreich: Führe die normale Logik aus
+            const roundPoints = calculateRoundPoints(currentRound.bids, currentRound.tricks);
 
             // Punkte zur aktuellen Runde hinzufügen
             const updatedRounds = [...prevData.rounds];
