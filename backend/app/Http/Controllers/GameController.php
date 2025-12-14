@@ -394,36 +394,39 @@ class GameController extends Controller
                 ]);
                 continue;
             }
-                    $user->increment('total_ranking_points', $pointsEarned);
-                    $user->increment('games_played');
+            // Speichere in player_rankings Tabelle
+            DB::table('player_rankings')->insert([
+                'user_id' => $user->id,
+                'game_id' => $game->id,
+                'player_count' => $playerCount,
+                'final_rank' => $placement,
+                'points_earned' => $pointsEarned,
+                'created_at' => now()
+            ]);
 
-                    // Update beste Platzierung (niedrigste Zahl = beste Platzierung)
-                    if ($user->best_placement === null || $placement < $user->best_placement) {
-                        $user->best_placement = $placement;
-                    }
+            // Update User-Statistiken
+            $user->increment('total_ranking_points', $pointsEarned);
+            $user->increment('games_played');
 
-                    // Elo-Rating Update (vereinfacht - nur Punkte-basierte Anpassung)
-                    // TODO: Implementiere vollständige Elo-Logik mit Gegner-Ratings
-                    $ratingChange = ($placement === 1) ? 10 : (($placement === 2) ? 5 : -5);
-                    $user->current_rating = max(800, $user->current_rating + $ratingChange);
-
-                    $user->save();
-                }
-
-                Log::info('Ranking stored for player', [
-                    'game_id' => $game->id,
-                    'user_id' => $userId,
-                    'placement' => $placement,
-                    'points_earned' => $pointsEarned
-                ]);
-
-            } catch (\Exception $e) {
-                Log::error('Failed to store ranking for player', [
-                    'game_id' => $game->id,
-                    'user_id' => $userId,
-                    'error' => $e->getMessage()
-                ]);
+            // Update beste Platzierung (niedrigste Zahl = beste Platzierung)
+            if ($user->best_placement === null || $placement < $user->best_placement) {
+                $user->best_placement = $placement;
             }
+
+            // Elo-Rating Update (vereinfacht - nur Punkte-basierte Anpassung)
+            // TODO: Implementiere vollständige Elo-Logik mit Gegner-Ratings
+            $ratingChange = ($placement === 1) ? 10 : (($placement === 2) ? 5 : -5);
+            $user->current_rating = max(800, $user->current_rating + $ratingChange);
+
+            $user->save();
+
+            Log::info('Ranking stored for player', [
+                'game_id' => $game->id,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'placement' => $placement,
+                'points_earned' => $pointsEarned
+            ]);
         }
 
         Log::info('Rankings calculated and stored', [
