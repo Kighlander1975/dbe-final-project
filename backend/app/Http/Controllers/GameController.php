@@ -302,6 +302,7 @@ class GameController extends Controller
      */
     private function calculateAndStoreRankings(Game $game)
     {
+        try {
         $gameData = $game->game_data;
         $players = $gameData['players'] ?? [];
         $rounds = $gameData['rounds'] ?? [];
@@ -434,5 +435,14 @@ class GameController extends Controller
             'total_players' => $playerCount,
             'registered_players' => count(array_filter($players, fn($p) => isset($p['userId'])))
         ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to calculate and store rankings', [
+                'game_id' => $game->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Re-throw to prevent status update
+            throw $e;
+        }
     }
 }
