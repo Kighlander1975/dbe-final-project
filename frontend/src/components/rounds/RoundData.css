@@ -112,3 +112,71 @@
     10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
     20%, 40%, 60%, 80% { transform: translateX(10px); }
 }
+
+/* Nummerisches Tastenfeld */
+.number-pad {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    max-width: 280px;
+}
+
+.number-pad__row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.number-pad__button {
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    background: #f8f9fa;
+    color: #007bff;
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.number-pad__button:hover:not(:disabled) {
+    background: #e3f2fd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.number-pad__button:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.number-pad__button--highlighted {
+    background: #fff3cd !important;
+    border-color: #ffc107 !important;
+    color: #856404 !important;
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3);
+}
+
+.number-pad__button--disabled {
+    background: #e9ecef !important;
+    border-color: #adb5bd !important;
+    color: #6c757d !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
+
+.number-pad__button--disabled:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.number-pad__button--zero {
+    width: 100%;
+    max-width: 280px;
+}

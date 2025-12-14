@@ -1,6 +1,5 @@
 // src/components/rounds/RoundData.jsx
-import React, { useState, useRef, useEffect } from 'react';
-import { useToast } from '@/context/ToastContext';
+import React, { useState } from 'react';
 import './RoundData.css';
 
 function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers, roundNumber, roundPhase, currentRound, validateTricksInput, maxCards, isEvaluated, isColorEvaluated, isCorrectBid, isGameFinished, playerName }) {
@@ -8,29 +7,8 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
     const [editField, setEditField] = useState(''); // 'bid' or 'tricks'
     const [editValue, setEditValue] = useState('');
     const [initialValue, setInitialValue] = useState('');
-    const [isInvalid, setIsInvalid] = useState(false);
-    const inputRef = useRef(null);
-    const lastToastRef = useRef(0);
-    const { showToast } = useToast();
 
     const maxBid = numPlayers <= 6 ? 9 : 7; // 2-6 Spieler: 9 Karten, 7-11 Spieler: 7 Karten
-
-    const isMobile = () => window.innerWidth < 768;
-
-    const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-    useEffect(() => {
-        if (isModalOpen && inputRef.current) {
-            inputRef.current.focus();
-            inputRef.current.select();
-        }
-    }, [isModalOpen]);
-
-    useEffect(() => {
-        if (!isModalOpen) {
-            lastToastRef.current = 0; // Reset Spam-Schutz beim Schließen des Modals
-        }
-    }, [isModalOpen]);
 
     const handleDoubleClick = (field) => {
         if (isGameFinished) return; // Spiel beendet - keine Bearbeitung möglich
@@ -50,50 +28,41 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
         setIsModalOpen(true);
     };
 
-    const handleInputChange = (e) => {
-        const newValue = e.target.value;
+    const handleNumberClick = async (value) => {
         let maxValue = editField === 'bid' ? maxBid : maxCards;
 
+        // Validierung
+        let isValid = false;
         if (editField === 'tricks') {
-            // Für Tricks: Prüfe die Summe aller Tricks in der Runde
-            if (/^\d+$/.test(newValue)) {
-                const numValue = parseInt(newValue);
-                if (numValue >= 0 && validateTricksInput(roundIndex, playerIndex, numValue)) {
-                    // Gültige Zahl: Animation und schließen
-                    if (inputRef.current) {
-                        inputRef.current.style.backgroundColor = '#d4edda'; // Grün
-                        setTimeout(() => {
-                            onUpdate(roundIndex, playerIndex, editField, numValue);
-                            setIsModalOpen(false);
-                        }, 300); // Kürzerer Delay
-                    }
-                    return;
-                }
-            }
+            isValid = value >= 0 && validateTricksInput(roundIndex, playerIndex, value);
         } else {
-            // Für Bids: Normale Validierung
-            if (/^\d+$/.test(newValue)) {
-                const numValue = parseInt(newValue);
-                if (numValue >= 0 && numValue <= maxValue) {
-                    // Gültige Zahl: Animation und schließen
-                    if (inputRef.current) {
-                        inputRef.current.style.backgroundColor = '#d4edda'; // Grün
-                        setTimeout(() => {
-                            onUpdate(roundIndex, playerIndex, editField, numValue);
-                            setIsModalOpen(false);
-                        }, 300); // Kürzerer Delay
-                    }
-                    return;
-                }
-            }
+            isValid = value >= 0 && value <= maxValue;
         }
 
-        // Ungültig: Vibration und Reset
-        setIsInvalid(true);
-        setTimeout(() => setIsInvalid(false), 500);
-        if (inputRef.current) {
-            inputRef.current.value = initialValue;
-            inputRef.current.select();
+        if (isValid) {
+            // Visuelles Feedback: Button vibrieren lassen
+            const button = document.querySelector(`[data-value="${value}"]`);
+            if (button) {
+                button.style.transform = 'scale(0.95)';
+                button.style.backgroundColor = '#d4edda';
+                setTimeout(() => {
+                    button.style.transform = '';
+                    button.style.backgroundColor = '';
+                }, 150);
+            }
+
+            // Wert aktualisieren und Modal schließen
+            onUpdate(roundIndex, playerIndex, editField, value);
+            setIsModalOpen(false);
+        } else {
+            // Ungültiger Wert: Button rot aufleuchten
+            const button = document.querySelector(`[data-value="${value}"]`);
+            if (button) {
+                button.style.backgroundColor = '#f8d7da';
+                setTimeout(() => {
+                    button.style.backgroundColor = '';
+                }, 300);
+            }
         }
     };
 
@@ -132,22 +101,95 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
                 <div className="modal-overlay" onClick={handleCancel}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h3>
-
                             {editField === 'bid' ? 'Ansage eingeben für:' : 'Stiche eingeben für:'}
-
                             <br />
-
                             {playerName}
-
                         </h3>
-                        <input
-                            ref={inputRef}
-                            type={isTouchDevice() ? 'number' : 'text'}
-                            defaultValue={editValue}
-                            onInput={handleInputChange}
-                            className={isInvalid ? 'invalid' : ''}
-                            style={{ fontSize: '4rem', textAlign: 'center', width: '100%', padding: '1rem' }}
-                        />
+
+                        {/* Nummerisches Tastenfeld */}
+                        <div className="number-pad">
+                            <div className="number-pad__row">
+                                <button
+                                    className={`number-pad__button ${editValue === '1' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="1"
+                                    onClick={() => handleNumberClick(1)}
+                                >
+                                    1
+                                </button>
+                                <button
+                                    className={`number-pad__button ${editValue === '2' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="2"
+                                    onClick={() => handleNumberClick(2)}
+                                >
+                                    2
+                                </button>
+                                <button
+                                    className={`number-pad__button ${editValue === '3' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="3"
+                                    onClick={() => handleNumberClick(3)}
+                                >
+                                    3
+                                </button>
+                            </div>
+                            <div className="number-pad__row">
+                                <button
+                                    className={`number-pad__button ${editValue === '4' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="4"
+                                    onClick={() => handleNumberClick(4)}
+                                >
+                                    4
+                                </button>
+                                <button
+                                    className={`number-pad__button ${editValue === '5' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="5"
+                                    onClick={() => handleNumberClick(5)}
+                                >
+                                    5
+                                </button>
+                                <button
+                                    className={`number-pad__button ${editValue === '6' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="6"
+                                    onClick={() => handleNumberClick(6)}
+                                >
+                                    6
+                                </button>
+                            </div>
+                            <div className="number-pad__row">
+                                <button
+                                    className={`number-pad__button ${editValue === '7' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="7"
+                                    onClick={() => handleNumberClick(7)}
+                                >
+                                    7
+                                </button>
+                                <button
+                                    className={`number-pad__button ${editValue === '8' ? 'number-pad__button--highlighted' : ''} ${maxBid < 8 ? 'number-pad__button--disabled' : ''}`}
+                                    data-value="8"
+                                    onClick={() => handleNumberClick(8)}
+                                    disabled={maxBid < 8}
+                                >
+                                    8
+                                </button>
+                                <button
+                                    className={`number-pad__button ${editValue === '9' ? 'number-pad__button--highlighted' : ''} ${maxBid < 9 ? 'number-pad__button--disabled' : ''}`}
+                                    data-value="9"
+                                    onClick={() => handleNumberClick(9)}
+                                    disabled={maxBid < 9}
+                                >
+                                    9
+                                </button>
+                            </div>
+                            <div className="number-pad__row">
+                                <button
+                                    className={`number-pad__button number-pad__button--zero ${editValue === '0' ? 'number-pad__button--highlighted' : ''}`}
+                                    data-value="0"
+                                    onClick={() => handleNumberClick(0)}
+                                >
+                                    0
+                                </button>
+                            </div>
+                        </div>
+
                         <div className="modal-buttons">
                             <button onClick={handleCancel}>Abbrechen</button>
                         </div>
