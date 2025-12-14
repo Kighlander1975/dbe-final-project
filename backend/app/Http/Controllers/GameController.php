@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Game;
 use App\Services\RankingService;
 use App\Models\User;
@@ -319,10 +320,22 @@ class GameController extends Controller
 
         // Berechne Endpunkte für jeden Spieler
         $finalPoints = array_fill(0, $playerCount, 0);
-        foreach ($rounds as $round) {
-            if (isset($round['points'])) {
-                foreach ($round['points'] as $playerIndex => $points) {
-                    $finalPoints[$playerIndex] += $points;
+
+        // Verwende totalPoints aus players, falls verfügbar (für bereits berechnete Spiele)
+        $hasTotalPoints = !empty(array_filter($players, fn($p) => isset($p['totalPoints'])));
+
+        if ($hasTotalPoints) {
+            // Verwende die gespeicherten totalPoints
+            foreach ($players as $index => $player) {
+                $finalPoints[$index] = $player['totalPoints'] ?? 0;
+            }
+        } else {
+            // Berechne aus rounds
+            foreach ($rounds as $round) {
+                if (isset($round['points'])) {
+                    foreach ($round['points'] as $playerIndex => $points) {
+                        $finalPoints[$playerIndex] += $points;
+                    }
                 }
             }
         }
@@ -366,20 +379,21 @@ class GameController extends Controller
             $placement = $placements[$playerIndex];
             $pointsEarned = RankingService::calculatePoints($playerCount, $placement);
 
-            try {
-                // Speichere in player_rankings Tabelle
-                DB::table('player_rankings')->insert([
-                    'user_id' => $userId,
-                    'game_id' => $game->id,
-                    'player_count' => $playerCount,
-                    'final_rank' => $placement,
-                    'points_earned' => $pointsEarned,
-                    'created_at' => now()
-                ]);
-
-                // Update User-Statistiken
+            // Finde User - userId kann ID (int) oder Email (string) sein
+            if (is_numeric($userId)) {
                 $user = User::find($userId);
-                if ($user) {
+            } else {
+                $user = User::where('email', $userId)->first();
+            }
+
+            if (!$user) {
+                Log::warning('User not found for ranking', [
+                    'game_id' => $game->id,
+                    'userId' => $userId,
+                    'player_index' => $playerIndex
+                ]);
+                continue;
+            }
                     $user->increment('total_ranking_points', $pointsEarned);
                     $user->increment('games_played');
 
