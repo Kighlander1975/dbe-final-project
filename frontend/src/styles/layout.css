@@ -25,6 +25,12 @@
   position: relative; /* Für absolutes Hamburger-Menü */
 }
 
+.main-layout__logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .main-layout__logo {
   font-size: 1.75rem;
   font-weight: bold;
@@ -41,6 +47,13 @@
 
 .main-layout__logo:hover {
   transform: scale(1.05);
+}
+
+.main-layout__build-hash {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: normal;
+  margin-top: 0.25rem;
 }
 
 /* Right side container */

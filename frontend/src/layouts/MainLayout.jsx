@@ -16,6 +16,9 @@ function MainLayout() {
     const location = useLocation();
     const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges(); // 🆕 UnsavedChangesContext
 
+    // Build Hash State
+    const [buildHash, setBuildHash] = useState('');
+
     // Hamburger Menu State
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
@@ -75,6 +78,21 @@ function MainLayout() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [menuOpen]);
+
+    // Extract build hash from script tag
+    useEffect(() => {
+        const scripts = document.querySelectorAll('script[src]');
+        for (const script of scripts) {
+            const src = script.getAttribute('src');
+            if (src && src.includes('index-') && src.includes('.js')) {
+                const match = src.match(/index-([a-zA-Z0-9_-]+)\.js/);
+                if (match && match[1]) {
+                    setBuildHash(match[1]);
+                    break;
+                }
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const checkDeviceAndOrientation = () => {
@@ -146,9 +164,16 @@ function MainLayout() {
 
             <header className="main-layout__header">
                 <nav className="main-layout__nav">
-                    <button onClick={() => handleNavigate('/')} className="main-layout__logo">
-                        🎯 Stechen Helper
-                    </button>
+                    <div className="main-layout__logo-container">
+                        <button onClick={() => handleNavigate('/')} className="main-layout__logo">
+                            🎯 Stechen Helper
+                        </button>
+                        {buildHash && (
+                            <div className="main-layout__build-hash">
+                                (Build: {buildHash})
+                            </div>
+                        )}
+                    </div>
 
                     <div className="main-layout__right">
                         {user && (
