@@ -303,26 +303,28 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         const converted = convertGameData(initialGameData);
         if (converted) {
             setGameData(converted);
-            
-            // Setze roundPhase basierend auf dem aktuellen Stand
-            const currentRound = converted.rounds[converted.currentRound - 1];
-            if (currentRound) {
-                const hasBids = currentRound.bids.some(bid => bid !== '-');
-                const hasTricks = currentRound.tricks.some(trick => trick !== '-');
-                
-                if (hasTricks) {
-                    // Wenn Tricks eingegeben wurden, Phase 1
-                    setRoundPhase(1);
-                } else if (hasBids) {
-                    // Wenn Bids gesetzt aber keine Tricks, Phase 1 (für Korrektur)
-                    setRoundPhase(1);
-                } else {
-                    // Wenn nichts gesetzt, Phase 0
-                    setRoundPhase(0);
-                }
-            }
         }
     }, [initialGameData]);
+
+    // Setze roundPhase basierend auf gameData Änderungen
+    useEffect(() => {
+        const currentRound = gameData.rounds[gameData.currentRound - 1];
+        if (currentRound) {
+            const hasBids = currentRound.bids.some(bid => bid !== '-');
+            const hasTricks = currentRound.tricks.some(trick => trick !== '-');
+            
+            if (hasTricks) {
+                // Wenn Tricks eingegeben wurden, Phase 1
+                setRoundPhase(1);
+            } else if (hasBids) {
+                // Wenn Bids gesetzt aber keine Tricks, Phase 1 (für Korrektur)
+                setRoundPhase(1);
+            } else {
+                // Wenn nichts gesetzt, Phase 0
+                setRoundPhase(0);
+            }
+        }
+    }, [gameData]);
 
     // Funktion zur Validierung der Tricks-Eingabe
     const validateTricksInput = (roundIdx, playerIdx, newTricks) => {
