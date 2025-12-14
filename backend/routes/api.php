@@ -4,9 +4,10 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\HostRequestController;
+use App\Http\Controllers\AdminSettingController;
+use App\Http\Controllers\RankingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
-use App\Http\Controllers\RankingController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,12 @@ Route::withoutMiddleware([\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequest
     Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
 });
+
+// ⭐ Public Version (ÖFFENTLICH, für Header-Anzeige)
+Route::get('/version', [AdminSettingController::class, 'getVersion']);
+
+// ⭐ Public Debug Setting (ÖFFENTLICH, für Header-Anzeige)
+Route::get('/admin/settings/debug_server_error', [AdminSettingController::class, 'getDebugSetting']);
 
 // Protected routes (Email verified required)
 Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(function () {
@@ -50,6 +57,11 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         Route::get('/stats', [StatsController::class, 'adminStats']);
         // ⭐ Test Email
         Route::post('/test-email', [UserController::class, 'sendTestEmail']);
+
+        // ⭐ Admin Settings
+        Route::apiResource('/settings', AdminSettingController::class)->parameters([
+            'settings' => 'key'
+        ]);
 
         // Host Request routes
         Route::post('/host-requests', [HostRequestController::class, 'store']); // Player: Anfrage stellen

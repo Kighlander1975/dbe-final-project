@@ -95,11 +95,15 @@ async function apiRequest(endpoint, options = {}) {
         if (!response.ok) {
             // Spezielle Behandlung für Server-Fehler (5xx)
             if (response.status >= 500) {
-                console.error("Server Error detected, redirecting to error page");
-                // Kurze Verzögerung, damit der Loading-Overlay beendet wird
-                setTimeout(() => {
-                    window.location.href = '/server-error';
-                }, 100);
+                console.error("Server Error detected", data);
+                // Nur weiterleiten wenn nicht im Debug-Modus
+                if (!import.meta.env.VITE_DEBUG_SERVER_ERRORS) {
+                    console.error("Redirecting to error page");
+                    // Kurze Verzögerung, damit der Loading-Overlay beendet wird
+                    setTimeout(() => {
+                        window.location.href = '/server-error';
+                    }, 100);
+                }
                 throw new Error("Server-Fehler aufgetreten");
             }
             throw new Error(data.message || "API request failed");
@@ -294,7 +298,7 @@ export const userAPI = {
 };
 
 // ⭐ Admin API Endpoints
-export const adminAPI = {
+const adminAPI = {
     // Get all users (admin)
     getUsers: async (page = 1, role = null) => {
         const params = new URLSearchParams({ page });
@@ -338,6 +342,39 @@ export const adminAPI = {
             method: "POST",
             body: JSON.stringify({ email }),
             loadingMessage: "Sende Test-E-Mail...",
+        });
+    },
+
+    // ⭐ Admin Settings
+    getSettings: async () => {
+        return apiRequest("/admin/settings", {
+            method: "GET",
+            loadingMessage: "Einstellungen werden geladen...",
+        });
+    },
+
+    updateSetting: async (key, settingData) => {
+        return apiRequest(`/admin/settings/${key}`, {
+            method: "PUT",
+            body: JSON.stringify(settingData),
+            loadingMessage: "Einstellung wird aktualisiert...",
+        });
+    },
+
+    deleteSetting: async (key) => {
+        return apiRequest(`/admin/settings/${key}`, {
+            method: "DELETE",
+            loadingMessage: "Einstellung wird gelöscht...",
+        });
+    },
+};
+
+// ⭐ Public API Endpoints (keine Authentifizierung erforderlich)
+const publicAPI = {
+    // Get app version
+    getVersion: async () => {
+        return apiRequest("/version", {
+            loadingMessage: "Version wird geladen...",
         });
     },
 };
@@ -459,14 +496,7 @@ const rankingAPI = {
             loadingMessage: "Ranking-Statistiken werden geladen...",
         });
     },
-
-    // Get detailed user ranking stats
-    getUserRanking: async (userId) => {
-        return apiRequest(`/rankings/${userId}`, {
-            loadingMessage: "Spieler-Ranking wird geladen...",
-        });
-    },
 };
 
-export { authAPI, gameAPI, statsAPI, rankingAPI };
+export { authAPI, gameAPI, statsAPI, rankingAPI, adminAPI, publicAPI };
 export default apiRequest;

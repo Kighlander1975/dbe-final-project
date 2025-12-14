@@ -142,8 +142,6 @@ class StatsController extends Controller
                 'active_games' => Game::where('status', 'active')->count(),
                 'paused_games' => Game::where('status', 'paused')->count(),
                 'finished_games' => Game::where('status', 'finished')->count(),
-                'host_requests_total' => HostRequest::count(),
-                'host_requests_unseen' => HostRequest::whereNull('seen_at')->count(),
             ];
         });
     }

@@ -21,12 +21,12 @@ function AdminSidebar() {
       icon: '📧',
       label: 'Test E-Mail'
     },
+    {
+      path: '/admin/settings',
+      icon: '⚙️',
+      label: 'Einstellungen'
+    },
     // 🔧 Hier können weitere Menüpunkte hinzugefügt werden
-    // {
-    //   path: '/admin/settings',
-    //   icon: '⚙️',
-    //   label: 'Einstellungen'
-    // },
   ]
 
   return (

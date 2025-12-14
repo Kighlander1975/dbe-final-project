@@ -28,6 +28,7 @@ import GameSummary from './pages/GameSummary';
 import GameEvaluation from './pages/GameEvaluation'; // 🆕 Neue Auswertungsseite
 import Game from './pages/Game';
 import Rankings from './pages/Rankings';
+import PlayerDetails from './pages/PlayerDetails';
 
 // Pages - Admin
 import Dashboard from "./pages/admin/Dashboard";
@@ -128,6 +129,14 @@ function App() {
                     element: (
                         <ProtectedRoute>
                             <Rankings />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: "/rankings/:userId",
+                    element: (
+                        <ProtectedRoute>
+                            <PlayerDetails />
                         </ProtectedRoute>
                     ),
                 },

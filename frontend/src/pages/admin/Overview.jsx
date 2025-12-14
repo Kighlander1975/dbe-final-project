@@ -12,7 +12,6 @@ function Overview() {
     active_games: 0,
     paused_games: 0,
     finished_games: 0,
-    host_requests: 0,
   })
 
   const [animatedStats, setAnimatedStats] = useState({
@@ -20,7 +19,6 @@ function Overview() {
     active_games: 0,
     paused_games: 0,
     finished_games: 0,
-    host_requests: 0,
   })
 
   // Load stats on mount
@@ -52,7 +50,6 @@ function Overview() {
         active_games: Math.floor(targetStats.active_games * progress),
         paused_games: Math.floor(targetStats.paused_games * progress),
         finished_games: Math.floor(targetStats.finished_games * progress),
-        host_requests: Math.floor(targetStats.host_requests * progress),
       })
 
       if (progress < 1) {
@@ -131,14 +128,6 @@ function Overview() {
           <div className="admin-overview__stat-content">
             <h3>Abgeschlossen</h3>
             <p className="admin-overview__stat-value">{animatedStats.finished_games}</p>
-          </div>
-        </div>
-
-        <div className="admin-overview__stat-card">
-          <div className="admin-overview__stat-icon">👑</div>
-          <div className="admin-overview__stat-content">
-            <h3>Hosts-Anfragen</h3>
-            <p className="admin-overview__stat-value">{animatedStats.host_requests}</p>
           </div>
         </div>
       </div>

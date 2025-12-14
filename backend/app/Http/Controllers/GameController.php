@@ -415,9 +415,26 @@ class GameController extends Controller
                 $user->best_placement = $placement;
             }
 
-            // Elo-Rating Update (vereinfacht - nur Punkte-basierte Anpassung)
-            // TODO: Implementiere vollständige Elo-Logik mit Gegner-Ratings
-            $ratingChange = ($placement === 1) ? 10 : (($placement === 2) ? 5 : -5);
+            // Elo-Rating Update mit vollständiger Logik
+            $opponentRatings = [];
+            foreach ($players as $opponentIndex => $opponent) {
+                if ($opponentIndex !== $playerIndex && isset($opponent['userId'])) {
+                    $opponentUser = User::find($opponent['userId']);
+                    if ($opponentUser) {
+                        $opponentRatings[] = $opponentUser->current_rating;
+                    }
+                }
+            }
+
+            $ratingChange = RankingService::calculateRatingChange(
+                $user->current_rating,
+                $opponentRatings,
+                $placement,
+                $playerCount,
+                $gameType
+            );
+
+            $oldRating = $user->current_rating;
             $user->current_rating = max(800, $user->current_rating + $ratingChange);
 
             $user->save();

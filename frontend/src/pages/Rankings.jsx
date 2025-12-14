@@ -19,7 +19,7 @@ function Rankings() {
     const fetchRankings = async () => {
         try {
             const response = await rankingAPI.getRankings();
-            setRankings(response.data.rankings);
+            setRankings(response.rankings);
         } catch (err) {
             console.error('Error fetching rankings:', err);
             setError('Fehler beim Laden der Rankings');
@@ -29,7 +29,7 @@ function Rankings() {
     const fetchStats = async () => {
         try {
             const response = await rankingAPI.getRankingStats();
-            setStats(response.data);
+            setStats(response);
         } catch (err) {
             console.error('Error fetching ranking stats:', err);
         } finally {

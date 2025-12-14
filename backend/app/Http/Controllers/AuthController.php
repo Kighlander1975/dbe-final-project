@@ -27,7 +27,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'email_verification_token' => Str::random(64),
-            // role wird automatisch auf 'player' gesetzt (DB default) ⭐
+            // role wird automatisch auf 'host' gesetzt (DB default) ⭐
         ]);
 
         // Verifizierungs-E-Mail senden

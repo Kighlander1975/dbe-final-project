@@ -7,7 +7,7 @@ import { useUnsavedChanges } from "../context/UnsavedChangesContext"; // 🆕 Un
 import LoadingOverlay from "../components/LoadingOverlay";
 import "../styles/layout.css";
 import "../components/OrientationGuard.css"; // Für die Sperre-Styles
-import { gameAPI } from "../services/api"; // ⭐ Game API import
+import { gameAPI, publicAPI } from "../services/api"; // ⭐ Game API und Public API import
 
 function MainLayout() {
     const { user, logout, loading, isAdmin, isGameCreator } = useAuth(); // ⭐ isAdmin und isGameCreator hinzugefügt
@@ -18,6 +18,12 @@ function MainLayout() {
 
     // Build Hash State
     const [buildHash, setBuildHash] = useState('');
+
+    // ⭐ App Version State
+    const [appVersion, setAppVersion] = useState('1.0');
+
+    // ⭐ Debug Mode State
+    const [debugMode, setDebugMode] = useState(false);
 
     // Hamburger Menu State
     const [menuOpen, setMenuOpen] = useState(false);
@@ -52,10 +58,59 @@ function MainLayout() {
         };
     }, [user, isAdmin]);
 
-    // ⭐ Load active game on mount and when user status changes
+    // ⭐ Expose loadAppVersion globally for other components
     useEffect(() => {
-        refreshActiveGame();
-    }, [user]);
+        window.refreshAppVersion = loadAppVersion;
+        return () => {
+            delete window.refreshAppVersion;
+        };
+    }, []);
+
+    // ⭐ Expose loadDebugMode globally for other components
+    useEffect(() => {
+        window.refreshDebugMode = loadDebugMode;
+        return () => {
+            delete window.refreshDebugMode;
+        };
+    }, []);
+
+    // ⭐ Function to load app version
+    const loadAppVersion = async () => {
+        try {
+            const response = await publicAPI.getVersion();
+            setAppVersion(response.version);
+        } catch (error) {
+            console.error('Failed to load app version:', error);
+            // Fallback to default version
+            setAppVersion('1.0');
+        }
+    };
+
+    // ⭐ Function to load debug mode
+    const loadDebugMode = async () => {
+        try {
+            // Load debug setting from admin settings API (public access needed)
+            const response = await fetch('/api/admin/settings/debug_server_error', {
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setDebugMode(data.setting?.value === 'true');
+            }
+        } catch (error) {
+            console.error('Failed to load debug mode:', error);
+            // Fallback to env value
+            setDebugMode(import.meta.env.VITE_DEBUG_SERVER_ERRORS === 'true');
+        }
+    };
+
+    // ⭐ Load app version and debug mode on mount
+    useEffect(() => {
+        loadAppVersion();
+        loadDebugMode();
+    }, []);
 
     // ⭐ Refresh active game when location changes (navigation)
     useEffect(() => {
@@ -170,7 +225,7 @@ function MainLayout() {
                         </button>
                         {buildHash && (
                             <div className="main-layout__build-hash">
-                                (Build: {buildHash})
+                                Version: {appVersion} (Build: {buildHash}){debugMode && ' DEBUG ACTIVE'}
                             </div>
                         )}
                     </div>

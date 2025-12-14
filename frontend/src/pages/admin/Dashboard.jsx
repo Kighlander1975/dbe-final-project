@@ -7,6 +7,7 @@ import Overview from './Overview'
 import UserManagement from './UserManagement'
 import UserDetail from './UserDetail'
 import TestEmail from './TestEmail'
+import Settings from './Settings' // 🆕 Settings import
 import '../../styles/pages/admin/dashboard.css'
 
 function Dashboard() {
@@ -22,8 +23,7 @@ function Dashboard() {
           <Route path="users" element={<UserManagement />} />
           <Route path="users/:id" element={<UserDetail />} />
           <Route path="test-email" element={<TestEmail />} />
-          {/* 🔧 Weitere Routen hier hinzufügen */}
-          {/* <Route path="settings" element={<Settings />} /> */}
+          <Route path="settings" element={<Settings />} /> {/* 🆕 Settings Route */}
           
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/admin" replace />} />

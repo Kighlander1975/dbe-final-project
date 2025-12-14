@@ -333,39 +333,55 @@ Besonderheiten des UI-Designs:
 
 ### Benutzerrollen und Zugriffsrechte
 
-#### Spielleiter
-- Spiele erstellen und verwalten
-- Spieler einladen und hinzufügen
-- Spielverlauf dokumentieren (Ansagen, Stiche, Punkte)
-- Spielergebnisse finalisieren
-- Spielgruppen organisieren und verwalten
+#### Rollen-Hierarchie
+Die Anwendung verwendet ein dreistufiges Sanktionssystem für Benutzerrollen:
 
-#### Spieler
-- An Spielen teilnehmen
-- Eigenes Profil verwalten (Avatar, Einstellungen)
-- Persönliche Statistiken einsehen
-- Ranglisten und Ligatabellen betrachten
-- Spielhistorie ansehen
-- Bei Bedarf als Spielleiter fungieren (wenn nicht in aktiver Partie)
+1. **Host** (Standard-Rolle für neue Registrierungen)
+   - Spiele erstellen und verwalten
+   - Spieler einladen und hinzufügen
+   - Spielverlauf dokumentieren (Ansagen, Stiche, Punkte)
+   - Spielergebnisse finalisieren
+   - Spielgruppen organisieren und verwalten
+   - Voller Zugriff auf alle Spieler-Funktionen
+
+2. **Player** (Erste Sanktionsstufe - eingeschränkte Rechte)
+   - Kann nur an Spielen teilnehmen (nicht leiten)
+   - Eigenes Profil verwalten (Avatar, Einstellungen)
+   - Persönliche Statistiken einsehen
+   - Ranglisten und Ligatabellen betrachten
+   - Spielhistorie ansehen
+   - **Einschränkungen:** Keine Spielerstellung, keine Spielverwaltung
+
+3. **Banned** (Zweite Sanktionsstufe - vollständige Sperre)
+   - Kein Zugriff auf Spiel-Funktionen
+   - Nur Profil-Verwaltung möglich
+   - Keine Teilnahme an Spielen
+   - Keine Sichtbarkeit in Ranglisten
 
 #### Administrator
 - Systemeinstellungen verwalten
-- Benutzerkonten verwalten
+- Benutzerkonten verwalten und Rollen ändern
 - Globale Statistiken einsehen
+- Sanktionen verhängen (Player → Banned)
 - Technische Probleme beheben
 - Zugriff auf phpMyAdmin für Datenbankwartung
 
 ### Rollenmanagement und Zugriffslogik
 
-- **Dynamische Rollenzuweisung**:
-  - Ein Benutzer kann zwischen Spieler- und Spielleiter-Rolle wechseln
-  - Ist ein Spieler in einer aktiven Partie, kann er nicht gleichzeitig als Spielleiter fungieren
-  - Nach Anmeldung kann ein Spieler, der nicht in einer aktiven Partie ist, zwischen "Spiel leiten" und "Spielerprofil" wählen
+- **Automatische Rollenzuweisung**:
+  - Neue Registrierungen erhalten automatisch die **Host**-Rolle
+  - **Player**-Rolle wird nur als Sanktion durch Administratoren vergeben
+  - **Banned**-Rolle ist die höchste Sanktionsstufe
+
+- **Sanktions-System**:
+  - Bei Verdacht auf unlauteres Spiel: Host → Player (Warnung)
+  - Bei bestätigten Verstößen: Player → Banned (Sperre)
+  - Möglichkeit zur Rehabilitierung durch Administrator
 
 - **Spielleiter-Exklusivität**:
-  - Zu jedem Zeitpunkt kann nur ein Spielleiter pro Spiel/Liga aktiv sein
-  - Der Spielleiter bleibt aktiv, bis er sich explizit abmeldet
-  - Bei Verbindungsverlust bleibt die Spielleiter-Rolle erhalten (Session-Management)
+  - Zu jedem Zeitpunkt kann nur ein Host pro Spiel/Liga aktiv sein
+  - Player können nicht als Spielleiter fungieren
+  - Banned haben keinen Zugriff auf Spiel-Funktionen
 
 - **Session-Management**:
   - Laravel Session-Handling für Benutzer-Sessions
@@ -489,6 +505,145 @@ Gibt gecachte Statistiken zurück (Cache: 5 Minuten). Nur für Administratoren z
   "host_requests": 2
 }
 ```
+
+---
+
+## 🔮 Zukünftige Erweiterungen
+
+### Anti-Collusion-Schutz für Elo-Rating-System
+
+**Problemstellung:** Das aktuelle Elo-System verhindert nicht, dass zwei oder mehr Spieler sich gegenseitig "hochpushen" können, indem sie nur untereinander spielen und abwechselnd gewinnen.
+
+**Geplante Lösungsansätze:**
+
+#### 1. **Opponent-Diversity-Score**
+- **Berechnung:** Prozentualer Anteil verschiedener Gegner an allen gespielten Spielen
+- **Formel:** `Diversity = (eindeutige_Gegner / gesamt_spiele) × 100`
+- **Mindest-Requirement:** Spieler müssen mindestens 70% verschiedene Gegner haben
+- **Rating-Cap:** Rating wird auf Basis der Diversity gedeckelt
+
+#### 2. **Mutual-Rating-Analysis**
+- **Überwachung:** Prüfung, ob zwei Spieler sich gegenseitig stärker pushen als erwartet
+- **Metriken:**
+  - Korrelation der Rating-Entwicklung zwischen Spielern
+  - Häufigkeit gemeinsamer Spiele vs. Rating-Veränderungen
+  - Verdacht bei Korrelation > 0.8 über 10+ gemeinsame Spiele
+
+#### 3. **Rating-Inflation-Detektion**
+- **Zeitbasierte Analyse:** Überprüfung ungewöhnlich schneller Rating-Zuwächse
+- **Benchmarking:** Vergleich mit ähnlich starken Spielern
+- **Dämpfung:** Automatische Reduzierung von K-Faktor bei Verdacht
+
+#### 4. **Minimum-Opponent-Pool**
+- **Anforderung:** Spieler müssen gegen mindestens 5 verschiedene Gegner gespielt haben
+- **Rating-Freeze:** Neues Rating wird erst nach Erreichen des Minimums aktiviert
+- **Warnsystem:** Benachrichtigung bei zu homogener Gegner-Zusammensetzung
+
+#### 5. **Clustering-basierte Erkennung**
+- **Algorithmus:** K-Means Clustering von Spielmustern
+- **Features:** Gegner-Diversität, Spielhäufigkeit, Rating-Veränderungen
+- **Intervention:** Manuelle Überprüfung bei Identifizierung von "Spam-Clustern"
+
+#### 6. **Implementierungspriorität**
+```
+Hoch:    1. Opponent-Diversity-Score + Rating-Cap
+Mittel:  2. Mutual-Rating-Analysis  
+Niedrig: 3. Rating-Inflation-Detektion
+         4. Minimum-Opponent-Pool
+         5. Clustering-Analyse
+```
+
+**Ziel:** Faire Wettkampfbedingungen erhalten, ohne legitime Spieler zu beeinträchtigen.
+
+#### **Abstrakte Implementation für Stechen-App**
+
+**Architektur-Überblick:**
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Game End      │───▶│  Rating Service  │───▶│ Collusion Check │
+│   Trigger       │    │  (bereits vorh.)│    │   Service        │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                                        │
+┌─────────────────┐    ┌──────────────────┐             │
+│ Suspicious      │◀───│  Analysis        │◀────────────┘
+│ Players DB      │    │  Dashboard       │
+└─────────────────┘    └──────────────────┘
+```
+
+**1. Datenmodell-Erweiterungen:**
+- **`player_rankings` Tabelle:** Zusätzliche Felder für Gegner-Tracking
+- **`user_opponents` Tabelle:** Historie aller gespielten Gegner pro User
+- **`rating_anomalies` Tabelle:** Flagging von verdächtigen Rating-Änderungen
+- **`game_participants` Tabelle:** Vollständige Spieler-Liste pro Spiel (inkl. Gäste)
+
+**2. Service-Architektur:**
+- **`CollusionDetectionService`:** Kernlogik für alle Analysen
+- **`OpponentDiversityCalculator`:** Berechnung von Gegner-Vielfalt
+- **`RatingAnomalyDetector`:** Erkennung ungewöhnlicher Rating-Sprünge
+- **`MutualInfluenceAnalyzer`:** Korrelationsanalyse zwischen Spielern
+
+**3. Trigger-Mechanismen:**
+- **Post-Game Hook:** Nach jedem Spielende automatische Analyse
+- **Batch Processing:** Tägliche/nächtliche Vollanalyse aller aktiven Spieler
+- **Threshold-based Alerts:** Sofortige Benachrichtigung bei kritischen Werten
+- **Manual Review Trigger:** Admin kann Verdachtsfälle manuell prüfen
+
+**4. Analyse-Algorithmen (abstrakt):**
+
+**Opponent Diversity Score:**
+```
+Für jeden Spieler S:
+diversity_S = (unique_registered_opponents_S / total_games_S) × 100
+
+Wenn diversity_S < 70%:
+rating_cap_S = base_rating_S × (diversity_S / 100) × 1.2
+```
+
+**Mutual Influence Detection:**
+```
+Für Spieler-Paar (A,B):
+correlation_AB = correlation(rating_changes_A, rating_changes_B)
+game_frequency_AB = games_played_together_AB / total_games_A
+
+Wenn correlation_AB > 0.8 UND game_frequency_AB > 0.6:
+Flagge als "mutual_boosting_suspicious"
+```
+
+**Rating Inflation Detection:**
+```
+rate_of_change = (current_rating - initial_rating) / games_played
+expected_rate = calculate_expected_rate_based_on_opponent_strength
+
+Wenn rate_of_change > expected_rate × 2.5:
+Flagge als "inflation_suspicious"
+```
+
+**5. Moderations-Workflow:**
+- **Automatische Flags:** System markiert suspekte Fälle
+- **Admin Dashboard:** Übersicht aller Verdachtsfälle mit Details
+- **Evidence Collection:** Automatische Zusammenstellung von Beweisen
+- **Rating Adjustments:** Möglichkeit zur manuellen Rating-Korrektur
+- **Player Notifications:** Warnungen bei wiederholten Verdachtsfällen
+
+**6. Monitoring & Reporting:**
+- **Real-time Metrics:** Live-Tracking von Diversity-Scores
+- **Trend Analysis:** Entwicklung von Rating-Anomalien über Zeit
+- **Group Analysis:** Identifizierung von "geschlossenen" Spielergruppen
+- **Effectiveness Reports:** Wie viele Fälle wurden erkannt/korrigiert
+
+**7. Integration mit bestehendem System:**
+- **Non-Breaking:** Bestehende Rating-Berechnung bleibt unverändert
+- **Opt-in Features:** Neue Checks können aktiviert/deaktiviert werden
+- **Gradual Rollout:** Zuerst Monitoring, dann Intervention
+- **Family-Friendly:** Berücksichtigt, dass viele Spiele familiär sind
+
+**8. Performance-Considerationen:**
+- **Caching:** Ergebnisse der Analysen cachen (1-24h)
+- **Async Processing:** Schwere Analysen im Hintergrund
+- **Database Indexing:** Optimierte Queries für häufige Checks
+- **Scalability:** Horizontale Skalierung der Analysis-Services
+
+**Ziel der abstrakten Implementation:** Maximale Fairness bei minimaler Beeinträchtigung legitimer Spieler, speziell angepasst an die Mehrspieler-Dynamik und familiären Spielrunden der Stechen-App. 🎯
 
 ---
 
