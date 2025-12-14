@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Game;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Services\RankingService;
+use App\Models\User;
 
 class GameController extends Controller
 {
@@ -270,6 +269,9 @@ class GameController extends Controller
     {
         $game = Game::where('admin_id', $request->user()->id)->findOrFail($id);
 
+        // Berechne Rankings für alle registrierten Spieler VOR dem Status-Update
+        $this->calculateAndStoreRankings($game);
+
         $game->update(['status' => 'finished']);
 
         Log::info('Game finished', [
@@ -292,5 +294,128 @@ class GameController extends Controller
         $game->delete();
 
         return response()->json(['message' => 'Game deleted']);
+    }
+
+    /**
+     * Berechne und speichere Rankings für alle registrierten Spieler eines beendeten Spiels
+     */
+    private function calculateAndStoreRankings(Game $game)
+    {
+        $gameData = $game->game_data;
+        $players = $gameData['players'] ?? [];
+        $rounds = $gameData['rounds'] ?? [];
+
+        if (empty($players) || empty($rounds)) {
+            Log::warning('Cannot calculate rankings: missing players or rounds', [
+                'game_id' => $game->id,
+                'players_count' => count($players),
+                'rounds_count' => count($rounds)
+            ]);
+            return;
+        }
+
+        $playerCount = count($players);
+        $gameType = RankingService::getGameType($playerCount);
+
+        // Berechne Endpunkte für jeden Spieler
+        $finalPoints = array_fill(0, $playerCount, 0);
+        foreach ($rounds as $round) {
+            if (isset($round['points'])) {
+                foreach ($round['points'] as $playerIndex => $points) {
+                    $finalPoints[$playerIndex] += $points;
+                }
+            }
+        }
+
+        // Sortiere Spieler nach Punkten (absteigend) für Platzierungen
+        $playersWithPoints = [];
+        foreach ($players as $index => $player) {
+            $playersWithPoints[] = [
+                'index' => $index,
+                'player' => $player,
+                'points' => $finalPoints[$index] ?? 0
+            ];
+        }
+
+        usort($playersWithPoints, function($a, $b) {
+            return $b['points'] <=> $a['points'];
+        });
+
+        // Weise Platzierungen zu (1-basiert)
+        $placements = [];
+        $currentRank = 1;
+        $prevPoints = null;
+
+        foreach ($playersWithPoints as $playerData) {
+            if ($prevPoints !== null && $playerData['points'] < $prevPoints) {
+                $currentRank++;
+            }
+            $placements[$playerData['index']] = $currentRank;
+            $prevPoints = $playerData['points'];
+        }
+
+        // Speichere Rankings für registrierte Spieler
+        foreach ($players as $playerIndex => $player) {
+            $userId = $player['userId'] ?? null;
+
+            // Überspringe Gäste (keine userId)
+            if (!$userId) {
+                continue;
+            }
+
+            $placement = $placements[$playerIndex];
+            $pointsEarned = RankingService::calculatePoints($playerCount, $placement);
+
+            try {
+                // Speichere in player_rankings Tabelle
+                DB::table('player_rankings')->insert([
+                    'user_id' => $userId,
+                    'game_id' => $game->id,
+                    'player_count' => $playerCount,
+                    'final_rank' => $placement,
+                    'points_earned' => $pointsEarned,
+                    'created_at' => now()
+                ]);
+
+                // Update User-Statistiken
+                $user = User::find($userId);
+                if ($user) {
+                    $user->increment('total_ranking_points', $pointsEarned);
+                    $user->increment('games_played');
+
+                    // Update beste Platzierung (niedrigste Zahl = beste Platzierung)
+                    if ($user->best_placement === null || $placement < $user->best_placement) {
+                        $user->best_placement = $placement;
+                    }
+
+                    // Elo-Rating Update (vereinfacht - nur Punkte-basierte Anpassung)
+                    // TODO: Implementiere vollständige Elo-Logik mit Gegner-Ratings
+                    $ratingChange = ($placement === 1) ? 10 : (($placement === 2) ? 5 : -5);
+                    $user->current_rating = max(800, $user->current_rating + $ratingChange);
+
+                    $user->save();
+                }
+
+                Log::info('Ranking stored for player', [
+                    'game_id' => $game->id,
+                    'user_id' => $userId,
+                    'placement' => $placement,
+                    'points_earned' => $pointsEarned
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Failed to store ranking for player', [
+                    'game_id' => $game->id,
+                    'user_id' => $userId,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
+        Log::info('Rankings calculated and stored', [
+            'game_id' => $game->id,
+            'total_players' => $playerCount,
+            'registered_players' => count(array_filter($players, fn($p) => isset($p['userId'])))
+        ]);
     }
 }
