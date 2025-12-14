@@ -191,10 +191,10 @@ function GameEvaluation() {
 
     // Hilfsfunktion für Spieler-Status Icon und Tooltip
     const getPlayerStatusIcon = (player) => {
-        if (player.email) {
+        if (player.rank === 1) {
             return {
-                icon: '📧',
-                tooltip: 'Ergebnis wird mit Email-Adresse gespeichert. Im Falle einer Registrierung mit dieser Adresse wird er automatisch in das ALLTIME RANKING einsortiert'
+                icon: '🏆',
+                tooltip: 'Gewinner - wird in das ALLTIME RANKING aufgenommen und erhält einen Ehrenplatz'
             };
         } else if (player.userId) {
             return {
@@ -204,7 +204,7 @@ function GameEvaluation() {
         } else {
             return {
                 icon: '❓',
-                tooltip: 'Spiel wird für diesen Spieler nicht gewertet, aber die Position wirkt sich auf registrierte Spieler aus.'
+                tooltip: 'Spiel wird für diesen Spieler nicht gewertet, aber die Position wirkt sich auf registrierte Spieler aus'
             };
         }
     };
