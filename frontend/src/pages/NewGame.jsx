@@ -200,6 +200,7 @@ function NewGame() {
                     isCurrentUser={i === 1}
                     existingData={existingPlayerData}
                     onRemovePlayer={i !== 1 ? handleRemovePlayer : null}
+                    loading={usersLoading}
                 />
             );
         }

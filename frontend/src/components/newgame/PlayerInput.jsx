@@ -13,6 +13,7 @@ function PlayerInput({
     isCurrentUser = false,
     existingData = null,
     onRemovePlayer = null,
+    loading = false, // 🆕 Loading state für User-Daten
 }) {
     const { showToast } = useToast(); // 🆕 Toast verwenden
     // State
@@ -416,6 +417,19 @@ function PlayerInput({
 
             <div className="player-row__fields">
                 <div className="player-input-wrapper">
+                    {loading && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            zIndex: 10,
+                            fontSize: '0.8rem',
+                            color: 'var(--text-medium)'
+                        }}>
+                            ⏳ Lade...
+                        </div>
+                    )}
                     <input
                         type="text"
                         className={`form-input ${
@@ -432,6 +446,7 @@ function PlayerInput({
                         onChange={handlePrimaryChange}
                         onBlur={handlePrimaryBlur}
                         readOnly={isCurrentUser}
+                        disabled={loading}
                         list={`emails-${playerNumber}`}
                     />
 
@@ -476,7 +491,7 @@ function PlayerInput({
                         onChange={handleNameChange}
                         onBlur={handleNameBlur}
                         readOnly={false} // ✅ GEÄNDERT: Immer bearbeitbar!
-                        disabled={!showNameField}
+                        disabled={!showNameField || loading}
                     />
 
                     {nameError && showNameField && (
