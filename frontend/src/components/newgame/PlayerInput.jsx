@@ -250,6 +250,7 @@ function PlayerInput({
         let newNameValue = nameValue;
         let newType = "guest";
         let hasError = false;
+        let userInDb = null; // 🐛 FIX: userInDb außerhalb aller Bedingungen definieren
 
         if (!value) {
             newShowNameField = false;
@@ -263,7 +264,8 @@ function PlayerInput({
                 newBadge = null;
                 hasError = true;
             } else {
-                const userInDb = availableEmails.find(
+                // 🐛 FIX: userInDb ist schon oben definiert
+                userInDb = availableEmails.find(
                     (item) => item.email === value
                 );
 
