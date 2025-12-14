@@ -121,7 +121,7 @@ function MainLayout() {
     const handleLogout = async () => {
         await logout();
         showToast("👋 Erfolgreich abgemeldet!", "success", 6000);
-        navigate("/login");
+        navigate("/");
     };
 
     // 🆕 Navigation mit Blocker-Check
