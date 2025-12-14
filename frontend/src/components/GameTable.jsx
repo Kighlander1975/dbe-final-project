@@ -317,6 +317,14 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         }
     }, [isCorrectingTricks]);
 
+    // Setze Phase auf 0 für neue Runden
+    useEffect(() => {
+        const currentRound = gameData.rounds[gameData.currentRound - 1];
+        if (currentRound && !currentRound.tricks.some(trick => trick !== '-')) {
+            setRoundPhase(0);
+        }
+    }, [gameData.currentRound, gameData.rounds]);
+
     // Funktion zur Validierung der Tricks-Eingabe
     const validateTricksInput = (roundIdx, playerIdx, newTricks) => {
         const round = gameData.rounds[roundIdx];
