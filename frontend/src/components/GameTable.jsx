@@ -310,18 +310,13 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     useEffect(() => {
         const currentRound = gameData.rounds[gameData.currentRound - 1];
         if (currentRound) {
-            const hasBids = currentRound.bids.some(bid => bid !== '-');
-            const hasAllBids = currentRound.bids.every(bid => bid !== '-');
             const hasTricks = currentRound.tricks.some(trick => trick !== '-');
             
             if (hasTricks) {
                 // Wenn Tricks eingegeben wurden, Phase 1
                 setRoundPhase(1);
-            } else if (hasAllBids) {
-                // Wenn ALLE Bids gesetzt sind, Phase 1
-                setRoundPhase(1);
             } else {
-                // Wenn nicht alle Bids gesetzt, Phase 0
+                // Solange keine Tricks eingegeben, bleibe in Phase 0 (Bids)
                 setRoundPhase(0);
             }
         }
