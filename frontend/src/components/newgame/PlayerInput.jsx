@@ -116,12 +116,13 @@ function PlayerInput({
         }
         // Fall 2: Es gibt existierende Daten für diesen Spieler
         else if (existingData) {
+            let userInDb = null;
             if (existingData.email) {
                 initialPrimaryValue = existingData.email;
                 initialNameValue = existingData.name || "";
                 initialShowNameField = true;
 
-                const userInDb = availableEmails.find(
+                userInDb = availableEmails.find(
                     (item) => item.email === existingData.email
                 );
 
@@ -145,27 +146,43 @@ function PlayerInput({
             }
         }
 
-        setPrimaryValue(initialPrimaryValue);
-        setNameValue(initialNameValue);
-        setShowNameField(initialShowNameField);
-        setBadge(initialBadge);
+        // Nur bei der ersten Initialisierung die Werte setzen
+        if (!isInitialized.current) {
+            setPrimaryValue(initialPrimaryValue);
+            setNameValue(initialNameValue);
+            setShowNameField(initialShowNameField);
+            setBadge(initialBadge);
 
-        if ((isCurrentUser && currentUser) || existingData) {
-            if (!isInitialized.current && onPlayerChangeRef.current) {
-                onPlayerChangeRef.current({
-                    playerNumber,
-                    email: initialType !== "guest" ? initialPrimaryValue : null,
-                    name:
-                        initialType !== "guest"
-                            ? initialNameValue
-                            : initialPrimaryValue,
-                    type: initialType,
-                    hasError: hasError,
-                });
+            if ((isCurrentUser && currentUser) || existingData) {
+                if (onPlayerChangeRef.current) {
+                    onPlayerChangeRef.current({
+                        playerNumber,
+                        email: initialType !== "guest" ? initialPrimaryValue : null,
+                        name:
+                            initialType !== "guest"
+                                ? initialNameValue
+                                : initialPrimaryValue,
+                        type: initialType,
+                        hasError: hasError,
+                        userId: initialType === "current" ? currentUser?.id : (initialType === "registered" ? userInDb?.id : null),
+                    });
+                }
+            }
+
+            isInitialized.current = true;
+        } else {
+            // Bei späteren Läufen nur die Badge aktualisieren, falls sich availableEmails geändert hat
+            if (existingData && existingData.email) {
+                const userInDb = availableEmails.find(
+                    (item) => item.email === existingData.email
+                );
+                if (userInDb && (!badge || badge.type !== "registered")) {
+                    setBadge({ type: "registered", label: "✅ Registriert" });
+                } else if (!userInDb && (!badge || badge.type !== "new")) {
+                    setBadge({ type: "new", label: "⚠️ Neu" });
+                }
             }
         }
-
-        isInitialized.current = true;
     }, [
         isCurrentUser,
         currentUser,
@@ -251,7 +268,7 @@ function PlayerInput({
                 );
 
                 if (userInDb) {
-                    newNameValue = userInDb.name || "";
+                    newNameValue = nameValue || userInDb.name || ""; // 🐛 FIX: Behalte geänderten Namen, fallback auf DB-Name
                     newShowNameField = true;
                     newBadge = { type: "registered", label: "✅ Registriert" };
                     newType = "registered";
@@ -281,6 +298,7 @@ function PlayerInput({
                 name: isValidEmail(value) ? newNameValue : value,
                 type: newType,
                 hasError: hasError,
+                userId: newType === "registered" ? userInDb?.id : null,
             });
         }
     };
@@ -314,6 +332,7 @@ function PlayerInput({
                 name: isValidEmail(primaryValue) ? nameValue : primaryValue,
                 type: badge?.type || "guest",
                 hasError: hasError || emailError !== null || nameError !== null,
+                userId: existingData?.userId || null,
             });
         }
     };
@@ -337,6 +356,7 @@ function PlayerInput({
                 name: value,
                 type: badge?.type || "guest",
                 hasError: hasError || emailError !== null,
+                userId: existingData?.userId || null,
             });
         }
     };
@@ -353,6 +373,7 @@ function PlayerInput({
                     name: nameValue,
                     type: badge.type,
                     hasError: hasError || emailError !== null,
+                    userId: existingData?.userId || null,
                 });
             }
         }

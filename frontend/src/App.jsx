@@ -25,6 +25,7 @@ import ServerError from "./pages/ServerError";
 // Pages - Geschützt
 import NewGame from "./pages/NewGame";
 import GameSummary from './pages/GameSummary';
+import GameEvaluation from './pages/GameEvaluation'; // 🆕 Neue Auswertungsseite
 import Game from './pages/Game';
 
 // Pages - Admin
@@ -97,6 +98,14 @@ function App() {
                     ),
                 },
                 { path: "/game-summary", element: <GameSummary /> },
+                {
+                    path: "/game-evaluation/:id",
+                    element: (
+                        <ProtectedRoute>
+                            <GameEvaluation />
+                        </ProtectedRoute>
+                    ),
+                },
                 {
                     path: "/game/:id",
                     element: (

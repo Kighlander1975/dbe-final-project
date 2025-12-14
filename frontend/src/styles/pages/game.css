@@ -16,10 +16,33 @@
     color: var(--text-muted);
 }
 
-.muted {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    font-weight: normal;
+.game-table__victory-condition {
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.game-evaluation__json {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 70vh;
+    overflow-y: auto;
+    color: #495057;
+}
+
+.game-evaluation__actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
 }
 
 .loading-state {

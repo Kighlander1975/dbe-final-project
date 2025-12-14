@@ -160,8 +160,8 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
 
     // Funktion zum Beenden des Spiels
     const finishGame = () => {
-        // Navigation zur GameSummary Seite
-        window.location.href = '/game-summary';
+        // Navigation zur GameEvaluation Seite
+        navigate(`/game-evaluation/${gameId}`);
     };
 
     // Funktion zum Pausieren des Spiels
@@ -202,6 +202,7 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         let players = data.players.map((player, index) => ({
             id: player.id || index + 1,
             name: player.name,
+            userId: player.userId || null,
             totalPoints: 0,
             rank: 0,
         }));
@@ -473,7 +474,7 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
             const playersWithRanks = calculateRanking(playersWithTotalPoints);
 
             // Siegbedingung prüfen
-            const victoryPoints = 100 + new Date().getDate(); // 100 + Tageszahl
+            const victoryPoints = prevData.victoryCondition;
             const hasWinner = playersWithRanks.some(player => player.totalPoints >= victoryPoints);
 
             let newGameData;
@@ -571,6 +572,9 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                                 <div className="game-table__header-info">
                                     am <strong>{dateStr}</strong>
                                     <span className="muted">({uuid})</span>
+                                    <div className="game-table__victory-condition">
+                                        🏆 Sieg bei {gameData.victoryCondition} Punkten
+                                    </div>
                                 </div>
                             );
                         }
@@ -621,7 +625,7 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                                     maxCards={maxCards}
                                     isEvaluated={roundIndex < gameData.currentRound - 1 || gameData.gameStatus === 'finished'}
                                     isColorEvaluated={roundIndex < gameData.currentRound - 1 || gameData.gameStatus === 'finished'}
-                                    isCorrectBid={playerIndex < r.bids.length && playerIndex < r.tricks.length && r.bids[playerIndex] !== '-' && r.tricks[playerIndex] !== '-' && r.bids[playerIndex] === r.tricks[playerIndex]}
+                                    isCorrectBid={playerIndex < r.bids.length && playerIndex < r.tricks.length && r.bids[playerIndex] !== '-' && r.tricks[playerIndex] !== '-' && parseInt(r.bids[playerIndex]) === parseInt(r.tricks[playerIndex])}
                                     playerName={player.name}
                                     isGameFinished={gameData.gameStatus === 'finished'}
                                 />

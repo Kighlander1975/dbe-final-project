@@ -167,6 +167,19 @@ input:focus, textarea:focus, select:focus {
   box-shadow: var(--shadow-md);
 }
 
+.btn-success {
+  background: #28a745;
+  color: white;
+  border: 2px solid #28a745;
+}
+
+.btn-success:hover {
+  background: #218838;
+  border-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
 .btn-secondary {
   background: white;
   color: var(--primary-green);
@@ -187,6 +200,12 @@ input:focus, textarea:focus, select:focus {
 }
 
 .btn-primary:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  border-color: #ccc !important;
+}
+
+.btn-success:disabled {
   background: #ccc !important;
   color: #666 !important;
   border-color: #ccc !important;

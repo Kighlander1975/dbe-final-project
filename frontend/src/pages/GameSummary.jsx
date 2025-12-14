@@ -189,7 +189,11 @@ function GameSummary() {
                 // API-Call zum Erstellen des Spiels
                 const gameData = {
                   gameName,
-                  players: players.map(p => ({ name: p.name })), // Nur name senden
+                  players: activePlayers.map(p => ({
+                    name: p.name,
+                    email: p.email || null,
+                    userId: p.userId || null
+                  })),
                   victoryCondition: victoryPoints
                 };
                 
