@@ -3,13 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useBlocker } from 'react-router-dom';
 import '../styles/pages/newgame.css';
 import { gameAPI } from '../services/api';
+import { useUserContext } from '../context/UserContext'; // 🆕 UserContext hinzufügen
 
 function GameSummary() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { users: availableEmails, loadUsers } = useUserContext(); // 🆕 UserContext verwenden
   
   // Daten aus Navigation State holen
   const { gameName, playerCount, players, victoryPoints } = location.state || {};
+
+  // 🆕 User-Daten beim Mount laden
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   // 🆕 Schutz vor Datenverlust
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
@@ -65,8 +72,13 @@ function GameSummary() {
   // Filtere nur die tatsächlich ausgefüllten Spieler
   const activePlayers = players.slice(0, playerCount).filter(p => p);
 
-  // Zähle Spieler-Typen
-  const registeredCount = activePlayers.filter(p => p.email).length;
+  // 🆕 Korrekte Zählung: Prüfe ob E-Mail zu registrierten Usern gehört
+  const isRegisteredUser = (email) => {
+    return availableEmails.some(user => user.email === email);
+  };
+
+  const registeredCount = activePlayers.filter(p => p.email && isRegisteredUser(p.email)).length;
+  const newUserCount = activePlayers.filter(p => p.email && !isRegisteredUser(p.email)).length;
   const guestCount = activePlayers.filter(p => !p.email).length;
 
   return (
@@ -107,7 +119,7 @@ function GameSummary() {
             <div className="summary-value">
               {playerCount} Spieler
               <span className="summary-badge">
-                {registeredCount} registriert, {guestCount} Gäste
+                {registeredCount} registriert, {newUserCount} neue User, {guestCount} Gäste
               </span>
             </div>
           </div>
@@ -139,9 +151,15 @@ function GameSummary() {
                       Du
                     </span>
                   ) : player.email ? (
-                    <span className="player-badge player-badge--registered">
-                      Registriert
-                    </span>
+                    isRegisteredUser(player.email) ? (
+                      <span className="player-badge player-badge--registered">
+                        Registriert
+                      </span>
+                    ) : (
+                      <span className="player-badge player-badge--new">
+                        Neuer User?
+                      </span>
+                    )
                   ) : (
                     <span className="player-badge player-badge--guest">
                       Gast
