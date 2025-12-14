@@ -51,9 +51,13 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
                 }, 150);
             }
 
-            // Wert aktualisieren und Modal schließen
+            // Wert aktualisieren
             onUpdate(roundIndex, playerIndex, editField, value);
-            setIsModalOpen(false);
+            
+            // Modal schließen nach kurzem Delay, um Speichern Zeit zu geben
+            setTimeout(() => {
+                setIsModalOpen(false);
+            }, 200);
         } else {
             // Ungültiger Wert: Button rot aufleuchten
             const button = document.querySelector(`[data-value="${value}"]`);
