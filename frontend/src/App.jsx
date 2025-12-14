@@ -27,6 +27,7 @@ import NewGame from "./pages/NewGame";
 import GameSummary from './pages/GameSummary';
 import GameEvaluation from './pages/GameEvaluation'; // 🆕 Neue Auswertungsseite
 import Game from './pages/Game';
+import Rankings from './pages/Rankings';
 
 // Pages - Admin
 import Dashboard from "./pages/admin/Dashboard";
@@ -119,6 +120,14 @@ function App() {
                     element: (
                         <ProtectedRoute>
                             <ChangePassword />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: "/rankings",
+                    element: (
+                        <ProtectedRoute>
+                            <Rankings />
                         </ProtectedRoute>
                     ),
                 },

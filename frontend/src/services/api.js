@@ -443,5 +443,30 @@ const statsAPI = {
     },
 };
 
-export { authAPI, gameAPI, statsAPI };
+// ⭐ Ranking API Endpoints
+const rankingAPI = {
+    // Get top rankings
+    getRankings: async (limit = 50, offset = 0) => {
+        const params = new URLSearchParams({ limit, offset });
+        return apiRequest(`/rankings?${params.toString()}`, {
+            loadingMessage: "Rankings werden geladen...",
+        });
+    },
+
+    // Get ranking overview stats
+    getRankingStats: async () => {
+        return apiRequest("/rankings/stats", {
+            loadingMessage: "Ranking-Statistiken werden geladen...",
+        });
+    },
+
+    // Get detailed user ranking stats
+    getUserRanking: async (userId) => {
+        return apiRequest(`/rankings/${userId}`, {
+            loadingMessage: "Spieler-Ranking wird geladen...",
+        });
+    },
+};
+
+export { authAPI, gameAPI, statsAPI, rankingAPI };
 export default apiRequest;

@@ -1,0 +1,292 @@
+/* Rankings Page Styles */
+.rankings-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.rankings-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.rankings-header h1 {
+    color: #2d9f5e;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.rankings-header p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.rankings-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.overview-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.overview-card h3 {
+    color: #2d9f5e;
+    font-size: 2rem;
+    margin: 0 0 5px 0;
+}
+
+.overview-card p {
+    color: #666;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.rankings-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.rankings-table-header {
+    display: grid;
+    grid-template-columns: 80px 2fr 100px 80px 120px 80px 100px;
+    gap: 15px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: bold;
+    color: #333;
+}
+
+.rankings-row {
+    display: grid;
+    grid-template-columns: 80px 2fr 100px 80px 120px 80px 100px;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.rankings-row:hover {
+    background-color: #f8f9fa;
+}
+
+.rankings-row.current-user {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+.rank-col {
+    text-align: center;
+    font-weight: bold;
+}
+
+.rank-icon {
+    font-size: 1.2rem;
+}
+
+.player-col {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.player-name {
+    font-weight: 500;
+}
+
+.current-user-badge {
+    background: #ffc107;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.points-col {
+    text-align: center;
+    font-weight: bold;
+    color: #2d9f5e;
+}
+
+.games-col {
+    text-align: center;
+    color: #666;
+}
+
+.best-col {
+    text-align: center;
+}
+
+.placement-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.placement-gold {
+    background: #ffd700;
+    color: #000;
+}
+
+.placement-silver {
+    background: #c0c0c0;
+    color: #000;
+}
+
+.placement-bronze {
+    background: #cd7f32;
+    color: #000;
+}
+
+.placement-normal {
+    background: #e9ecef;
+    color: #333;
+}
+
+.rating-col {
+    text-align: center;
+    font-weight: 500;
+}
+
+.actions-col {
+    text-align: center;
+}
+
+.no-rankings {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.no-rankings p:first-child {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.rankings-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.rankings-info h3 {
+    color: #2d9f5e;
+    margin-bottom: 15px;
+}
+
+.rankings-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.rankings-info li {
+    padding: 5px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.rankings-info li:last-child {
+    border-bottom: none;
+}
+
+.rankings-info strong {
+    color: #2d9f5e;
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .rankings-page {
+        padding: 10px;
+    }
+
+    .rankings-header h1 {
+        font-size: 2rem;
+    }
+
+    .rankings-overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .overview-card {
+        padding: 15px;
+    }
+
+    .rankings-table-header,
+    .rankings-row {
+        grid-template-columns: 60px 1fr 70px 60px 100px 60px 80px;
+        gap: 8px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    .rankings-info {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .rankings-table-header,
+    .rankings-row {
+        grid-template-columns: 50px 1fr;
+        gap: 5px;
+    }
+
+    .rankings-table-header {
+        display: none; /* Hide header on very small screens */
+    }
+
+    .rankings-row {
+        display: block;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .rank-col,
+    .player-col,
+    .points-col,
+    .games-col,
+    .best-col,
+    .rating-col,
+    .actions-col {
+        display: inline-block;
+        margin: 2px 5px;
+        font-size: 0.9rem;
+    }
+
+    .player-col {
+        display: block;
+        margin: 5px 0;
+    }
+}

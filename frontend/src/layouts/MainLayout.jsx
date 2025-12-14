@@ -244,6 +244,10 @@ function MainLayout() {
                                         🔐 Passwort ändern
                                     </button>
 
+                                    <button onClick={() => { handleNavigate('/rankings'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                        🏆 Rankings
+                                    </button>
+
                                     {/* ⭐ Admin-Link nur für Admins */}
                                     {isAdmin() && (
                                         <button onClick={() => { handleNavigate('/admin'); setMenuOpen(false); }} className="main-layout__menu-item">
