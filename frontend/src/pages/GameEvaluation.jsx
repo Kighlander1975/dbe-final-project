@@ -191,20 +191,29 @@ function GameEvaluation() {
 
     // Hilfsfunktion für Spieler-Status Icon und Tooltip
     const getPlayerStatusIcon = (player) => {
-        if (player.rank === 1) {
+        if (player.userId === null) {
+            // Gastspieler
             return {
                 icon: '❓',
-                tooltip: 'Gewinner - wird in das ALLTIME RANKING aufgenommen und erhält einen Ehrenplatz'
+                tooltip: 'Dieser Spieler wird NICHT in die Wertung aufgenommen, wird aber für die Berücksichtigung anderer Spieler mitgewertet, aber nicht gespeichert.'
             };
-        } else if (player.userId) {
+        } else if (typeof player.userId === 'string') {
+            // Neuer Spieler mit E-Mail
             return {
                 icon: '❓',
-                tooltip: 'Spiel wird gewertet und in die ALLTIME RANKING Tabelle aufgenommen'
+                tooltip: 'Dieser Spieler wird in die Wertung aufgenommen, bei späterer Registrierung bekommt er in seinem Profil seine Spiele mit angezeigt.'
+            };
+        } else if (typeof player.userId === 'number') {
+            // Registrierter Spieler
+            return {
+                icon: '❓',
+                tooltip: 'Dieser Spieler geht normal in die Wertung ein.'
             };
         } else {
+            // Fallback
             return {
                 icon: '❓',
-                tooltip: 'Spiel wird für diesen Spieler nicht gewertet, aber die Position wirkt sich auf registrierte Spieler aus'
+                tooltip: 'Spieler-Status unbekannt.'
             };
         }
     };
