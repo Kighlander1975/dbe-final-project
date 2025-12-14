@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('player_rankings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('game_id')->constrained('games_history')->onDelete('cascade');
+            $table->foreignId('game_id')->constrained('games')->onDelete('cascade');
             $table->tinyInteger('player_count'); // Anzahl Spieler im Spiel
             $table->tinyInteger('final_rank'); // Endplatzierung (1-basiert)
             $table->smallInteger('points_earned'); // Erhaltene Punkte
