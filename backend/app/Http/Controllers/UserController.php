@@ -138,4 +138,53 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update user (Admin only)
+     */
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => ['sometimes', 'string', 'max:100', 'regex:/^[a-zA-Z0-9äöüÄÖÜß!^()<>éøåçñàèìòùâêîôûëïüÿæœÀÈÌÒÙÂÊÎÔÛËÏÜŸÆŒ\s]+$/'],
+            'email' => ['sometimes', 'email', 'unique:users,email,' . $user->id],
+            'role' => ['sometimes', Rule::enum(UserRole::class)]
+        ]);
+
+        if (isset($validated['name'])) {
+            $user->name = $validated['name'];
+        }
+
+        if (isset($validated['email'])) {
+            $user->email = $validated['email'];
+        }
+
+        if (isset($validated['role'])) {
+            $user->setRole(UserRole::from($validated['role']));
+        }
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Benutzer erfolgreich aktualisiert.',
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * Delete user (Admin only)
+     */
+    public function destroy(User $user)
+    {
+        if ($user->isAdmin()) {
+            return response()->json([
+                'message' => 'Administratoren können nicht gelöscht werden.'
+            ], 403);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Benutzer wurde erfolgreich gelöscht.'
+        ]);
+    }
 }

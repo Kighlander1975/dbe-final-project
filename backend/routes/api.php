@@ -4,6 +4,8 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\HostRequestController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
