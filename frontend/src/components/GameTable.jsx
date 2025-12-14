@@ -44,6 +44,7 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     const [scrollTop, setScrollTop] = useState(0);
     const [showTooltip, setShowTooltip] = useState(false);
     const [roundPhase, setRoundPhase] = useState(0); // 0 = bids, 1 = tricks
+    const [isCorrectingTricks, setIsCorrectingTricks] = useState(false); // Flag für Korrektur-Modus
     const saveTimeoutRef = useRef(null);
 
     // Handler für Drag-to-Scroll
@@ -307,20 +308,14 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     }, [initialGameData]);
 
     // Setze roundPhase basierend auf gameData Änderungen
+    // ❌ Entfernt: Automatische Phasen-Wechsel führen zu unerwünschtem Verhalten
+    // Phase wird nur manuell über confirmRound und confirmTricks gesteuert
     useEffect(() => {
-        const currentRound = gameData.rounds[gameData.currentRound - 1];
-        if (currentRound) {
-            const hasTricks = currentRound.tricks.some(trick => trick !== '-');
-            
-            if (hasTricks) {
-                // Wenn Tricks eingegeben wurden, Phase 1
-                setRoundPhase(1);
-            } else {
-                // Solange keine Tricks eingegeben, bleibe in Phase 0 (Bids)
-                setRoundPhase(0);
-            }
+        if (isCorrectingTricks) {
+            setRoundPhase(1); // Bei Korrektur bleibe in Tricks-Phase
+            setIsCorrectingTricks(false);
         }
-    }, [gameData]);
+    }, [isCorrectingTricks]);
 
     // Funktion zur Validierung der Tricks-Eingabe
     const validateTricksInput = (roundIdx, playerIdx, newTricks) => {
@@ -437,7 +432,12 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
             setRoundPhase(1);
         } else {
             // Bestätige Tricks und starte neue Runde
-            confirmTricks();
+            const success = confirmTricks();
+            if (!success) {
+                // Validierung fehlgeschlagen - bleibe in Phase 1 für Korrekturen
+                setRoundPhase(1);
+            }
+            // Bei Erfolg wird die Phase in confirmTricks gesetzt
         }
     };
 
@@ -487,7 +487,10 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                 return newGameData; // Zurückgesetzte Daten zurückgeben
             }
 
-            const roundPoints = calculateRoundPoints(currentRound.bids, currentRound.tricks);
+            // Bei Validierungsfehler: Phase auf 1 setzen für Korrekturen
+            setRoundPhase(1);
+
+            // ✅ Validierung erfolgreich: Führe die normale Logik aus
 
             // Punkte zur aktuellen Runde hinzufügen
             const updatedRounds = [...prevData.rounds];
