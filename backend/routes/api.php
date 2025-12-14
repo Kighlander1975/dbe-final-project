@@ -6,6 +6,7 @@ use App\Http\Controllers\StatsController;
 use App\Http\Controllers\HostRequestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\RankingController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -89,5 +90,12 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
     Route::prefix('stats')->group(function () {
         Route::get('/players', [StatsController::class, 'players']);
         Route::get('/player/{id}', [StatsController::class, 'player']);
+    });
+
+    // ⭐ Ranking routes (für alle auth User, readonly)
+    Route::prefix('rankings')->group(function () {
+        Route::get('/', [RankingController::class, 'index']); // Top-Rankings
+        Route::get('/stats', [RankingController::class, 'stats']); // Ranking-Übersicht
+        Route::get('/{userId}', [RankingController::class, 'show']); // Persönliche Details
     });
 });
