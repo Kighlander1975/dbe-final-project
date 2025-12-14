@@ -456,8 +456,29 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
             // Prüfe, ob die Summe der Tricks korrekt ist
             const totalTricks = currentRound.tricks.reduce((sum, t) => sum + parseInt(t), 0);
             if (totalTricks !== maxCards) {
-                showToast(`Die Summe der Ergebnisse (Erg.) muss genau ${maxCards} sein! Aktuell: ${totalTricks}.\n\nBitte korrigieren Sie die Ergebnis-Felder (grüne Felder) in dieser Runde.`, "error", 8000);
-                return prevData; // Nicht bestätigen
+                // ❌ Validierung fehlgeschlagen: Tricks-Felder zurücksetzen und Toast anzeigen
+                showToast(`Die Summe der Ergebnisse (Erg.) muss genau ${maxCards} sein! Aktuell: ${totalTricks}.\n\nDie Ergebnis-Felder wurden zurückgesetzt - bitte neu eingeben.`, "error", 8000);
+                
+                // Tricks-Felder zurücksetzen (nur aktuelle Runde)
+                const updatedRounds = [...prevData.rounds];
+                updatedRounds[currentRoundIndex] = {
+                    ...currentRound,
+                    tricks: currentRound.tricks.map(() => '-'), // Alle Tricks auf '-' setzen
+                };
+                
+                // Speichern der zurückgesetzten Daten
+                const newGameData = {
+                    ...prevData,
+                    rounds: updatedRounds,
+                };
+                
+                // Speichere in sessionStorage
+                sessionStorage.setItem('gameData', JSON.stringify(newGameData));
+                
+                // Debounced Speichern
+                debouncedSave(newGameData);
+                
+                return newGameData; // Zurückgesetzte Daten zurückgeben
             }
 
             const roundPoints = calculateRoundPoints(currentRound.bids, currentRound.tricks);
