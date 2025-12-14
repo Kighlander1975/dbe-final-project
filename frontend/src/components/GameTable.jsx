@@ -303,6 +303,16 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         const converted = convertGameData(initialGameData);
         if (converted) {
             setGameData(converted);
+            
+            // Setze roundPhase basierend auf dem aktuellen Stand
+            const currentRound = converted.rounds[converted.currentRound - 1];
+            if (currentRound && currentRound.tricks.some(trick => trick !== '-')) {
+                // Wenn bereits Tricks eingegeben wurden, setze Phase auf 1
+                setRoundPhase(1);
+            } else {
+                // Sonst Phase 0
+                setRoundPhase(0);
+            }
         }
     }, [initialGameData]);
 
@@ -446,7 +456,7 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
             // Prüfe, ob die Summe der Tricks korrekt ist
             const totalTricks = currentRound.tricks.reduce((sum, t) => sum + parseInt(t), 0);
             if (totalTricks !== maxCards) {
-                alert(`Die Summe der Tricks muss genau ${maxCards} sein! Aktuell: ${totalTricks}. Bitte korrigieren Sie die Eingaben.`);
+                showToast(`Die Summe der Ergebnisse (Erg.) muss genau ${maxCards} sein! Aktuell: ${totalTricks}.\n\nBitte korrigieren Sie die Ergebnis-Felder (grüne Felder) in dieser Runde.`, "error", 8000);
                 return prevData; // Nicht bestätigen
             }
 
