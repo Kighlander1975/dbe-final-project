@@ -111,7 +111,7 @@ function GameEvaluation() {
 
             return {
                 name: player.name || 'Unbekannter Spieler',
-                userId: player.user_id,
+                userId: player.userId,
                 email: player.email, // Für zukünftige Implementierung
                 totalPoints: calculatedTotalPoints,
                 rank: player.rank || 0
@@ -191,6 +191,8 @@ function GameEvaluation() {
 
     // Hilfsfunktion für Spieler-Status Icon und Tooltip
     const getPlayerStatusIcon = (player) => {
+        console.log('Player userId:', player.userId, 'Type:', typeof player.userId);
+
         if (player.userId === null) {
             // Gastspieler
             return {
