@@ -193,12 +193,12 @@ function GameEvaluation() {
     const getPlayerStatusIcon = (player) => {
         if (player.rank === 1) {
             return {
-                icon: '🏆',
+                icon: '❓',
                 tooltip: 'Gewinner - wird in das ALLTIME RANKING aufgenommen und erhält einen Ehrenplatz'
             };
         } else if (player.userId) {
             return {
-                icon: '⭐',
+                icon: '❓',
                 tooltip: 'Spiel wird gewertet und in die ALLTIME RANKING Tabelle aufgenommen'
             };
         } else {
