@@ -40,24 +40,36 @@ function RoundData({ bid, tricks, onUpdate, roundIndex, playerIndex, numPlayers,
         }
 
         if (isValid) {
-            // Visuelles Feedback: Button vibrieren lassen
+            // Visuelles Feedback: Button vibrieren lassen und "Speichern..." anzeigen
             const button = document.querySelector(`[data-value="${value}"]`);
             if (button) {
                 button.style.transform = 'scale(0.95)';
                 button.style.backgroundColor = '#d4edda';
+                button.textContent = '💾';
                 setTimeout(() => {
                     button.style.transform = '';
                     button.style.backgroundColor = '';
+                    button.textContent = value;
                 }, 150);
             }
 
-            // Wert aktualisieren
-            onUpdate(roundIndex, playerIndex, editField, value);
-            
-            // Modal schließen nach kurzem Delay, um Speichern Zeit zu geben
-            setTimeout(() => {
+            try {
+                // Wert aktualisieren und auf Speichern warten
+                await onUpdate(roundIndex, playerIndex, editField, value, true);
+                
+                // Modal schließen nach erfolgreichem Speichern
                 setIsModalOpen(false);
-            }, 200);
+            } catch (error) {
+                console.error('Fehler beim Speichern:', error);
+                // Bei Fehler: Button rot aufleuchten lassen
+                if (button) {
+                    button.style.backgroundColor = '#f8d7da';
+                    setTimeout(() => {
+                        button.style.backgroundColor = '';
+                        button.textContent = value;
+                    }, 300);
+                }
+            }
         } else {
             // Ungültiger Wert: Button rot aufleuchten
             const button = document.querySelector(`[data-value="${value}"]`);

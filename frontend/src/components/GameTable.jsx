@@ -288,6 +288,13 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         }, 800); // ⏱️ Erhöht auf 800ms für Development-Performance
     }, [onGameUpdate]);
 
+    // Sofortiges Speichern für synchrone UI-Updates
+    const immediateSave = useCallback(async (data) => {
+        if (onGameUpdate) {
+            await onGameUpdate(data);
+        }
+    }, [onGameUpdate]);
+
     // Cleanup beim Unmount
     useEffect(() => {
         return () => {
@@ -334,29 +341,39 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     };
 
     // Funktion zum Aktualisieren von Runden-Daten
-    const updateRoundData = (roundIndex, playerIndex, field, value) => {
-        setGameData(prevData => {
-            const newRounds = [...prevData.rounds];
-            if (!newRounds[roundIndex]) return prevData;
+    const updateRoundData = async (roundIndex, playerIndex, field, value, immediate = false) => {
+        return new Promise((resolve) => {
+            setGameData(prevData => {
+                const newRounds = [...prevData.rounds];
+                if (!newRounds[roundIndex]) {
+                    resolve();
+                    return prevData;
+                }
 
-            if (field === 'bid') {
-                newRounds[roundIndex].bids[playerIndex] = value;
-            } else if (field === 'tricks') {
-                newRounds[roundIndex].tricks[playerIndex] = value;
-            }
+                if (field === 'bid') {
+                    newRounds[roundIndex].bids[playerIndex] = value;
+                } else if (field === 'tricks') {
+                    newRounds[roundIndex].tricks[playerIndex] = value;
+                }
 
-            const updatedData = {
-                ...prevData,
-                rounds: newRounds,
-            };
+                const updatedData = {
+                    ...prevData,
+                    rounds: newRounds,
+                };
 
-            // Speichere in sessionStorage
-            sessionStorage.setItem('gameData', JSON.stringify(updatedData));
+                // Speichere in sessionStorage
+                sessionStorage.setItem('gameData', JSON.stringify(updatedData));
 
-            // Debounced Speichern anstatt sofort
-            debouncedSave(updatedData);
+                // Sofortiges oder debounced Speichern
+                if (immediate) {
+                    immediateSave(updatedData).then(() => resolve());
+                } else {
+                    debouncedSave(updatedData);
+                    resolve(); // Sofort auflösen für debounced
+                }
 
-            return updatedData;
+                return updatedData;
+            });
         });
     };
 
