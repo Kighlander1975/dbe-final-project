@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Models\HostRequest;
 use App\Models\User;
+use App\Models\Game;
 
 class StatsController extends Controller
 {
