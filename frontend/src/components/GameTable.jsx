@@ -311,16 +311,17 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         const currentRound = gameData.rounds[gameData.currentRound - 1];
         if (currentRound) {
             const hasBids = currentRound.bids.some(bid => bid !== '-');
+            const hasAllBids = currentRound.bids.every(bid => bid !== '-');
             const hasTricks = currentRound.tricks.some(trick => trick !== '-');
             
             if (hasTricks) {
                 // Wenn Tricks eingegeben wurden, Phase 1
                 setRoundPhase(1);
-            } else if (hasBids) {
-                // Wenn Bids gesetzt aber keine Tricks, Phase 1 (für Korrektur)
+            } else if (hasAllBids) {
+                // Wenn ALLE Bids gesetzt sind, Phase 1
                 setRoundPhase(1);
             } else {
-                // Wenn nichts gesetzt, Phase 0
+                // Wenn nicht alle Bids gesetzt, Phase 0
                 setRoundPhase(0);
             }
         }
