@@ -25,7 +25,15 @@ function NewGame() {
 
     // State
     const [playerCount, setPlayerCount] = useState(restoredData.playerCount || 5); // ✅ Wiederhergestellt
-    const [players, setPlayers] = useState(restoredData.players || []); // ✅ Wiederhergestellt
+    const [players, setPlayers] = useState(() => {
+        const restored = restoredData.players || [];
+        // Stelle sicher, dass das Array mindestens playerCount Elemente hat
+        const count = restoredData.playerCount || 5;
+        while (restored.length < count) {
+            restored.push(null);
+        }
+        return restored;
+    }); // ✅ Wiederhergestellt und initialisiert
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [gameName, setGameName] = useState(restoredData.gameName || ''); // ✅ Wiederhergestellt
@@ -210,12 +218,20 @@ function NewGame() {
 
     // Prüfe, ob Form valide ist (keine Fehler und alle Daten ausgefüllt)
     const isFormValid = () => {
-        const hasGameName = gameName.trim().length > 0;
+        // Spielname muss vorhanden sein und darf keine Leerzeichen enthalten
+        const hasGameName = gameName.trim().length > 0 && !/\s/.test(gameName);
+        
+        // Alle Spieler müssen ausgefüllt sein (für die eingestellte Anzahl)
         const playersValid = players
             .slice(0, playerCount)
             .every((p) => p && !p.hasError && p.name && p.name.trim().length > 0);
         
         return hasGameName && playersValid;
+    };
+
+    // Prüfe, ob Spielname valide ist
+    const isGameNameValid = () => {
+        return gameName.trim().length > 0 && !/\s/.test(gameName);
     };
 
     // Submit-Handler
@@ -286,6 +302,7 @@ function NewGame() {
                         onChange={handleGameNameChange}
                         required={true}
                         initialFullName={restoredData.gameName} // ✅ NEU: Vollständiger Name übergeben
+                        isValid={isGameNameValid()}
                     />
 
                     {/* 🆕 VictoryConditionSelector */}
@@ -317,13 +334,15 @@ function NewGame() {
                     >
                         Abbrechen
                     </button>
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        disabled={!isFormValid()}
-                    >
-                        Weiter zur Übersicht →
-                    </button>
+                    <div title={!isFormValid() ? "Einige Felder sind noch nicht korrekt ausgefüllt." : ""}>
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={!isFormValid()}
+                        >
+                            Weiter zur Übersicht →
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

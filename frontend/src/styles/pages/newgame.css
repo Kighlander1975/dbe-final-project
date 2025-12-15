@@ -118,6 +118,11 @@
     box-shadow: 0 0 0 3px rgba(45, 159, 94, 0.1);
 }
 
+.form-input--warning {
+    border-color: #f39c12 !important; /* Warnendes Gelb */
+    background-color: rgba(243, 156, 18, 0.05);
+}
+
 .gamename-suffix {
     flex: 0 0 auto;
     font-size: 0.9rem;
@@ -381,12 +386,6 @@
     flex: 1;
     padding: 0.85rem 1.5rem;
     font-size: 1rem;
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
 }
 
 /* ============================================

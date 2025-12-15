@@ -1,7 +1,7 @@
 // src/components/newgame/GameNameInput.jsx
 import React, { useState, useEffect } from 'react';
 
-function GameNameInput({ value, onChange, required = true, initialFullName = '' }) { // ✅ initialFullName hinzugefügt
+function GameNameInput({ value, onChange, required = true, initialFullName = '', isValid = true }) { // ✅ isValid hinzugefügt
   const [suffix, setSuffix] = useState('');
   const [inputValue, setInputValue] = useState(value || ''); // ✅ Lokaler State für Input
 
@@ -32,7 +32,7 @@ function GameNameInput({ value, onChange, required = true, initialFullName = '' 
       setSuffix(newSuffix);
       
       // ✅ Default-Name setzen
-      const defaultName = 'Mein Spiel';
+      const defaultName = 'Mein_Spiel';
       setInputValue(defaultName);
       
       // ✅ Initialen Callback mit Default-Name
@@ -53,7 +53,11 @@ function GameNameInput({ value, onChange, required = true, initialFullName = '' 
 
   // Handler für Input-Änderung
   const handleInputChange = (e) => {
-    const newInputValue = e.target.value;
+    let newInputValue = e.target.value;
+    
+    // Entferne Leerzeichen und ersetze durch Unterstriche
+    newInputValue = newInputValue.replace(/\s+/g, '_');
+    
     setInputValue(newInputValue);
     
     // Kombiniere Input + Suffix
@@ -74,8 +78,8 @@ function GameNameInput({ value, onChange, required = true, initialFullName = '' 
         <input
           type="text"
           id="gameName"
-          className="form-input form-input--gamename"
-          placeholder="Mein Spiel"
+          className={`form-input form-input--gamename ${!isValid ? 'form-input--warning' : ''}`}
+          placeholder="Mein_Spiel"
           value={inputValue} // ✅ Kontrollierter Input
           onChange={handleInputChange}
           required={required}

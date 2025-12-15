@@ -400,95 +400,6 @@ function MainLayout() {
                 </div>
             </footer>
 
-            <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-
-        /* Footer Styles */
-        .footer-content {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 2rem;
-        }
-
-        .footer-links {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .footer-link {
-          background: none;
-          border: none;
-          color: var(--text-secondary);
-          text-decoration: underline;
-          cursor: pointer;
-          font-size: 0.9rem;
-          padding: 0;
-        }
-
-        .footer-link:hover {
-          color: var(--text-primary);
-        }
-
-        .footer-separator {
-          color: var(--text-secondary);
-          font-size: 0.9rem;
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-        }
-
-        .modal-content {
-          background: var(--bg-card);
-          border-radius: 8px;
-          box-shadow: var(--shadow-xl);
-          max-width: 600px;
-          width: 90%;
-          max-height: 80vh;
-          overflow-y: auto;
-        }
-
-        .modal-header {
-          padding: 1.5rem;
-          border-bottom: 1px solid var(--border-color);
-        }
-
-        .modal-header h2 {
-          margin: 0;
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: var(--text-primary);
-        }
-
-        .modal-body {
-          padding: 1.5rem;
-        }
-
-        .modal-footer {
-          padding: 1.5rem;
-          border-top: 1px solid var(--border-color);
-          display: flex;
-          justify-content: flex-end;
-        }
-      `}</style>
-
             {/* Impressum Modal */}
             {showImprintModal && (
                 <div className="modal-overlay">
@@ -496,8 +407,37 @@ function MainLayout() {
                         <div className="modal-header">
                             <h2>Impressum</h2>
                         </div>
-                        <div className="modal-body">
-                            <p>Impressum-Inhalt wird hier eingefügt...</p>
+                        <div className="modal-body modal-body-scroll">
+                            <h3>Angaben gemäß § 5 TMG</h3>
+                            <p>
+                                <b>Kai Akkermann</b><br />
+                                Rennerskamp 16 B<br />
+                                32289 Rödinghausen<br />
+                                Deutschland
+                            </p>
+                            <h3>Kontakt</h3>
+                            <p>
+                                Telefon: +49 (0)151 6524 5116<br />
+                                E-Mail: kai.akkermann@kighlander.de<br />
+                                Web: https://kighlander.de
+                            </p>
+                            <h3>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h3>
+                            <p>
+                                Kai Akkermann<br />
+                                (Anschrift wie oben)
+                            </p>
+                            <h3>Non-Profit-Hinweis</h3>
+                            <p>
+                                Dieses Webangebot ist ein privates, nicht-kommerzielles Non-Profit-Projekt. Es erfolgt keine Gewinnerzielungsabsicht und keine kommerzielle Nutzung der bereitgestellten Inhalte.
+                            </p>
+                            <h3>Haftungsausschluss</h3>
+                            <p>
+                                Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden. Es bestehen keine externen Links.
+                            </p>
+                            <h3>Streitschlichtung</h3>
+                            <p>
+                                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit. Als privater, nicht-kommerzieller Betreiber bin ich nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+                            </p>
                         </div>
                         <div className="modal-footer">
                             <button 
@@ -518,8 +458,66 @@ function MainLayout() {
                         <div className="modal-header">
                             <h2>Datenschutzerklärung</h2>
                         </div>
-                        <div className="modal-body">
-                            <p>Datenschutzerklärung-Inhalt wird hier eingefügt...</p>
+                        <div className="modal-body modal-body-scroll">
+                            <h3>1. Verantwortlicher</h3>
+                            <p>
+                                Verantwortlich für die Datenverarbeitung ist der im <b>Impressum</b> genannte Betreiber dieser Anwendung.
+                                <br />
+                                Siehe <button className="footer-link footer-link-inline" onClick={() => { setShowPrivacyModal(false); setShowImprintModal(true); }}>Impressum</button>.
+                            </p>
+                            <h3>2. Zwecke und Rechtsgrundlagen der Datenverarbeitung</h3>
+                            <ul>
+                                <li>Bereitstellung und Betrieb der App (Art. 6 Abs. 1 lit. b DSGVO)</li>
+                                <li>Authentifizierung und Verwaltung von Nutzerkonten (Art. 6 Abs. 1 lit. b DSGVO)</li>
+                                <li>Führen von Ranglisten und Spielstatistiken (Art. 6 Abs. 1 lit. f DSGVO, berechtigtes Interesse)</li>
+                                <li>Erfüllung gesetzlicher Aufbewahrungspflichten (Art. 6 Abs. 1 lit. c DSGVO)</li>
+                            </ul>
+                            <h3>3. Erhobene Daten</h3>
+                            <ul>
+                                <li><b>E-Mail-Adresse</b> (bei Registrierung): Authentifizierung, Accountverwaltung, Wiederherstellung</li>
+                                <li><b>Name/Alias</b>: Anzeige im Spiel, Ranglisten</li>
+                                <li><b>Passwort</b>: Nur gehasht gespeichert</li>
+                                <li><b>Spielverläufe & Statistiken</b>: Zuordnung zu User-ID, für 2 Jahre gespeichert</li>
+                                <li><b>Geräte-/Nutzungsdaten</b>: Nur technisch notwendige Daten (z.B. Session, Cookies)</li>
+                            </ul>
+                            <h3>4. Speicherdauer und Löschung</h3>
+                            <ul>
+                                <li>Accountdaten: Bis zur Löschung des Accounts, danach E-Mail & User-ID für 2 Jahre (Ranglisten-Konsistenz, Wiederherstellung)</li>
+                                <li>Spielverläufe: 2 Jahre ab Spielende, dann automatische Löschung</li>
+                                <li>Ranglisten: Dauerhaft, aber nach Account-Löschung anonymisiert („Anonymer Nutzer“)</li>
+                                <li>Backups: Maximal 30 Tage</li>
+                            </ul>
+                            <h3>5. Betroffenenrechte</h3>
+                            <ul>
+                                <li>Auskunft über gespeicherte Daten (Art. 15 DSGVO)</li>
+                                <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
+                                <li>Löschung („Recht auf Vergessenwerden“, Art. 17 DSGVO)</li>
+                                <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+                                <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+                                <li>Widerspruch gegen Verarbeitung (Art. 21 DSGVO)</li>
+                                <li>Beschwerderecht bei einer Aufsichtsbehörde</li>
+                            </ul>
+                            <h3>6. Weitergabe von Daten</h3>
+                            <p>
+                                Es erfolgt keine Weitergabe Ihrer Daten an Dritte, außer es besteht eine gesetzliche Pflicht oder Sie haben ausdrücklich eingewilligt.
+                            </p>
+                            <h3>7. Technische und organisatorische Maßnahmen</h3>
+                            <ul>
+                                <li>Passwort-Hashing (bcrypt)</li>
+                                <li>Soft-Delete mit 30-Tage-Frist</li>
+                                <li>Automatische Löschung von Spielverläufen</li>
+                                <li>Zugriffsbeschränkungen für Admins</li>
+                                <li>Regelmäßige Backups (max. 30 Tage)</li>
+                                <li>CSRF-Schutz, Authentifizierung via Sanctum</li>
+                                <li>Logging und Monitoring von Löschvorgängen</li>
+                            </ul>
+                            <h3>8. Kontakt</h3>
+                            <p>
+                                Für Fragen zum Datenschutz wenden Sie sich bitte an den im <b>Impressum</b> genannten Kontakt.
+                            </p>
+                            <p className="modal-note">
+                                Stand: 15.12.2025 – Diese Datenschutzerklärung wird regelmäßig aktualisiert.
+                            </p>
                         </div>
                         <div className="modal-footer">
                             <button 

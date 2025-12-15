@@ -135,12 +135,12 @@
 }
 
 .btn-primary {
-    background: var(--primary-color);
+    background: var(--primary-green);
     color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-    background: var(--primary-hover);
+    background: var(--primary-green-light);
 }
 
 .btn-primary:disabled {
@@ -160,12 +160,12 @@
 }
 
 .btn-danger {
-    background: var(--error-color);
+    background: var(--accent-red);
     color: white;
 }
 
 .btn-danger:hover {
-    background: var(--error-hover);
+    background: var(--accent-red-hover);
 }
 
 .btn-sm {
