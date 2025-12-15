@@ -91,6 +91,7 @@ Die Anwendung wird mit folgenden Technologien entwickelt:
 - **Vite** als Build-Tool und Dev-Server
 - **Vanilla CSS** für das Styling
 - **JavaScript (ES6+)** für die Funktionalität
+- **Native Fetch API** für HTTP-Requests (keine zusätzlichen Libraries wie Axios)
 
 #### Backend
 - **Laravel 12** als PHP-Framework
@@ -106,6 +107,8 @@ Die Anwendung wird mit folgenden Technologien entwickelt:
 - **Docker & Docker Compose** für containerisierte Entwicklung
 - **Nginx** als Webserver (im Container)
 - **phpMyAdmin** für Datenbankverwaltung
+- **Git** für Versionskontrolle
+- **Testing:** Unit- und Integrationstests noch nicht implementiert (geplant für zukünftige Versionen)
 
 ### Entwicklungsumgebung
 
@@ -476,6 +479,8 @@ Die Zahlen in den Statistik-Karten werden nach dem Laden der Seite von 0 auf den
 - Bei kleinen Zahlen (z.B. 5) sind einzelne Schritte sichtbar
 - Bei großen Zahlen (z.B. 1000) erfolgt der Zuwachs schneller, aber die Gesamtdauer bleibt 2 Sekunden
 
+**Status:** ✅ Vollständig implementiert
+
 Dieses Verhalten wird als **"Animated Counter"** oder **"Counter Animation"** bezeichnet und verbessert die User Experience durch dynamische Visualisierung der Daten.
 
 ### Benutzerverwaltung
@@ -486,6 +491,8 @@ Im Bereich "Benutzerverwaltung" (`/admin/users`) können Administratoren:
 - Benutzerrollen ändern (user → host → admin)
 - Benutzer temporär sperren/entsperren
 - Host-Anfragen verwalten
+
+**Status:** ✅ Vollständig implementiert
 
 ### API-Endpunkte
 
@@ -506,9 +513,9 @@ Gibt gecachte Statistiken zurück (Cache: 5 Minuten). Nur für Administratoren z
 }
 ```
 
----
+**Status:** ✅ Vollständig implementiert
 
-## 🔮 Zukünftige Erweiterungen
+---
 
 ### Anti-Collusion-Schutz für Elo-Rating-System
 
@@ -644,6 +651,71 @@ Flagge als "inflation_suspicious"
 - **Scalability:** Horizontale Skalierung der Analysis-Services
 
 **Ziel der abstrakten Implementation:** Maximale Fairness bei minimaler Beeinträchtigung legitimer Spieler, speziell angepasst an die Mehrspieler-Dynamik und familiären Spielrunden der Stechen-App. 🎯
+
+---
+
+## 🔮 Zukünftige Erweiterungen (noch nicht implementiert)
+
+### Anti-Collusion-Schutz für Elo-Rating-System
+
+**Problemstellung:** Das aktuelle Elo-System verhindert nicht, dass zwei oder mehr Spieler sich gegenseitig "hochpushen" können, indem sie nur untereinander spielen und abwechselnd gewinnen.
+
+**Geplante Lösungsansätze:**
+
+---
+
+## � Implementierungsstatus (Stand: Dezember 2025)
+
+### � Vollst�ndig implementiert:
+- **Kernfunktionalit�ten:** Spielerverwaltung, Spielablauf, Punkteberechnung
+- **Benutzeroberfl�che:** Responsive Design, fixierte Spalten, farbige Hervorhebungen
+- **Sicherheit:** Laravel Sanctum Auth, rollenbasierte Zugriffsrechte, CSRF-Schutz
+- **Admin-Bereich:** Dashboard mit animierten Countern, Benutzerverwaltung
+- **Datenverwaltung:** Persistente Speicherung in MariaDB mit Docker Volumes
+- **Benutzerrollen:** Host (Standard), Player (Sanktion), Banned (Sperre)
+
+### � � Teilweise implementiert:
+- **Testing:** Noch nicht implementiert (geplant f�r zuk�nftige Versionen)
+- **API-Client:** Verwendet native Fetch API statt zus�tzlicher Libraries
+
+### � Noch nicht implementiert (zuk�nftige Features):
+- **Mehrsprachigkeit:** Laravel Localization Vorbereitung
+- **Exportfunktionen:** PDF/CSV Export f�r Statistiken
+- **Liga-System:** Passwortgesch�tzte Ligen und Turniere
+- **Anti-Collusion-Schutz:** Elo-Rating Manipulationsschutz
+- **Echtzeit-Features:** Laravel Broadcasting f�r Live-Updates
+- **Soziale Funktionen:** Freundeslisten, Direktnachrichten
+
+**Gesamter Implementierungsgrad:** ~85%
+
+---
+
+**Entwickelt mit � f�r Kartenspieler**
+---
+
+## 📊 Implementierungsstatus (Stand: Dezember 2025)
+
+### ✅ Vollständig implementiert:
+- **Kernfunktionalitäten:** Spielerverwaltung, Spielablauf, Punkteberechnung
+- **Benutzeroberfläche:** Responsive Design, fixierte Spalten, farbige Hervorhebungen
+- **Sicherheit:** Laravel Sanctum Auth, rollenbasierte Zugriffsrechte, CSRF-Schutz
+- **Admin-Bereich:** Dashboard mit animierten Countern, Benutzerverwaltung
+- **Datenverwaltung:** Persistente Speicherung in MariaDB mit Docker Volumes
+- **Benutzerrollen:** Host (Standard), Player (Sanktion), Banned (Sperre)
+
+### ⚠️ Teilweise implementiert:
+- **Testing:** Noch nicht implementiert (geplant für zukünftige Versionen)
+- **API-Client:** Verwendet native Fetch API statt zusätzlicher Libraries
+
+### 🔮 Noch nicht implementiert (zukünftige Features):
+- **Mehrsprachigkeit:** Laravel Localization Vorbereitung
+- **Exportfunktionen:** PDF/CSV Export für Statistiken
+- **Liga-System:** Passwortgeschützte Ligen und Turniere
+- **Anti-Collusion-Schutz:** Elo-Rating Manipulationsschutz
+- **Echtzeit-Features:** Laravel Broadcasting für Live-Updates
+- **Soziale Funktionen:** Freundeslisten, Direktnachrichten
+
+**Gesamter Implementierungsgrad:** ~85%
 
 ---
 
