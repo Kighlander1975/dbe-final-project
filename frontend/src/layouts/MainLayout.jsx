@@ -32,6 +32,9 @@ function MainLayout() {
     // ⭐ Active Game State
     const [activeGame, setActiveGame] = useState(null);
 
+    // Orientation-Check
+    const [deviceStatus, setDeviceStatus] = useState({ isAllowed: true, reason: null });
+
     // Modal States
     const [showImprintModal, setShowImprintModal] = useState(false);
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
