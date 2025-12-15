@@ -94,7 +94,7 @@ Der Schriftführer notiert die Punkte auf dem Zettel (später in der App) und z�
 | Begriff | Erklärung |
 |---------|-----------|
 | **Stich** | Eine Spielrunde, bei der jeder Spieler eine Karte legt. Der Spieler mit der höchsten Karte der ausgespielten Farbe oder der höchsten Trumpf-Farbe gewinnt den Stich. |
-| **Trumpf-Farbe** | Die zu Beginn des Spiels durch eine aufgedeckte Karte festgelegte Farbe, die alle anderen Farben schlägt. |
+| **Trumpf-Farbe** | Die zu Beginn jeder Runde durch eine aufgedeckte Karte festgelegte Farbe, die alle anderen Farben schlägt. |
 | **Bedienen** | Die Pflicht, eine Karte der ausgespielten Farbe zu legen, wenn man diese besitzt. |
 | **Dealer** | Der Kartengeber, der die Karten mischt und austeilt. Diese Rolle wechselt nach jeder Runde im Uhrzeigersinn. |
 | **Ansagen** | Die Vorhersage eines Spielers, wie viele Stiche er in einer Runde zu machen glaubt. Basis für die spätere Punkteberechnung. |
