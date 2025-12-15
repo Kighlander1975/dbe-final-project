@@ -518,26 +518,7 @@ stechen-helper/
 │       └── docker/
 │
 ├── bilder_sammlung/         # Bildersammlung
-├── gedanken/                # Dokumentation und Gedanken
-│   ├── ADMIN-DASHBOARD-DOCS.md
-│   ├── ALL-INKL-DEPLOYMENT.md
-│   ├── BACKEND-PLANUNG.md
-│   ├── CSS-Strukturen-Konzept.md
-│   ├── DEPLOYMENT.md
-│   ├── FineTuning.md
-│   ├── FRONTEND-ROLE-DOCS.md
-│   ├── HOST-REQUESTS-DOCS.md
-│   ├── Live-Server-Aufgaben.md
-│   ├── LOADING-OVERLAY-DOCS.md
-│   ├── NeuerTag.md
-│   ├── NEW-GAME-PRE-START.md
-│   ├── newGame.md
-│   ├── PRE-GAME-DOCS.md
-│   ├── Routing-Konzept.md
-│   ├── testdaten.md
-│   ├── User-Rollen-und-Berechtigungen.md
-│   └── VIRTUELLER-NOTIZZETTEL.md
-│
+
 └── Screenshots/             # Screenshots
     └── commit-74426cd/
 ```
