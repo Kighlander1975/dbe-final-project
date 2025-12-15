@@ -53,11 +53,11 @@ Das **Stechen**-Helper Projekt ist eine Webanwendung, die entwickelt wird, um di
 Das Kartenspiel **Stechen** ist in meiner Familie ein beliebtes Gesellschaftsspiel, das oft mit Freunden und der Familie gespielt wird. Es basiert auf dem Kartenspiel [**11er Raus**](https://amzn.eu/d/eReStgf), dessen Regeln ich gleich noch näher erläutere. Für dieses Spiel braucht man einen Schriftführer, der die Punkte mitschreibt und so später dann der Gewinner ermittelt werden kann. Und HIER kommt die App ins Spiel. Meine App soll den Papieraufwand minimieren, wenn nicht gleich eliminieren und einen schnelleren und zugleich komplett regelkonformen Ablauf zu gewährleisten. Das *tracken* einer Partie ist aber nur ein Teil der App. Mit dieser App soll man zudem auch mehrere Spielgruppen organisieren können und Ranglisten sowie Spielerstärken ermitteln.
 
 ### Die Regeln des Spiels **Stechen**
-Für dieses Spiel benötigt man das oben erwähnte **11er Raus** Kartenspiel. **Stechen** ist ein Spiel für min. 2 und maximal 11 Personen. Den meisten Spielspaß hat man allerdings erst ab mindestens drei Personen.
+Für dieses Spiel benötigt man das oben erwähnte **11er Raus** Kartenspiel. **Stechen** ist ein Spiel für mind. 2 und maximal 11 Personen. Den meisten Spielspaß hat man allerdings erst ab mindestens drei Personen.
 
 Ziel dieses Spieles ist es, durch die geschickte Analyse seiner Karten und die Ansage seiner zu erwartenden Stiche eine bestimmte Punktzahl als Erstes so schnell wie möglich zu erreichen.
 
-Das **11er Raus** Kartenspiel besteht aus 80 Karten, aufgeteilt in 4 Farben, rot, gelb, grün und blau, zu Werten von 1-20. Daher ergibt sich auch die Höchstgrenze für Mitspieler: 11 Spieler á 7 Karten = 77 Karten, drei rest im Stack. Davon eine Karte noch als Trumpf-Karte = 78 Karten, zwei verbleibend.
+Das **11er Raus** Kartenspiel besteht aus 80 Karten, aufgeteilt in 4 Farben, rot, gelb, grün und blau, zu Werten von 1-20. Daher ergibt sich auch die Höchstgrenze für Mitspieler: 11 Spieler je 7 Karten = 77 Karten, drei rest im Stack. Davon eine Karte als Trumpf-Karte = 78 Karten, zwei verbleibende.
 
 Je nach Anzahl der Spieler gibt es unterschiedliche Anzahl von Karten, die die Spieler zu Beginn erhalten:
 - 2 - 6 Spieler: 9 Karten
@@ -68,7 +68,7 @@ Die restlichen Karten verbleiben als Stapel, wobei noch EINE Karte als Trumpfkar
 Zu Beginn des Spieles wird der Kartengeber (Dealer) bestimmt, danach wechselt dieser pro Spielrunde im Uhrzeigersinn. Der Dealer mischt die Karten und teilt sie aus. Danach wird die Trumpfkarte aufgedeckt. Eine Runde besteht aus drei Spielabschnitten, die nun näher erläutert werden.
 
 #### Das Ansagen
-In diesem Spielabschnitt startet der Spieler **links vom Dealer** mit den Ansagen. Einen sogenannten *Stich* kann man machen, wenn man mit der ausgespielten Farbe die Höchste Zahl selbst hat oder, wenn die ausgespielte Karte keine Trumpf-Farbe ist, die höchste Trumpf-Farbenkarte auf den Tisch legt. Entscheidend ist, dass man die Farbe, die ausgespielt wurde, bedienen muss, es sei denn, man hat diese Farbe nicht. Dann kann man entweder eine Trumpf-Farbe legen und so eventuell den Stich zu bekommen oder eine andere Farbe abwerfen. Mit diesem Hintergrund *schätzt* der Spieler, wie viele Stiche er mit seinen Karten bekommt. Es sind Ansagen von 0 bis 7 (oder 9 bei Spieleranzahl kleiner sieben) möglich.
+In diesem Spielabschnitt startet der Spieler **links vom Dealer** mit den Ansagen. Einen sogenannten *Stich* kann man machen, wenn man mit der ausgespielten Farbe die höchste Zahl selbst hat oder, wenn die ausgespielte Karte keine Trumpf-Farbe ist, die höchste Trumpf-Farbe-Karte auf den Tisch legt. Entscheidend ist, dass man die Farbe, die ausgespielt wurde, bedienen muss, es sei denn, man hat diese Farbe nicht. Dann kann man entweder eine Trumpf-Farbe legen und so eventuell den Stich zu bekommen oder eine andere Farbe abwerfen. Mit diesem Hintergrund *schätzt* der Spieler, wie viele Stiche er mit seinen Karten bekommt. Es sind Ansagen von 0 bis 7 (oder 9 bei Spieleranzahl kleiner als sieben) möglich.
 
 Hierbei kommt auch die strategische Komponente ins Spiel, denn die nachfolgenden Spieler können die Ansagen der Vorherigen sehen und so ihre eigene Ansage anpassen. 
 
@@ -328,7 +328,7 @@ Die Benutzeroberfläche wird für Tablets und Desktop optimiert, mit Unterstütz
 
 Besonderheiten des UI-Designs:
 - Fixierte Spalten für Spielernamen und Gesamtpunkte (bleiben immer sichtbar)
-- Horizontal scrollbarer Bereich zwischen den fixierten Spalten, der alle Rundendetails enthält und bei vielen Runden ein horizontales Scrollen ermöglicht, während die Spielernamen und Gesamtpunkte stets sichtbar bleiben
+- Horizontal scrollbar Bereich zwischen den fixierten Spalten, der alle Rundendetails enthält und bei vielen Runden ein horizontales Scrollen ermöglicht, während die Spielernamen und Gesamtpunkte stets sichtbar bleiben
 - Farbliche Hervorhebung für:
   - Dealer der aktuellen Runde
   - Übereinstimmende Ansagen und erreichte Stiche
