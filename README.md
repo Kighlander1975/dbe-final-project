@@ -14,6 +14,14 @@
   <img src="https://img.shields.io/github/stars/Kighlander1975/dbe-final-project.svg" alt="Stars">
   <img src="https://img.shields.io/github/last-commit/Kighlander1975/dbe-final-project.svg" alt="Last Commit">
   <img src="https://img.shields.io/github/repo-size/Kighlander1975/dbe-final-project.svg" alt="Repo Size">
+  <img src="https://img.shields.io/github/contributors/Kighlander1975/dbe-final-project.svg" alt="Contributors">
+  <img src="https://img.shields.io/github/commit-activity/m/Kighlander1975/dbe-final-project.svg" alt="Commit Activity">
+  <br>
+  <img src="https://img.shields.io/codeclimate/maintainability/Kighlander1975/dbe-final-project.svg" alt="Maintainability">
+  <img src="https://img.shields.io/codacy/grade/dbe-final-project.svg" alt="Codacy">
+  <img src="https://img.shields.io/github/actions/workflow/status/Kighlander1975/dbe-final-project/ci.yml.svg" alt="CI">
+  <img src="https://img.shields.io/david/Kighlander1975/dbe-final-project.svg" alt="Dependencies">
+  <img src="https://img.shields.io/david/dev/Kighlander1975/dbe-final-project.svg" alt="Dev Dependencies">
 </p>
 
 ### Inhaltsverzeichnis
