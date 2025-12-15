@@ -55,7 +55,7 @@ Das Kartenspiel **Stechen** ist in meiner Familie ein beliebtes Gesellschaftsspi
 ### Die Regeln des Spiels **Stechen**
 Für dieses Spiel benötigt man das oben erwähnte **11er Raus** Kartenspiel. **Stechen** ist ein Spiel für min. 2 und maximal 11 Personen. Den meisten Spielspaß hat man allerdings erst ab mindestens drei Personen.
 
-Ziel dieses Spieles ist es, durch geschicktes Analysieren seiner Karten und ansagen seiner zu erwartenden Stiche eine bestimmte Punktzahl als erstes so schnell wie möglich zu erreichen.
+Ziel dieses Spieles ist es, durch die geschickte Analyse seiner Karten und die Ansage seiner zu erwartenden Stiche eine bestimmte Punktzahl als Erstes so schnell wie möglich zu erreichen.
 
 Das **11er Raus** Kartenspiel besteht aus 80 Karten, aufgeteilt in 4 Farben, rot, gelb, grün und blau, zu Werten von 1-20. Daher ergibt sich auch die Höchstgrenze für Mitspieler: 11 Spieler á 7 Karten = 77 Karten, drei rest im Stack. Davon eine Karte noch als Trumpf-Karte = 78 Karten, zwei verbleibend.
 
