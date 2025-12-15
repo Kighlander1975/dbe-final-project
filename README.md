@@ -1,6 +1,21 @@
 # Abschlussprojekt DBE-Academy Frontend Web Developer
 ### Projekt: **Stechen**-Helper
 
+<!-- Badges -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12-red.svg" alt="Laravel">
+  <img src="https://img.shields.io/badge/PHP-8.2-blue.svg" alt="PHP">
+  <img src="https://img.shields.io/badge/React-18.3.1-blue.svg" alt="React">
+  <img src="https://img.shields.io/badge/Node.js-20-green.svg" alt="Node.js">
+  <img src="https://img.shields.io/badge/Docker-Ready-blue.svg" alt="Docker">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+  <br>
+  <img src="https://img.shields.io/github/issues/Kighlander1975/dbe-final-project.svg" alt="Issues">
+  <img src="https://img.shields.io/github/stars/Kighlander1975/dbe-final-project.svg" alt="Stars">
+  <img src="https://img.shields.io/github/last-commit/Kighlander1975/dbe-final-project.svg" alt="Last Commit">
+  <img src="https://img.shields.io/github/repo-size/Kighlander1975/dbe-final-project.svg" alt="Repo Size">
+</p>
+
 ### Inhaltsverzeichnis
 1. [Einleitung](#einleitung)
 2. [Projektbeschreibung](#projektbeschreibung)
