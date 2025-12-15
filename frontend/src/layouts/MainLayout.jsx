@@ -32,8 +32,9 @@ function MainLayout() {
     // ⭐ Active Game State
     const [activeGame, setActiveGame] = useState(null);
 
-    // Orientation-Check
-    const [deviceStatus, setDeviceStatus] = useState({ isAllowed: true, reason: null });
+    // Modal States
+    const [showImprintModal, setShowImprintModal] = useState(false);
+    const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
     // ⭐ Function to refresh active game status
     const refreshActiveGame = async () => {
@@ -376,7 +377,24 @@ function MainLayout() {
             </main>
 
             <footer className="main-layout__footer">
-                <p>© 2025 Stechen Helper - Alle Rechte vorbehalten</p>
+                <div className="footer-content">
+                    <p>© 2025 Stechen Helper - Alle Rechte vorbehalten</p>
+                    <div className="footer-links">
+                        <button 
+                            onClick={() => setShowImprintModal(true)}
+                            className="footer-link"
+                        >
+                            Impressum
+                        </button>
+                        <span className="footer-separator">|</span>
+                        <button 
+                            onClick={() => setShowPrivacyModal(true)}
+                            className="footer-link"
+                        >
+                            Datenschutzerklärung
+                        </button>
+                    </div>
+                </div>
             </footer>
 
             <style>{`
@@ -384,7 +402,133 @@ function MainLayout() {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
         }
+
+        /* Footer Styles */
+        .footer-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 2rem;
+        }
+
+        .footer-links {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .footer-link {
+          background: none;
+          border: none;
+          color: var(--text-secondary);
+          text-decoration: underline;
+          cursor: pointer;
+          font-size: 0.9rem;
+          padding: 0;
+        }
+
+        .footer-link:hover {
+          color: var(--text-primary);
+        }
+
+        .footer-separator {
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        }
+
+        .modal-content {
+          background: var(--bg-card);
+          border-radius: 8px;
+          box-shadow: var(--shadow-xl);
+          max-width: 600px;
+          width: 90%;
+          max-height: 80vh;
+          overflow-y: auto;
+        }
+
+        .modal-header {
+          padding: 1.5rem;
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+        }
+
+        .modal-footer {
+          padding: 1.5rem;
+          border-top: 1px solid var(--border-color);
+          display: flex;
+          justify-content: flex-end;
+        }
       `}</style>
+
+            {/* Impressum Modal */}
+            {showImprintModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h2>Impressum</h2>
+                        </div>
+                        <div className="modal-body">
+                            <p>Impressum-Inhalt wird hier eingefügt...</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button 
+                                onClick={() => setShowImprintModal(false)}
+                                className="btn btn-primary"
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Datenschutzerklärung Modal */}
+            {showPrivacyModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h2>Datenschutzerklärung</h2>
+                        </div>
+                        <div className="modal-body">
+                            <p>Datenschutzerklärung-Inhalt wird hier eingefügt...</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button 
+                                onClick={() => setShowPrivacyModal(false)}
+                                className="btn btn-primary"
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
