@@ -87,7 +87,7 @@ Der Schriftführer zählt reihum, beginnend vom Spieler **links vom Dealer** die
 ##### Sonderfall: 0 Punkte angesagt und eingehalten
 Hat der Spieler 0 Punkte angesagt und auch 0 Punkte erreicht, bekommt er 20 Punkte. Bei Nichteinhalten bekommt er so viele Punkte, wie er Stiche gesammelt hat.
 
-Der Schriftführer notiert die Punkte auf dem Zettel (später in der App) und zählt die Punkte zusammen. [Ein Beispiel eines solchen Punktezettels findet sich im Anhang/Ordner "preparation".] Sobald ein Spieler 100 Punkte + Datum erreicht hat, ist die Runde zu Ende. 100 plus Datum heißt, wenn heute z.B. der 6.11. wäre, dann ist die Gewinnmarke 106 Punkte, die es zu erreichen gilt. Haben mehrere Spieler die Gewinnmarke erreicht, dann ist derjenige Spieler, der diese Marke zuerst erreicht hat, der Gewinner.
+Der Schriftführer notiert die Punkte auf dem Zettel (später in der App) und zählt die Punkte zusammen. Sobald ein Spieler 100 Punkte + Datum erreicht hat, ist die Runde zu Ende. 100 plus Datum heißt, wenn heute z.B. der 6.11. wäre, dann ist die Gewinnmarke 106 Punkte, die es zu erreichen gilt. Haben mehrere Spieler die Gewinnmarke erreicht, dann ist derjenige Spieler, der diese Marke zuerst erreicht hat, der Gewinner.
 
 ### Glossar der Spielbegriffe
 
