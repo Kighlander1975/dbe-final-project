@@ -496,6 +496,13 @@ const rankingAPI = {
             loadingMessage: "Ranking-Statistiken werden geladen...",
         });
     },
+
+    // Get detailed ranking for a specific user
+    getUserRanking: async (userId) => {
+        return apiRequest(`/rankings/${userId}`, {
+            loadingMessage: "Spieler-Details werden geladen...",
+        });
+    },
 };
 
 export { authAPI, gameAPI, statsAPI, rankingAPI, adminAPI, publicAPI };
