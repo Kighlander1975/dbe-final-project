@@ -205,6 +205,8 @@ php artisan key:generate
 php artisan migrate
 exit
 
+**Hinweis:** Für E-Mail-Funktionalität bitte die `.env`-Datei des Backends anpassen, sonst könnten Fehler auftreten.
+
 # 4. Frontend-Dependencies installieren (falls nötig)
 docker exec -it stechen_frontend npm install
 ```
@@ -218,33 +220,6 @@ docker exec -it stechen_frontend npm install
   - Benutzer: `stechen_user`
   - Passwort: `stechen_password`
 - **Datenbank** (extern): `localhost:3307`
-
-#### Mobile Testing mit ngrok
-
-Für Tests auf echten Mobilgeräten (z.B. Tablet) oder externe Zugänglichkeit während der Entwicklung:
-
-1. **Ngrok installieren** (kostenlos): Lade von [https://ngrok.com](https://ngrok.com) herunter und installiere.
-
-2. **Docker-App starten**:
-   ```powershell
-   docker-compose up -d
-   ```
-
-3. **Ngrok-Tunnel erstellen**:
-   ```powershell
-   # Für Frontend (Port 3000)
-   ngrok http 3000
-
-   # Alternative: Für Backend (Port 8000)
-   ngrok http 8000
-   ```
-
-4. **Externe URL verwenden**: Ngrok zeigt eine temporäre HTTPS-URL (z.B. `https://abc123.ngrok.io`). Öffne diese auf deinem Mobilgerät.
-
-**Hinweise:**
-- Ngrok ist kostenlos für Basis-Tests (zeitlich begrenzt).
-- Verwende die lokale IP (`ipconfig` in CMD) für WLAN-Tests ohne ngrok.
-- Stelle sicher, dass dein Firewall ngrok erlaubt.
 
 #### Tägliche Nutzung
 
@@ -291,16 +266,16 @@ docker-compose ps
 
 #### 3. Organisations-Features
 - Erstellung von Einzelspielen
-- Verwaltung mehrerer Spielgruppen
-- Einladungssystem für Spiele
-- **Visuelle Unterscheidung pausierter Spiele**: Auf der Startseite werden pausierte Spiele mit drei verschiedenen Pastellfarben (Blau, Lila, Orange) hervorgehoben, um Verwechslungen bei gleichen Spielnamen zu vermeiden
-- **Detaillierte Tooltips**: Hover über pausierte Spiel-Buttons zeigt Spielerliste mit aktuellen Punkten und Rängen
+- Verwaltung mehrerer Spielgruppen *(noch nicht implementiert)*
+- Einladungssystem für Spiele *(noch nicht implementiert)*
+- Visuelle Unterscheidung pausierter Spiele: Auf der Startseite werden pausierte Spiele mit drei verschiedenen Pastellfarben (Blau, Lila, Orange) hervorgehoben, um Verwechslungen bei gleichen Spielnamen zu vermeiden
+- Detaillierte Tooltips: Hover über pausierte Spiel-Buttons zeigt Spielerliste mit aktuellen Punkten und Rängen
 
 #### 4. Statistik und Ranglisten
 - Globale Einzelspieler-Ranglisten
 - Spielerwertungen basierend auf vergangenen Spielen
 - Detaillierte Spielstatistiken
-- Ligatabellen
+- Ligatabellen *(noch nicht implementiert)*
 
 ### Benutzeroberfläche
 
@@ -395,7 +370,7 @@ Die Anwendung verwendet ein dreistufiges Sanktionssystem für Benutzerrollen:
 
 - **Automatische Rollenzuweisung**:
   - Neue Registrierungen erhalten automatisch die **Host**-Rolle
-  - **Player**-Rolle wird nur als Sanktion durch Administratoren vergeben
+  - **Player**-Rolle wird nur als Sanktion durch Administratoren vergeben. Kann auch vom Spieler erbeten werden, wenn er keine Spiele leiten möchte
   - **Banned**-Rolle ist die höchste Sanktionsstufe
 
 - **Sanktions-System**:
@@ -447,37 +422,124 @@ Die Anwendung wird modular aufgebaut, um zukünftige Erweiterungen zu erleichter
 
 ```
 stechen-helper/
-├── frontend/                 # React Frontend
-│   ├── src/
-│   │   ├── components/      # React-Komponenten
-│   │   ├── pages/           # Seiten-Komponenten
-│   │   ├── services/        # API-Services
-│   │   ├── utils/           # Hilfsfunktionen
-│   │   ├── App.jsx          # Haupt-App-Komponente
-│   │   └── main.jsx         # Entry Point
-│   ├── public/              # Statische Assets
-│   ├── package.json
-│   └── vite.config.js
+├── .github/                 # GitHub-spezifische Konfigurationen
+├── .gitignore               # Git-Ignore-Regeln
+├── AGENTS.MD                # Agenten-Dokumentation
+├── README.md                # Projekt-Dokumentation
+├── docker-compose.yml       # Docker-Konfiguration
+├── entrypoint.sh            # Docker-Entrypoint-Script
+├── frontend.Dockerfile      # Dockerfile für Frontend
+├── package-lock.json        # NPM-Abhängigkeiten (Root)
+├── check_games.php          # PHP-Skript für Spielprüfung
+├── check_user.php           # PHP-Skript für Benutzerprüfung
 │
 ├── backend/                 # Laravel Backend
 │   ├── app/
 │   │   ├── Http/
 │   │   │   ├── Controllers/ # API-Controller
 │   │   │   └── Middleware/  # Custom Middleware
+│   │   ├── Mail/            # E-Mail-Templates
 │   │   ├── Models/          # Eloquent Models
-│   │   └── Policies/        # Authorization Policies
+│   │   ├── Providers/       # Service Provider
+│   │   └── UserRole.php     # Benutzerrollen-Modell
+│   ├── bootstrap/
+│   │   ├── app.php
+│   │   ├── providers.php
+│   │   └── cache/
+│   ├── config/              # Konfigurationsdateien
+│   │   ├── app.php
+│   │   ├── auth.php
+│   │   ├── cache.php
+│   │   ├── cors.php
+│   │   ├── database.php
+│   │   ├── filesystems.php
+│   │   ├── logging.php
+│   │   ├── mail.php
+│   │   ├── queue.php
+│   │   ├── sanctum.php
+│   │   ├── services.php
+│   │   └── session.php
 │   ├── database/
+│   │   ├── factories/       # Model Factories
 │   │   ├── migrations/      # Datenbank-Migrationen
 │   │   └── seeders/         # Test-Daten
+│   ├── docker/
+│   │   ├── entrypoint.sh
+│   │   ├── nginx.conf
+│   │   └── supervisord.conf
+│   ├── public/
+│   │   ├── index.php
+│   │   ├── robots.txt
+│   │   └── build/
+│   ├── resources/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── views/
 │   ├── routes/
 │   │   ├── api.php          # API-Routen
+│   │   ├── console.php      # Konsolen-Befehle
 │   │   └── web.php          # Web-Routen
-│   ├── .env.example
-│   └── composer.json
+│   ├── storage/
+│   │   ├── app/
+│   │   ├── framework/
+│   │   └── logs/
+│   ├── tests/
+│   │   ├── Feature/
+│   │   ├── Unit/
+│   │   └── TestCase.php
+│   ├── artisan              # Laravel CLI
+│   ├── composer.json        # PHP-Abhängigkeiten
+│   ├── Dockerfile           # Backend-Dockerfile
+│   ├── package.json         # Node-Abhängigkeiten (Backend)
+│   ├── phpunit.xml          # Test-Konfiguration
+│   ├── README.md
+│   ├── supervisord.pid
+│   ├── test_update.php
+│   └── vite.config.js       # Vite-Konfiguration
 │
-├── docker-compose.yml       # Docker-Konfiguration
-├── .gitignore
-└── README.md
+├── frontend/                # React Frontend
+│   ├── public/              # Statische Assets
+│   ├── src/                 # Quellcode
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   └── ...              # Weitere Komponenten
+│   ├── index.html           # HTML-Template
+│   ├── package.json         # NPM-Abhängigkeiten
+│   └── vite.config.js       # Vite-Konfiguration
+│
+├── backup/                  # Backup-Dateien
+│   ├── docker-compose.yml
+│   ├── entrypoint.sh
+│   ├── frontend.Dockerfile
+│   ├── NeuerTag.md
+│   ├── PRE-GAME-DOCS.md
+│   └── backend/
+│       ├── Dockerfile
+│       └── docker/
+│
+├── bilder_sammlung/         # Bildersammlung
+├── gedanken/                # Dokumentation und Gedanken
+│   ├── ADMIN-DASHBOARD-DOCS.md
+│   ├── ALL-INKL-DEPLOYMENT.md
+│   ├── BACKEND-PLANUNG.md
+│   ├── CSS-Strukturen-Konzept.md
+│   ├── DEPLOYMENT.md
+│   ├── FineTuning.md
+│   ├── FRONTEND-ROLE-DOCS.md
+│   ├── HOST-REQUESTS-DOCS.md
+│   ├── Live-Server-Aufgaben.md
+│   ├── LOADING-OVERLAY-DOCS.md
+│   ├── NeuerTag.md
+│   ├── NEW-GAME-PRE-START.md
+│   ├── newGame.md
+│   ├── PRE-GAME-DOCS.md
+│   ├── Routing-Konzept.md
+│   ├── testdaten.md
+│   ├── User-Rollen-und-Berechtigungen.md
+│   └── VIRTUELLER-NOTIZZETTEL.md
+│
+└── Screenshots/             # Screenshots
+    └── commit-74426cd/
 ```
 
 ## Admin-Bereich
@@ -492,7 +554,6 @@ Das Admin-Dashboard (`/admin`) zeigt wichtige Statistiken in animierten Karten a
 - **🎮 Aktive Spiele**: Anzahl derzeit laufender Spiele
 - **⏸️ Pausierte Spiele**: Anzahl vorübergehend gestoppter Spiele
 - **🏆 Abgeschlossen**: Anzahl beendeter Spiele
-- **👑 Hosts-Anfragen**: Anzahl ausstehender Host-Berechtigungsanfragen
 
 #### Counter-Animation
 
@@ -512,7 +573,6 @@ Im Bereich "Benutzerverwaltung" (`/admin/users`) können Administratoren:
 - Alle Benutzer auflisten und durchsuchen
 - Benutzerrollen ändern (user → host → admin)
 - Benutzer temporär sperren/entsperren
-- Host-Anfragen verwalten
 
 **Status:** ✅ Vollständig implementiert
 
@@ -684,35 +744,6 @@ Flagge als "inflation_suspicious"
 
 **Geplante Lösungsansätze:**
 
----
-
-## � Implementierungsstatus (Stand: Dezember 2025)
-
-### � Vollst�ndig implementiert:
-- **Kernfunktionalit�ten:** Spielerverwaltung, Spielablauf, Punkteberechnung
-- **Benutzeroberfl�che:** Responsive Design, fixierte Spalten, farbige Hervorhebungen
-- **Sicherheit:** Laravel Sanctum Auth, rollenbasierte Zugriffsrechte, CSRF-Schutz
-- **Admin-Bereich:** Dashboard mit animierten Countern, Benutzerverwaltung
-- **Datenverwaltung:** Persistente Speicherung in MariaDB mit Docker Volumes
-- **Benutzerrollen:** Host (Standard), Player (Sanktion), Banned (Sperre)
-
-### � � Teilweise implementiert:
-- **Testing:** Noch nicht implementiert (geplant f�r zuk�nftige Versionen)
-- **API-Client:** Verwendet native Fetch API statt zus�tzlicher Libraries
-
-### � Noch nicht implementiert (zuk�nftige Features):
-- **Mehrsprachigkeit:** Laravel Localization Vorbereitung
-- **Exportfunktionen:** PDF/CSV Export f�r Statistiken
-- **Liga-System:** Passwortgesch�tzte Ligen und Turniere
-- **Anti-Collusion-Schutz:** Elo-Rating Manipulationsschutz
-- **Echtzeit-Features:** Laravel Broadcasting f�r Live-Updates
-- **Soziale Funktionen:** Freundeslisten, Direktnachrichten
-
-**Gesamter Implementierungsgrad:** ~85%
-
----
-
-**Entwickelt mit � f�r Kartenspieler**
 ---
 
 ## 📊 Implementierungsstatus (Stand: Dezember 2025)
