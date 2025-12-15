@@ -17,11 +17,10 @@
   <img src="https://img.shields.io/github/contributors/Kighlander1975/dbe-final-project.svg" alt="Contributors">
   <img src="https://img.shields.io/github/commit-activity/m/Kighlander1975/dbe-final-project.svg" alt="Commit Activity">
   <br>
-  <img src="https://img.shields.io/codeclimate/maintainability/Kighlander1975/dbe-final-project.svg" alt="Maintainability">
-  <img src="https://img.shields.io/codacy/grade/dbe-final-project.svg" alt="Codacy">
-  <img src="https://img.shields.io/github/actions/workflow/status/Kighlander1975/dbe-final-project/ci.yml.svg" alt="CI">
-  <img src="https://img.shields.io/david/Kighlander1975/dbe-final-project.svg" alt="Dependencies">
-  <img src="https://img.shields.io/david/dev/Kighlander1975/dbe-final-project.svg" alt="Dev Dependencies">
+  <img src="https://img.shields.io/badge/Open_Source-Yes-green.svg" alt="Open Source">
+  <img src="https://img.shields.io/badge/PRs-Welcome-blue.svg" alt="PRs Welcome">
+  <img src="https://img.shields.io/badge/Maintained-Yes-green.svg" alt="Maintained">
+  <img src="https://img.shields.io/badge/Status-Active-success.svg" alt="Status">
 </p>
 
 ### Inhaltsverzeichnis
