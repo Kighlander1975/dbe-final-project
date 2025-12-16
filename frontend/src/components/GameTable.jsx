@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RoundHeader from './rounds/RoundHeader';
 import RoundData from './rounds/RoundData';
 import { useToast } from '../context/ToastContext';
-import { gameAPI } from '../services/api';
+import { gameAPI, parseGameName } from '../services/api';
 import './GameTable.css';
 
 // Funktion zum Generieren zufälliger Bids (0-7)
@@ -169,9 +169,8 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     const handlePauseGame = async () => {
         try {
             await gameAPI.pauseGame(gameId);
-            const parts = gameData.gameName.split('_');
-            const gameTitle = parts[0];
-            showToast(`⏸️ Spiel "${gameTitle}" wurde pausiert`, 'success', 3000);
+            const { gameName } = parseGameName(gameData.gameName);
+            showToast(`⏸️ Spiel "${gameName}" wurde pausiert`, 'success', 3000);
             // Zur Startseite navigieren und Seite neu laden für aktualisierte Spiel-Liste
             window.location.href = '/';
         } catch (error) {
@@ -185,9 +184,8 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
         if (window.confirm('⚠️ Spiel wirklich abbrechen und löschen? Alle Daten gehen verloren!')) {
             try {
                 await gameAPI.deleteGame(gameId);
-                const parts = gameData.gameName.split('_');
-                const gameTitle = parts[0];
-                showToast(`🗑️ Spiel "${gameTitle}" wurde abgebrochen und gelöscht`, 'warning', 5000);
+                const { gameName } = parseGameName(gameData.gameName);
+                showToast(`🗑️ Spiel "${gameName}" wurde abgebrochen und gelöscht`, 'warning', 5000);
                 navigate('/');
             } catch (error) {
                 console.error('Failed to cancel game:', error);
@@ -613,30 +611,15 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
                  style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
                 <div className="game-table__header">
                     <h3>{(() => {
-                        // Parse gameName: Titel_TIMESTAMP_UUID
-                        const parts = (gameData.gameName || "Spiel-Tabelle").split('_');
-                        return parts[0]; // Nur der Titel vor dem ersten Unterstrich
+                        const { gameName } = parseGameName(gameData.gameName || "Spiel-Tabelle");
+                        return gameName;
                     })()}</h3>
                     {(() => {
-                        // Extrahiere Timestamp und UUID aus gameName
-                        const parts = (gameData.gameName || "").split('_');
-                        if (parts.length >= 3) {
-                            let timestamp = parseInt(parts[1]); // Timestamp als Zahl
-                            const uuid = parts[2];
-                            
-                            // Prüfe ob es Millisekunden oder Sekunden sind
-                            // Wenn Timestamp unrealistisch alt ist (< 2000), dann * 1000 für Sekunden
-                            if (timestamp < 1577836800000) { // 2020-01-01 in MS
-                                timestamp *= 1000; // Konvertiere Sekunden zu Millisekunden
-                            }
-                            
-                            // Konvertiere Timestamp zu Datum
-                            const date = new Date(timestamp);
-                            const dateStr = date.toLocaleDateString('de-DE');
-                            
+                        const { timestamp, uuid, formattedDate } = parseGameName(gameData.gameName || "");
+                        if (timestamp && uuid) {
                             return (
                                 <div className="game-table__header-info">
-                                    am <strong>{dateStr}</strong>
+                                    am <strong>{formattedDate}</strong>
                                     <span className="muted">({uuid})</span>
                                     <div className="game-table__victory-condition">
                                         🏆 Sieg bei {gameData.victoryCondition} Punkten

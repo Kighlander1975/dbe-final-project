@@ -57,39 +57,47 @@ class GameController extends Controller
         $formattedGames = $games->map(function ($game) {
             $gameData = $game->game_data;
             $players = $gameData['players'] ?? [];
-            $currentPoints = [];
+            $rounds = $gameData['rounds'] ?? [];
+            $totalPoints = [];
             $ranks = [];
 
-            // Berechne aktuelle Punkte und Ränge aus der letzten Runde
-            if (!empty($gameData['rounds'])) {
-                $lastRound = end($gameData['rounds']);
-                $currentPoints = $lastRound['points'] ?? [];
-                // Ränge berechnen
-                $pointsWithIndex = array_map(function($points, $index) {
-                    return ['points' => $points, 'index' => $index];
-                }, $currentPoints, array_keys($currentPoints));
-                usort($pointsWithIndex, function($a, $b) {
-                    return $b['points'] <=> $a['points'];
-                });
-                $rank = 1;
-                $prevPoints = null;
-                foreach ($pointsWithIndex as $item) {
-                    if ($prevPoints !== null && $item['points'] < $prevPoints) {
-                        $rank++;
+            // Berechne Gesamtpunkte aus allen Runden
+            foreach ($players as $playerIndex => $player) {
+                $totalPoints[$playerIndex] = 0;
+            }
+            foreach ($rounds as $round) {
+                if (isset($round['points']) && is_array($round['points'])) {
+                    foreach ($round['points'] as $playerIndex => $points) {
+                        $totalPoints[$playerIndex] += $points;
                     }
-                    $ranks[$item['index']] = $rank;
-                    $prevPoints = $item['points'];
                 }
+            }
+
+            // Ränge berechnen basierend auf Gesamtpunkten
+            $pointsWithIndex = array_map(function($points, $index) {
+                return ['points' => $points, 'index' => $index];
+            }, $totalPoints, array_keys($totalPoints));
+            usort($pointsWithIndex, function($a, $b) {
+                return $b['points'] <=> $a['points'];
+            });
+            $rank = 1;
+            $prevPoints = null;
+            foreach ($pointsWithIndex as $item) {
+                if ($prevPoints !== null && $item['points'] < $prevPoints) {
+                    $rank++;
+                }
+                $ranks[$item['index']] = $rank;
+                $prevPoints = $item['points'];
             }
 
             return [
                 'id' => $game->id,
-                'gameName' => $gameData['gameName'] ?? 'Unbenanntes Spiel',
+                'gameName' => $gameData['gameName'] ?? 'Unbekanntes Spiel',
                 'status' => $game->status,
-                'players' => array_map(function($player, $index) use ($currentPoints, $ranks) {
+                'players' => array_map(function($player, $index) use ($totalPoints, $ranks) {
                     return [
                         'name' => $player['name'] ?? 'Unbekannt',
-                        'points' => $currentPoints[$index] ?? 0,
+                        'totalPoints' => $totalPoints[$index] ?? 0,
                         'rank' => $ranks[$index] ?? 1
                     ];
                 }, $players, array_keys($players)),

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { useUserContext } from '../context/UserContext' // 🆕 UserContext
-import { gameAPI } from '../services/api' // ⭐ Game API
+import { gameAPI, parseGameName } from '../services/api' // ⭐ Game API
 import '../styles/pages/home.css'
 
 function Home() {
@@ -134,21 +134,8 @@ function Home() {
                         </div>
                         <div className="home__link-sub">
                           {(() => {
-                            const parts = (game.gameName || "").split('_');
-                            if (parts.length >= 3) {
-                              let timestamp = parseInt(parts[1]);
-                              const uuid = parts[2];
-
-                              if (timestamp < 1577836800000) {
-                                timestamp *= 1000;
-                              }
-
-                              const date = new Date(timestamp);
-                              const dateStr = date.toLocaleDateString('de-DE');
-
-                              return `${parts[0]} • ${dateStr}`;
-                            }
-                            return game.gameName || "Unbekanntes Spiel";
+                            const { gameName, formattedDate } = parseGameName(game.gameName);
+                            return `${gameName} • ${formattedDate}`;
                           })()}
                         </div>
                       </button>
@@ -170,28 +157,15 @@ function Home() {
                         onClick={() => handleResumeGame(game)}
                         className={`home__link--with-sub home__link-button home__link-button--paused-${(index % 3) + 1}`}
                         disabled={userGames.some(g => g.status === 'active')}
-                        title={`Spieler:\n${game.players?.map(p => `${p.rank}. ${p.name}: ${p.points} Pkt`).join('\n') || 'Keine Daten'}`}
+                        title={`Spieler:\n${game.players?.map(p => `${p.rank}. ${p.name}: ${p.totalPoints} Pkt`).join('\n') || 'Keine Daten'}`}
                       >
                         <div className="home__link-main">
                           ⏸️ Spiel fortsetzen
                         </div>
                         <div className="home__link-sub">
                           {(() => {
-                            const parts = (game.gameName || "").split('_');
-                            if (parts.length >= 3) {
-                              let timestamp = parseInt(parts[1]);
-                              const uuid = parts[2];
-
-                              if (timestamp < 1577836800000) {
-                                timestamp *= 1000;
-                              }
-
-                              const date = new Date(timestamp);
-                              const dateStr = date.toLocaleDateString('de-DE');
-
-                              return `${parts[0]} • ${dateStr}`;
-                            }
-                            return game.gameName || "Unbekanntes Spiel";
+                            const { gameName, formattedDate } = parseGameName(game.gameName);
+                            return `${gameName} • ${formattedDate}`;
                           })()}
                         </div>
                       </button>

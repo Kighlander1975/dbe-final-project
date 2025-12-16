@@ -7,7 +7,7 @@ import { useUnsavedChanges } from "../context/UnsavedChangesContext"; // 🆕 Un
 import LoadingOverlay from "../components/LoadingOverlay";
 import "../styles/layout.css";
 import "../components/OrientationGuard.css"; // Für die Sperre-Styles
-import { gameAPI, publicAPI } from "../services/api"; // ⭐ Game API und Public API import
+import { gameAPI, publicAPI, parseGameName } from "../services/api"; // ⭐ Game API und Public API import
 
 function MainLayout() {
     const { user, logout, loading, isAdmin, isGameCreator } = useAuth(); // ⭐ isAdmin und isGameCreator hinzugefügt
@@ -277,18 +277,8 @@ function MainLayout() {
                                                     disabled={location.pathname === `/game/${activeGame.id}`}
                                                 >
                                                     🎯 Zum aktiven Spiel: {(() => {
-                                                        const parts = activeGame.gameName.split('_');
-                                                        const title = parts[0];
-                                                        if (parts.length >= 2) {
-                                                            let timestamp = parseInt(parts[1]);
-                                                            if (timestamp < 1577836800000) {
-                                                                timestamp *= 1000;
-                                                            }
-                                                            const date = new Date(timestamp);
-                                                            const dateStr = date.toLocaleDateString('de-DE');
-                                                            return `${title} (${dateStr})`;
-                                                        }
-                                                        return title;
+                                                        const { gameName, formattedDate } = parseGameName(activeGame.gameName);
+                                                        return `${gameName} (${formattedDate})`;
                                                     })()}
                                                 </button>
                                             ) : (

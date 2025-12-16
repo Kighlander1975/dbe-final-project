@@ -1,7 +1,7 @@
 // src/pages/GameEvaluation.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { gameAPI } from '../services/api';
+import { gameAPI, parseGameName } from '../services/api';
 import '../styles/pages/game.css';
 
 function GameEvaluation() {
@@ -38,32 +38,7 @@ function GameEvaluation() {
         console.log('Processing game data:', data);
 
         // Parse game name: "Mein Spiel_1765705880_3ac8aa1c"
-        const rawGameName = data.gameName || 'Unbekanntes Spiel';
-        const nameParts = rawGameName.split('_');
-        
-        let gameName = 'Unbekanntes Spiel';
-        let timestamp = null;
-        let uuid = null;
-        
-        if (nameParts.length >= 3) {
-            gameName = nameParts[0];
-            timestamp = parseInt(nameParts[1]);
-            uuid = nameParts[2];
-        } else if (nameParts.length === 1) {
-            gameName = nameParts[0];
-        }
-
-        // Convert UNIX timestamp to MEZ date
-        let formattedDate = 'Unbekannt';
-        if (timestamp) {
-            const date = new Date(timestamp * 1000);
-            formattedDate = date.toLocaleDateString('de-DE', {
-                timeZone: 'Europe/Berlin',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-        }
+        const { gameName, timestamp, uuid, formattedDate } = parseGameName(data.gameName);
 
         const playersCount = data.players?.length || 0;
         const roundsPlayed = data.rounds?.length || 0;

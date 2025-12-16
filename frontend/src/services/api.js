@@ -20,6 +20,60 @@ export function setLoadingHandlers(handlers) {
     loadingHandlers = handlers;
 }
 
+// Utility-Funktion zum Parsen von Spielnamen
+// Format: "Spielname_Timestamp_UUID" (z.B. "Mein_Spiel_1765873483_574edaca")
+export function parseGameName(rawGameName) {
+    if (!rawGameName || typeof rawGameName !== 'string') {
+        return {
+            gameName: 'Unbekanntes Spiel',
+            timestamp: null,
+            uuid: null,
+            formattedDate: 'Unbekannt'
+        };
+    }
+
+    const parts = rawGameName.split('_');
+    
+    if (parts.length < 3) {
+        // Fallback für alte oder einfache Namen
+        return {
+            gameName: parts[0] || 'Unbekanntes Spiel',
+            timestamp: null,
+            uuid: null,
+            formattedDate: 'Unbekannt'
+        };
+    }
+
+    // Rückwärts parsen: UUID ist das letzte Element
+    const uuid = parts[parts.length - 1];
+    
+    // Timestamp ist das vorletzte Element
+    const timestampStr = parts[parts.length - 2];
+    const timestamp = parseInt(timestampStr, 10);
+    
+    // Spielname ist alles davor
+    const gameNameParts = parts.slice(0, -2);
+    const gameName = gameNameParts.join('_').replace(/_/g, ' '); // '_' zurück zu Leerzeichen
+    
+    // Datum formatieren
+    let formattedDate = 'Unbekannt';
+    if (!isNaN(timestamp)) {
+        const date = new Date(timestamp * 1000);
+        formattedDate = date.toLocaleDateString('de-DE', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    }
+
+    return {
+        gameName,
+        timestamp,
+        uuid,
+        formattedDate
+    };
+}
+
 /**
  * Cookie-Helper: Liest ein Cookie nach Namen
  */
