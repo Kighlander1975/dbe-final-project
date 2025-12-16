@@ -390,24 +390,16 @@ function PlayerInput({
 
     // Gefilterte E-Mail-Liste
     const getFilteredEmails = () => {
-        console.log("🎯 getFilteredEmails called for player", playerNumber);
-        console.log("📧 Available emails:", availableEmails.length, availableEmails.map(u => u.email));
-        console.log("👤 Current user:", currentUser?.email);
-        console.log("🚫 Used emails:", usedEmails);
-        
         const filtered = availableEmails.filter((item) => {
             if (item.email === currentUser?.email) {
-                console.log("🚫 Filter: currentUser", item.email);
                 return false;
             }
             if (usedEmails.includes(item.email) && item.email !== primaryValue) {
-                console.log("🚫 Filter: usedEmail", item.email);
                 return false;
             }
             return true;
         });
         
-        console.log("✅ Filtered emails:", filtered.length, filtered.map(u => u.email));
         return filtered;
     };
 

@@ -15,9 +15,7 @@ function GameEvaluation() {
     useEffect(() => {
         const loadGameData = async () => {
             try {
-                console.log('Loading game data for ID:', id);
                 const response = await gameAPI.getGame(id);
-                console.log('Game data loaded:', response);
                 setGameData(response.game_data);
                 setLoading(false);
             } catch (err) {
@@ -34,8 +32,6 @@ function GameEvaluation() {
 
     const processGameData = (data) => {
         if (!data) return null;
-
-        console.log('Processing game data:', data);
 
         // Parse game name: "Mein Spiel_1765705880_3ac8aa1c"
         const { gameName, timestamp, uuid, formattedDate } = parseGameName(data.gameName);
@@ -162,11 +158,9 @@ function GameEvaluation() {
     }
 
     const processedData = processGameData(gameData);
-    console.log('Processed data:', processedData);
 
     // Hilfsfunktion für Spieler-Status Icon und Tooltip
     const getPlayerStatusIcon = (player) => {
-        console.log('Player userId:', player.userId, 'Type:', typeof player.userId);
 
         if (player.userId === null) {
             // Gastspieler

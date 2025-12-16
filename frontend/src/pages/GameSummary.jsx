@@ -56,7 +56,7 @@ function GameSummary() {
       <div className="newgame">
         <div className="newgame__form">
           <div className="error-state">
-            <p>❌ Keine Spieldaten gefunden</p>
+            <p>Keine Spieldaten gefunden</p>
             <button
               className="btn btn-primary"
               onClick={() => navigate('/new-game')}
@@ -203,7 +203,6 @@ function GameSummary() {
             className="btn btn-primary"
             onClick={async () => {
               try {
-                console.log('🎮 Spiel starten Button geklickt');
                 // API-Call zum Erstellen des Spiels
                 const gameData = {
                   gameName,
@@ -225,7 +224,6 @@ function GameSummary() {
                 // Navigation zur Game-Seite mit der Spiel-ID
                 setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start
                 localStorage.setItem('gameActive', 'true'); // Spiel als aktiv markieren
-                console.log('📍 Navigate aufrufen...');
                 
                 // Navigation zur Game-Seite mit der Spiel-ID
                 setHasUnsavedChanges(false); // 🆕 Schutz deaktivieren für Spiel-Start

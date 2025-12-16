@@ -32,7 +32,6 @@ function ResetPassword() {
     setError('');
     setLoading(true);
 
-    // Validation
     if (!formData.email || !formData.token || !formData.password || !formData.password_confirmation) {
       setError('Bitte fülle alle Felder aus');
       setLoading(false);
@@ -59,15 +58,14 @@ function ResetPassword() {
         formData.password_confirmation
       );
 
-      showToast('✅ ' + response.message, 'success', 6000);
+      showToast(response.message, 'success', 6000);
       
-      // Nach 2 Sekunden zum Login
       setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (err) {
       setError(err.message || 'Ein Fehler ist aufgetreten');
-      showToast('❌ ' + (err.message || 'Fehler beim Zurücksetzen'), 'error');
+      showToast(err.message || 'Fehler beim Zurücksetzen', 'error');
     } finally {
       setLoading(false);
     }
@@ -76,7 +74,7 @@ function ResetPassword() {
   return (
     <div className="register">
       <div className="register__container">
-        <h1 className="register__title">🔐 Neues Passwort setzen</h1>
+        <h1 className="register__title">Neues Passwort setzen</h1>
         <p className="register__subtitle">
           Gib den Token aus der E-Mail und dein neues Passwort ein
         </p>
@@ -105,7 +103,7 @@ function ResetPassword() {
           fontSize: '0.9rem',
           border: '1px solid #ffeaa7',
         }}>
-          <strong>⚠️ Wichtig:</strong> Der Token ist nur 60 Minuten gültig.
+          <strong>Wichtig:</strong> Der Token ist nur 60 Minuten gültig.
         </div>
 
         <form onSubmit={handleSubmit}>

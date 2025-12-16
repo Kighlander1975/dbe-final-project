@@ -3,24 +3,24 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
-import { useUserContext } from '../context/UserContext' // 🆕 UserContext
-import { gameAPI, parseGameName } from '../services/api' // ⭐ Game API
+import { useUserContext } from '../context/UserContext'
+import { gameAPI, parseGameName } from '../services/api'
 import '../styles/pages/home.css'
 
 function Home() {
-  const { user, isAdmin, isGameCreator } = useAuth() // ✅ isAdmin und isGameCreator hinzugefügt
+  const { user, isAdmin, isGameCreator } = useAuth()
   const { showToast } = useToast()
   const navigate = useNavigate()
-  const { loadUsers } = useUserContext() // 🆕 UserContext
+  const { loadUsers } = useUserContext()
 
-  // ✅ isAuthenticated basiert auf user
+  // isAuthenticated basiert auf user
   const isAuthenticated = !!user
 
-  // ⭐ State für User-Spiele (für alle authentifizierten User)
+  // State für User-Spiele (für alle authentifizierten User)
   const [userGames, setUserGames] = useState([])
   const [loadingGames, setLoadingGames] = useState(false)
 
-  // ⭐ User-Spiele laden Funktion (für alle authentifizierten User)
+  // User-Spiele laden Funktion (für alle authentifizierten User)
   const loadUserGames = async () => {
     if (isAuthenticated) {
       setLoadingGames(true);
@@ -59,13 +59,13 @@ function Home() {
       // Prüfen, ob bereits ein anderes Spiel aktiv ist
       const otherActiveGames = userGames.filter(g => g.status === 'active' && g.id !== game.id);
       if (otherActiveGames.length > 0) {
-        showToast('⚠️ Ein anderes Spiel ist bereits aktiv. Bitte beende es zuerst.', 'warning', 5000);
+        showToast('Ein anderes Spiel ist bereits aktiv. Bitte beende es zuerst.', 'warning', 5000);
         return;
       }
 
       // Spiel aktivieren
       await gameAPI.resumeGame(game.id);
-      showToast('✅ Spiel wurde aktiviert', 'success');
+      showToast('Spiel wurde aktiviert', 'success');
 
       // Spiele im Hintergrund neu laden (für sofortige UI-Aktualisierung)
       loadUserGames();
@@ -74,7 +74,7 @@ function Home() {
       navigate(`/game/${game.id}`);
     } catch (error) {
       console.error('Failed to resume game:', error);
-      showToast('❌ Fehler beim Aktivieren des Spiels', 'error');
+      showToast('Fehler beim Aktivieren des Spiels', 'error');
     }
   }
 
@@ -102,12 +102,12 @@ function Home() {
             <>
               <li>
                 <Link to="/login">
-                  <div className="home__link-main">🔐 Login</div>
+                  <div className="home__link-main">Login</div>
                 </Link>
               </li>
               <li>
                 <Link to="/register">
-                  <div className="home__link-main">📝 Registrierung</div>
+                  <div className="home__link-main">Registrierung</div>
                 </Link>
               </li>
             </>
@@ -148,7 +148,7 @@ function Home() {
               {userGames.filter(game => game.status === 'paused').length > 0 && (
                 <>
                   <li className="home__section-header">
-                    <div className="home__link-main">⏸️ Pausierte Spiele</div>
+                    <div className="home__link-main">Pausierte Spiele</div>
                     <div className="home__link-sub">Klicke zum Fortsetzen</div>
                   </li>
                   {userGames.filter(game => game.status === 'paused').map((game, index) => (
@@ -160,7 +160,7 @@ function Home() {
                         title={`Spieler:\n${game.players?.map(p => `${p.rank}. ${p.name}: ${p.totalPoints} Pkt`).join('\n') || 'Keine Daten'}`}
                       >
                         <div className="home__link-main">
-                          ⏸️ Spiel fortsetzen
+                          Spiel fortsetzen
                         </div>
                         <div className="home__link-sub">
                           {(() => {
@@ -183,12 +183,12 @@ function Home() {
                     onClick={(e) => {
                       if (userGames.some(g => g.status === 'active')) {
                         e.preventDefault();
-                        showToast('⚠️ Beende zuerst das aktive Spiel, bevor du ein neues erstellst', 'warning', 5000);
+                        showToast('Beende zuerst das aktive Spiel, bevor du ein neues erstellst', 'warning', 5000);
                       }
                     }}
                   >
                     <div className="home__link-main">
-                      🎮 Neues Spiel
+                      Neues Spiel
                       {userGames.length >= 3 && ' (Max. erreicht)'}
                     </div>
                     {userGames.length >= 3 && (
@@ -220,7 +220,7 @@ function Home() {
           {isAuthenticated && isAdmin() && (
             <li>
               <Link to="/admin">
-                <div className="home__link-main">⚙️ Admin Dashboard</div>
+                <div className="home__link-main">Admin Dashboard</div>
               </Link>
             </li>
           )}

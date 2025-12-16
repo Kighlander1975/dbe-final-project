@@ -3,23 +3,23 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { useLoading } from '../context/LoadingContext'; // ✅ NEU
+import { useLoading } from '../context/LoadingContext';
 import '../styles/pages/forms.css';
 
 function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
   const { showToast } = useToast();
-  const { startLoading, stopLoading } = useLoading(); // ✅ NEU
+  const { startLoading, stopLoading } = useLoading();
 
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false); // 🆕 Privacy Modal State
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
-    privacyAccepted: false, // 🆕 Datenschutz-Checkbox
+    privacyAccepted: false,
   });
 
   const [error, setError] = useState('');
@@ -42,35 +42,33 @@ function Register() {
     setSuccess('');
     setLoading(true);
     
-    // ✅ SOFORT Loading starten
     startLoading('Registrierung läuft...');
 
-    // Validation
     if (!formData.name || !formData.email || !formData.password || !formData.password_confirmation) {
       setError('Bitte fülle alle Felder aus');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
     if (!formData.privacyAccepted) {
       setError('Bitte akzeptiere die Datenschutzbestimmungen');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
     if (formData.password.length < 8) {
       setError('Passwort muss mindestens 8 Zeichen lang sein');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
     if (formData.password !== formData.password_confirmation) {
       setError('Passwörter stimmen nicht überein');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
@@ -84,16 +82,15 @@ function Register() {
     );
 
     if (result.success) {
-      setSuccess('✅ Registrierung erfolgreich! Bitte überprüfe deine E-Mails und verifiziere deine Adresse.');
-      showToast('📧 Bitte verifiziere deine E-Mail-Adresse!', 'info', 8000);
+      setSuccess('Registrierung erfolgreich! Bitte überprüfe deine E-Mails und verifiziere deine Adresse.');
+      showToast('Bitte verifiziere deine E-Mail-Adresse!', 'info', 8000);
       
-      // Nach 3 Sekunden zum Login
       setTimeout(() => {
         navigate('/login');
       }, 3000);
     } else {
       setError(result.message);
-      stopLoading(); // ✅ NEU: Bei Fehler stoppen
+      stopLoading();
     }
 
     setLoading(false);

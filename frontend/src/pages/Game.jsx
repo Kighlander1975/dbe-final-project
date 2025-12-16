@@ -47,10 +47,8 @@ function Game() {
                 }
             } else if (stateData) {
                 // Legacy: Spiel erstellen (für alte Flows)
-                console.log('📤 Spiel erstellen (Legacy):', stateData);
                 try {
                     const response = await gameAPI.createGame(stateData);
-                    console.log('✅ Spiel erstellt:', response);
                     setGameData(response.game_data);
                     setGameId(response.id);
                     localStorage.setItem('currentGameId', response.id);
@@ -61,7 +59,6 @@ function Game() {
                     navigate('/new-game');
                 }
             } else {
-                console.log('🔄 Keine stateData - lade gespeichertes Spiel');
                 // Bei Refresh: Spiel aus API laden
                 const savedGameId = localStorage.getItem('currentGameId');
                 if (savedGameId) {
@@ -88,9 +85,7 @@ function Game() {
     const handleGameUpdate = async (updatedGameData) => {
         if (gameId) {
             try {
-                console.log('💾 Speichere Spiel Update:', gameId, updatedGameData);
                 await gameAPI.updateGame(gameId, updatedGameData);
-                console.log('✅ Spiel Update gespeichert');
             } catch (error) {
                 console.error('❌ Fehler beim Speichern des Spiels:', error);
             }

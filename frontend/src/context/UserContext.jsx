@@ -20,11 +20,9 @@ export const UserProvider = ({ children }) => {
     const clearCache = useCallback(() => {
         sessionStorage.removeItem('availableEmails');
         localStorage.removeItem('users_1_all'); // Auch localStorage leeren
-        console.log("🗑️ User-Cache geleert");
     }, []);
 
     const loadUsers = useCallback(async (force = false) => {
-        console.log("Loading users with force:", force);
         // Cache prüfen (sessionStorage)
         const cached = sessionStorage.getItem('availableEmails');
         const now = Date.now();
@@ -33,7 +31,6 @@ export const UserProvider = ({ children }) => {
             const { data, timestamp } = JSON.parse(cached);
             // Cache gültig für 5 Minuten (wiederhergestellt)
             if (now - timestamp < 5 * 60 * 1000) {
-                console.log("📥 User-Liste aus Cache geladen");
                 setUsers(data);
                 setLastLoaded(timestamp);
                 return data;
@@ -43,7 +40,6 @@ export const UserProvider = ({ children }) => {
         // Neu laden
         try {
             setLoading(true);
-            console.log("📥 User-Liste neu geladen");
             const response = await userAPI.getAll();
             const userData = response.data || response;
             const emailList = userData.map((user) => ({

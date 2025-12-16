@@ -97,7 +97,6 @@ function getCSRFToken() {
  * Zentrale API-Funktion
  */
 async function apiRequest(endpoint, options = {}) {
-    console.log("API Request:", API_BASE_URL + endpoint, options);
     // Starte den globalen Ladevorgang, falls nicht übersprungen
     if (!options.skipLoading) {
         const loadingMessage = options.loadingMessage || "Wird geladen...";
@@ -128,23 +127,9 @@ async function apiRequest(endpoint, options = {}) {
     const { body, ...otherOptions } = options;
     Object.assign(config, otherOptions);
 
-    console.log("📤 API Request:", {
-        url: `${API_BASE_URL}${endpoint}`,
-        method: config.method,
-        body: options.body,
-        headers: config.headers,
-        csrfToken: csrfToken,
-    });
-
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
         const data = await response.json();
-
-        console.log("📥 API Response:", {
-            status: response.status,
-            ok: response.ok,
-            data: data,
-        });
 
         if (!response.ok) {
             // Spezielle Behandlung für Server-Fehler (5xx)
@@ -239,7 +224,7 @@ const authAPI = {
         });
     },
 
-    // ⭐ Check user role
+    // Check user role
     checkRole: async () => {
         return apiRequest("/user/role", {
             method: "GET",
@@ -309,7 +294,7 @@ const authAPI = {
     },
 };
 
-// ⭐ NEU: User API (Public)
+// User API (Public)
 export const userAPI = {
     /**
      * Get all users (öffentlich, für Spielerauswahl)
@@ -321,12 +306,9 @@ export const userAPI = {
         const isGameActive = localStorage.getItem('gameActive') === 'true';
         const cacheKey = `users_${page}_${role || 'all'}`;
 
-        console.log("getAll called with force:", force, "isGameActive:", isGameActive);
-
         if (!force && isGameActive) {
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
-                console.log('📦 Loading users from localStorage cache');
                 return JSON.parse(cached);
             }
         }
@@ -340,19 +322,16 @@ export const userAPI = {
             credentials: "omit", // Öffentlicher Endpoint, keine Credentials nötig
         });
 
-        console.log("🔍 API Response /users:", data);
-
         // Cache die Daten, wenn Spiel aktiv
         if (isGameActive) {
             localStorage.setItem(cacheKey, JSON.stringify(data));
-            console.log('💾 Users cached');
         }
 
         return data;
     },
 };
 
-// ⭐ Admin API Endpoints
+// Admin API Endpoints
 const adminAPI = {
     // Get all users (admin)
     getUsers: async (page = 1, role = null) => {
@@ -400,7 +379,7 @@ const adminAPI = {
         });
     },
 
-    // ⭐ Admin Settings
+    // Admin Settings
     getSettings: async () => {
         return apiRequest("/admin/settings", {
             method: "GET",
@@ -424,7 +403,7 @@ const adminAPI = {
     },
 };
 
-// ⭐ Public API Endpoints (keine Authentifizierung erforderlich)
+// Public API Endpoints (keine Authentifizierung erforderlich)
 const publicAPI = {
     // Get app version
     getVersion: async () => {
@@ -434,7 +413,7 @@ const publicAPI = {
     },
 };
 
-// ⭐ Game API Endpoints
+// Game API Endpoints
 const gameAPI = {
     // Create new game (Admin only)
     createGame: async (gameData) => {
@@ -445,7 +424,7 @@ const gameAPI = {
         });
     },
 
-    // ⭐ Check if admin has active game
+    // Check if admin has active game
     hasActiveGame: async () => {
         return apiRequest("/games/active", {
             method: "GET",
@@ -453,7 +432,7 @@ const gameAPI = {
         });
     },
 
-    // ⭐ Get all user games (Host only)
+    // Get all user games (Host only)
     getUserGames: async () => {
         return apiRequest("/games/user-games", {
             method: "GET",
@@ -470,7 +449,6 @@ const gameAPI = {
 
     // Update game (Admin only)
     updateGame: async (gameId, gameData) => {
-        console.log('updateGame called with gameId:', gameId, 'gameData:', gameData);
         return apiRequest(`/games/${gameId}`, {
             method: "PATCH",
             body: { game_data: gameData },
@@ -478,7 +456,7 @@ const gameAPI = {
         });
     },
 
-    // ⭐ Pause game (set status to paused)
+    // Pause game (set status to paused)
     pauseGame: async (gameId) => {
         return apiRequest(`/games/${gameId}/pause`, {
             method: "PATCH",
@@ -486,7 +464,7 @@ const gameAPI = {
         });
     },
 
-    // ⭐ Resume game (set status to active)
+    // Resume game (set status to active)
     resumeGame: async (gameId) => {
         return apiRequest(`/games/${gameId}/resume`, {
             method: "PATCH",
@@ -494,7 +472,7 @@ const gameAPI = {
         });
     },
 
-    // ⭐ Finish game (set status to finished)
+    // Finish game (set status to finished)
     finishGame: async (gameId) => {
         return apiRequest(`/games/${gameId}/finish`, {
             method: "PATCH",
@@ -511,7 +489,7 @@ const gameAPI = {
     },
 };
 
-// ⭐ Stats API Endpoints
+// Stats API Endpoints
 const statsAPI = {
     // Get all players stats
     getPlayersStats: async () => {
@@ -527,7 +505,7 @@ const statsAPI = {
         });
     },
 
-    // ⭐ Admin Stats
+    // Admin Stats
     getAdminStats: async () => {
         return apiRequest("/admin/stats", {
             loadingMessage: "Admin-Statistiken werden geladen...",
@@ -535,7 +513,7 @@ const statsAPI = {
     },
 };
 
-// ⭐ Ranking API Endpoints
+// Ranking API Endpoints
 const rankingAPI = {
     // Get top rankings
     getRankings: async (limit = 50, offset = 0) => {

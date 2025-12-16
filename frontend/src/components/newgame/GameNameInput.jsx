@@ -21,8 +21,6 @@ function GameNameInput({ value, onChange, required = true, initialFullName = '',
         if (onChange) {
           onChange(initialFullName, extractedInput);
         }
-        
-        console.log('🔄 Wiederhergestellt:', { extractedInput, extractedSuffix });
       }
     } else {
       // Fall 2: Neues Spiel → Suffix generieren
@@ -39,8 +37,6 @@ function GameNameInput({ value, onChange, required = true, initialFullName = '',
       if (onChange) {
         onChange(defaultName + newSuffix, defaultName);
       }
-      
-      console.log('✨ Neuer Suffix:', newSuffix);
     }
   }, [initialFullName]); // ✅ Nur bei initialFullName-Änderung
 

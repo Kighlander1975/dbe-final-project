@@ -14,11 +14,9 @@ class HeartbeatService {
      */
     start() {
         if (this.isActive) {
-            console.log('🔄 Heartbeat bereits aktiv');
             return;
         }
 
-        console.log('💓 Heartbeat gestartet (alle 1h)');
         this.isActive = true;
 
         // Sofortiger erster Heartbeat
@@ -38,7 +36,6 @@ class HeartbeatService {
             return;
         }
 
-        console.log('💔 Heartbeat gestoppt');
         this.isActive = false;
 
         if (this.intervalId) {
@@ -57,14 +54,12 @@ class HeartbeatService {
             });
 
             if (response.status === 'ok') {
-                console.log('💓 Heartbeat erfolgreich - Session erneuert');
             }
         } catch (error) {
             console.warn('💔 Heartbeat fehlgeschlagen:', error.message);
 
             // Bei Auth-Fehler: Heartbeat stoppen (User ist ausgeloggt)
             if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
-                console.log('🚪 Heartbeat gestoppt - User nicht mehr eingeloggt');
                 this.stop();
 
                 // Optional: Logout-Event triggern oder Seite neu laden

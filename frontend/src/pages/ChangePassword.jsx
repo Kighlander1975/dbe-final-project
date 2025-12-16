@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
-import { useLoading } from '../context/LoadingContext'; // ✅ NEU
+import { useLoading } from '../context/LoadingContext';
 import '../styles/pages/forms.css';
 
 function ChangePassword() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { user } = useAuth();
-  const { startLoading, stopLoading } = useLoading(); // ✅ NEU
+  const { startLoading, stopLoading } = useLoading();
 
   const [formData, setFormData] = useState({
     current_password: '',
@@ -47,35 +47,33 @@ function ChangePassword() {
     setError('');
     setLoading(true);
     
-    // ✅ SOFORT Loading starten
     startLoading('Passwort wird geändert...');
 
-    // Validation
     if (!formData.current_password || !formData.new_password || !formData.new_password_confirmation) {
       setError('Bitte fülle alle Felder aus');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
     if (formData.new_password.length < 8) {
       setError('Das neue Passwort muss mindestens 8 Zeichen lang sein');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
     if (formData.new_password !== formData.new_password_confirmation) {
       setError('Die neuen Passwörter stimmen nicht überein');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
     if (formData.current_password === formData.new_password) {
       setError('Das neue Passwort darf nicht mit dem alten übereinstimmen');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 
@@ -86,23 +84,21 @@ function ChangePassword() {
         formData.new_password_confirmation
       );
 
-      showToast('✅ ' + response.message, 'success', 6000);
+      showToast(response.message, 'success', 6000);
       
-      // Form zurücksetzen
       setFormData({
         current_password: '',
         new_password: '',
         new_password_confirmation: '',
       });
 
-      // Nach 2 Sekunden zur Startseite
       setTimeout(() => {
         navigate('/');
       }, 2000);
     } catch (err) {
       setError(err.message || 'Ein Fehler ist aufgetreten');
-      showToast('❌ ' + (err.message || 'Fehler beim Ändern'), 'error');
-      stopLoading(); // ✅ NEU: Bei Fehler stoppen
+      showToast(err.message || 'Fehler beim Ändern', 'error');
+      stopLoading();
     } finally {
       setLoading(false);
     }
@@ -111,7 +107,7 @@ function ChangePassword() {
   return (
     <div className="register">
       <div className="register__container">
-        <h1 className="register__title">🔐 Passwort ändern</h1>
+        <h1 className="register__title">Passwort ändern</h1>
         <p className="register__subtitle">
           Hallo <strong>{user?.name}</strong>, ändere hier dein Passwort
         </p>
@@ -140,7 +136,7 @@ function ChangePassword() {
           fontSize: '0.9rem',
           border: '1px solid #90caf9',
         }}>
-          <strong>💡 Tipp:</strong> Verwende ein sicheres Passwort mit mindestens 8 Zeichen.
+          <strong>Hinweis:</strong> Verwende ein sicheres Passwort mit mindestens 8 Zeichen.
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -178,7 +174,7 @@ function ChangePassword() {
                 onMouseEnter={(e) => e.target.style.opacity = 1}
                 onMouseLeave={(e) => e.target.style.opacity = 0.6}
               >
-                {showPasswords.current ? '👁️' : '👁️‍🗨️'}
+                {showPasswords.current ? 'Verbergen' : 'Zeigen'}
               </button>
             </div>
           </div>
@@ -217,7 +213,7 @@ function ChangePassword() {
                 onMouseEnter={(e) => e.target.style.opacity = 1}
                 onMouseLeave={(e) => e.target.style.opacity = 0.6}
               >
-                {showPasswords.new ? '👁️' : '👁️‍🗨️'}
+                {showPasswords.new ? 'Verbergen' : 'Zeigen'}
               </button>
             </div>
             {formData.new_password && (
@@ -227,7 +223,7 @@ function ChangePassword() {
                 marginTop: '0.25rem',
                 display: 'block',
               }}>
-                {formData.new_password.length >= 8 ? '✅' : '❌'} {formData.new_password.length}/8 Zeichen
+                {formData.new_password.length >= 8 ? '✓' : '✗'} {formData.new_password.length}/8 Zeichen
               </small>
             )}
           </div>
@@ -266,7 +262,7 @@ function ChangePassword() {
                 onMouseEnter={(e) => e.target.style.opacity = 1}
                 onMouseLeave={(e) => e.target.style.opacity = 0.6}
               >
-                {showPasswords.confirm ? '👁️' : '👁️‍🗨️'}
+                {showPasswords.confirm ? 'Verbergen' : 'Zeigen'}
               </button>
             </div>
             {formData.new_password_confirmation && (
@@ -276,7 +272,7 @@ function ChangePassword() {
                 marginTop: '0.25rem',
                 display: 'block',
               }}>
-                {formData.new_password === formData.new_password_confirmation ? '✅ Passwörter stimmen überein' : '❌ Passwörter stimmen nicht überein'}
+                {formData.new_password === formData.new_password_confirmation ? '✓ Passwörter stimmen überein' : '✗ Passwörter stimmen nicht überein'}
               </small>
             )}
           </div>

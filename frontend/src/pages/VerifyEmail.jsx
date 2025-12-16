@@ -28,7 +28,6 @@ function VerifyEmail() {
       setStatus('success');
       setMessage(response.message || 'E-Mail erfolgreich verifiziert!');
       
-      // Nach 3 Sekunden zum Login
       setTimeout(() => {
         navigate('/login');
       }, 3000);
@@ -42,9 +41,9 @@ function VerifyEmail() {
     <div className="verify-email">
       <div className="verify-email__container">
         <h1 className="verify-email__title">
-          {status === 'loading' && '⏳ Verifizierung läuft...'}
-          {status === 'success' && '✅ E-Mail verifiziert!'}
-          {status === 'error' && '❌ Verifizierung fehlgeschlagen'}
+          {status === 'loading' && 'Verifizierung läuft...'}
+          {status === 'success' && 'E-Mail verifiziert!'}
+          {status === 'error' && 'Verifizierung fehlgeschlagen'}
         </h1>
 
         {status === 'loading' && (

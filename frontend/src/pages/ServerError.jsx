@@ -7,7 +7,7 @@ function ServerError() {
   return (
     <div className="servererror">
       <div className="servererror__container">
-        <div className="servererror__icon">⚠️</div>
+        <div className="servererror__icon">!</div>
         <h1 className="servererror__title">Server-Fehler</h1>
         <p className="servererror__message">
           Es ist ein unerwarteter Fehler aufgetreten.

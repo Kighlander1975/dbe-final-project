@@ -21,14 +21,12 @@ function ForgotPassword() {
     setSuccess(false);
     setLoading(true);
     
-    // ✅ SOFORT Loading starten
     startLoading('Reset-Link wird gesendet...');
 
-    // Validation
     if (!email) {
       setError('Bitte gib deine E-Mail-Adresse ein');
       setLoading(false);
-      stopLoading(); // ✅ NEU
+      stopLoading();
       return;
     }
 

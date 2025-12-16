@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
-import { useLoading } from "../context/LoadingContext"; // ✅ NEU
+import { useLoading } from "../context/LoadingContext";
 import "../styles/pages/forms.css";
 
 function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
     const { showToast } = useToast();
-    const { startLoading, stopLoading } = useLoading(); // ✅ NEU
+    const { startLoading, stopLoading } = useLoading();
 
     const [formData, setFormData] = useState({
         email: "",
@@ -33,14 +33,12 @@ function Login() {
         setError("");
         setLoading(true);
         
-        // ✅ SOFORT globales Loading starten (vor Validation!)
         startLoading("Anmeldung läuft...");
 
-        // Validation
         if (!formData.email || !formData.password) {
             setError("Bitte fülle alle Felder aus");
             setLoading(false);
-            stopLoading(); // ✅ NEU
+            stopLoading();
             return;
         }
 
@@ -60,11 +58,11 @@ function Login() {
                 }, 100);
             } else {
                 setError(result.message);
-                stopLoading(); // ✅ NEU: Bei Fehler Loading stoppen
+                stopLoading();
             }
         } catch (err) {
             setError("Ein Fehler ist aufgetreten");
-            stopLoading(); // ✅ NEU: Bei Exception Loading stoppen
+            stopLoading();
         } finally {
             setLoading(false);
         }
@@ -73,7 +71,7 @@ function Login() {
     return (
         <div className="login">
             <div className="login__container">
-                <h1 className="login__title">🔐 Login</h1>
+                <h1 className="login__title">Login</h1>
                 <p className="login__subtitle">Melde dich an</p>
 
                 {error && (

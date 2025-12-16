@@ -111,7 +111,6 @@ function UserDetail() {
   const handleNameSubmit = async () => {
     const trimmedName = editName.trim()
     
-    // Validation: Required after trim
     if (!trimmedName) {
       showToast('Name darf nicht leer sein', 'error')
       return
