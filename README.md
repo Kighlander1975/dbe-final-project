@@ -322,14 +322,18 @@ Besonderheiten des UI-Designs:
 - **Skalierbarkeit**: Optimierte Eloquent-Queries für schnelle Datenverarbeitung auch bei großen Datenmengen
 - **Backup**: Docker Volume `database_data` kann für Backups exportiert werden
 
+
 ### Sicherheit und Datenschutz
 
-- **Authentifizierung**: Laravel Sanctum für sichere API-Token-basierte Authentifizierung
-- **Autorisierung**: Rollenbasierte Zugriffsrechte via Laravel Policies (Spieler, Schriftführer, Administrator)
-- **CSRF-Schutz**: Laravel CSRF-Token für alle Formulare
-- **Passwort-Hashing**: Bcrypt-Verschlüsselung für Passwörter
-- **Umgebungsvariablen**: Sensible Daten in `.env`-Dateien (nicht im Git)
-- **Datenschutz**: Konformität mit gängigen Datenschutzrichtlinien (DSGVO-ready)
+**Authentifizierung**: Laravel Sanctum für sichere API-Token-basierte Authentifizierung
+**Autorisierung**: Rollenbasierte Zugriffsrechte via Laravel Policies (Spieler, Schriftführer, Administrator)
+**CSRF-Schutz**: Laravel CSRF-Token für alle Formulare
+**Passwort-Hashing**: Bcrypt-Verschlüsselung für Passwörter
+**Umgebungsvariablen**: Sensible Daten in `.env`-Dateien (nicht im Git)
+**Datenschutz**: Konformität mit gängigen Datenschutzrichtlinien (DSGVO-ready)
+
+**Hinweis zur Session-Sicherheit:**
+Die Benutzer-Session bleibt auch nach dem Schließen des Browsers oder dem Ausschalten des Geräts erhalten, solange die eingestellte Session-Lebensdauer (z. B. 2 Stunden) nicht überschritten wird. Dies ist besonders relevant für Tablets, die zwischendurch in den Standby-Modus gehen. Aus Sicherheitsgründen sollte beachtet werden, dass ein unbefugter Zugriff innerhalb dieses Zeitfensters möglich ist, solange die Session aktiv bleibt.
 
 ### Benutzerrollen und Zugriffsrechte
 
