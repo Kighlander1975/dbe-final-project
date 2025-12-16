@@ -123,12 +123,7 @@ function NewGame() {
     const handlePlayerChange = (playerData) => {
         setPlayers((prev) => {
             const updated = [...prev];
-            // 🆕 Für Spieler 1: Wenn der Name dem ursprünglichen user.name entspricht, entferne den Eintrag
-            if (playerData.playerNumber === 1 && playerData.name === user.name) {
-                updated[0] = null; // Zurück auf Standard
-            } else {
-                updated[playerData.playerNumber - 1] = playerData;
-            }
+            updated[playerData.playerNumber - 1] = playerData;
             return updated;
         });
     };
@@ -208,21 +203,12 @@ function NewGame() {
     const isFormValid = () => {
         // Spielname muss vorhanden sein und darf keine Leerzeichen enthalten
         const hasGameName = gameName.trim().length > 0 && !/\s/.test(gameName);
-        
+
         // Alle Spieler müssen ausgefüllt sein (für die eingestellte Anzahl)
         const playersValid = players
             .slice(0, playerCount)
             .every((p) => p && !p.hasError && p.name && p.name.trim().length > 0);
         
-        return hasGameName && playersValid;
-    };
-
-    // Prüfe, ob Spielname valide ist
-    const isGameNameValid = () => {
-        return gameName.trim().length > 0 && !/\s/.test(gameName);
-    };
-
-    // Submit-Handler
     const handleSubmit = (e) => {
         e.preventDefault();
         
