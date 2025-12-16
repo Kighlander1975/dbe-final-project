@@ -1,125 +1,73 @@
-// src/pages/NewGame.jsx
+﻿// src/pages/NewGame.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, useBlocker } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useLoading } from "../context/LoadingContext";
-import { useUserContext } from "../context/UserContext"; // 🆕 UserContext
-import { useUnsavedChanges } from "../context/UnsavedChangesContext"; // 🆕 UnsavedChangesContext
-import { userAPI } from "../services/api";
+import { useUserContext } from "../context/UserContext";
+import { useUnsavedChanges } from "../context/UnsavedChangesContext";
 import PlayerCountSelector from "../components/newgame/PlayerCountSelector";
 import PlayerInput from "../components/newgame/PlayerInput";
 import GameNameInput from "../components/newgame/GameNameInput";
-import VictoryConditionSelector from "../components/newgame/VictoryConditionSelector"; // 🆕 Siegbedingung
+import VictoryConditionSelector from "../components/newgame/VictoryConditionSelector";
 import "../styles/pages/newgame.css";
 
 function NewGame() {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const location = useLocation(); // ✅ NEU
-    const { startLoading, stopLoading } = useLoading();
-    const { users: availableEmails, loading: usersLoading, loadUsers, clearCache } = useUserContext(); // 🆕 clearCache hinzugefügt
-    const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges(); // 🆕 UnsavedChangesContext
+    const location = useLocation();
+    const { users: availableEmails, loading: usersLoading, loadUsers, clearCache } = useUserContext();
+    const { hasUnsavedChanges, setHasUnsavedChanges } = useUnsavedChanges();
 
-    // ✅ NEU: Daten aus Navigation State holen (falls vorhanden)
     const restoredData = location.state || {};
-
-    // State
-    const [playerCount, setPlayerCount] = useState(restoredData.playerCount || 5); // ✅ Wiederhergestellt
+    const [playerCount, setPlayerCount] = useState(restoredData.playerCount || 5);
     const [players, setPlayers] = useState(() => {
         const restored = restoredData.players || [];
-        // Stelle sicher, dass das Array mindestens playerCount Elemente hat
         const count = restoredData.playerCount || 5;
         while (restored.length < count) {
             restored.push(null);
         }
         return restored;
-    }); // ✅ Wiederhergestellt und initialisiert
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [gameName, setGameName] = useState(restoredData.gameName || ''); // ✅ Wiederhergestellt
-    const [gameNameInput, setGameNameInput] = useState(''); // ✅ Wird in GameNameInput gesetzt
-    const [victoryPoints, setVictoryPoints] = useState(restoredData.victoryPoints || (100 + new Date().getDate())); // 🆕 Initial korrekt setzen
+    const [gameName, setGameName] = useState(restoredData.gameName || '');
+    const [gameNameInput, setGameNameInput] = useState('');
+    const [victoryPoints, setVictoryPoints] = useState(restoredData.victoryPoints || (100 + new Date().getDate()));
     
     const MAX_PLAYERS_CACHE = 11;
-    const initialPlayerCount = restoredData.playerCount || 5; // 🆕 Ursprüngliche Spieleranzahl
-    const initialVictoryPoints = restoredData.victoryPoints || (100 + new Date().getDate()); // 🆕 Ursprüngliche Siegbedingung
 
-    // 🆕 Prüfe, ob ungespeicherte Änderungen vorliegen
-    const isDirty = () => {
-        const gameNameChanged = gameNameInput.trim() !== '';
-        const playerCountChanged = playerCount !== 5;
-        const victoryPointsChanged = victoryPoints !== (100 + new Date().getDate());
-        const player1Changed = players[0] && players[0].name !== user.name; // 🆕 Spieler 1 Name geändert?
-        const otherPlayersChanged = players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Andere Spieler hinzugefügt?
-        
-        return gameNameChanged || playerCountChanged || victoryPointsChanged || player1Changed || otherPlayersChanged;
-    };
-
-    // 🆕 User-Liste beim Mount laden (falls nicht schon geladen) - FORCE RELOAD für Cache-Problem
+    // Initialize users
     useEffect(() => {
         if (availableEmails.length === 0 && !usersLoading) {
-            clearCache(); // Cache leeren für frische Daten
-            loadUsers(true); // Force reload to bypass cache
+            clearCache();
+            loadUsers(true);
         }
-        setLoading(false); // Entferne loading, da UserContext das handhabt
+        setLoading(false);
     }, [availableEmails.length, usersLoading, loadUsers, clearCache]);
 
-    // 🆕 Schutz vor Datenverlust: Warnung beim Verlassen der Seite
-    useEffect(() => {
-        const handleBeforeUnload = (e) => {
-            if (hasUnsavedChanges) {
-                e.preventDefault();
-                e.returnValue = 'Du hast ungespeicherte Änderungen. Möchtest du wirklich die Seite verlassen? Alle Daten gehen verloren.';
-            }
-        };
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, [hasUnsavedChanges]);
-
-    // 🆕 Automatische Aktualisierung des unsaved-Flags bei State-Änderungen
-    useEffect(() => {
-        setHasUnsavedChanges(isDirty());
-    }, [gameNameInput, playerCount, victoryPoints, players]); // 🆕 Abhängigkeiten hinzufügen
-
-    // Handler für Spielname-Änderung
+    // Handle game name change
     const handleGameNameChange = (fullName, inputPart) => {
         setGameName(fullName);
         setGameNameInput(inputPart);
     };
 
-    // Handler für Spieleranzahl-Änderung
+    // Handle player count change
     const handlePlayerCountChange = (count) => {
         setPlayerCount(count);
-
-        // Erweitere players Array, wenn nötig, aber behalte vorhandene Daten
         setPlayers(prev => {
             const newPlayers = [...prev];
             while (newPlayers.length < count) {
-                newPlayers.push(null); // Leere Spieler hinzufügen
+                newPlayers.push(null);
             }
-            // Nicht kürzen, um Daten bei versehentlicher Reduzierung zu behalten
             return newPlayers;
         });
     };
 
-    // Handler für Siegbedingung-Änderung
+    // Handle victory condition change
     const handleVictoryConditionChange = (points) => {
         setVictoryPoints(points);
     };
 
-    // Handler für Spieler entfernen
-    const handleRemovePlayer = (playerNumber) => {
-        if (playerCount <= 1) return; // Mindestens 1 Spieler
-
-        const index = playerNumber - 1;
-        setPlayers(prev => {
-            const newPlayers = prev.filter((_, i) => i !== index);
-            // Aktualisiere playerNumber für alle verbleibenden Spieler
-            return newPlayers.map((p, i) => p ? { ...p, playerNumber: i + 1 } : null);
-        });
-        setPlayerCount(playerCount - 1);
-    };
+    // Handle player change - FIXED: removed faulty reset logic
     const handlePlayerChange = (playerData) => {
         setPlayers((prev) => {
             const updated = [...prev];
@@ -128,130 +76,60 @@ function NewGame() {
         });
     };
 
-    // Berechne bereits verwendete E-Mails (exkl. aktueller Spieler)
-    const getUsedEmails = (excludePlayerNumber = null) => {
-        return players
-            .filter((p) => {
-                if (!p || !p.email) return false;
-                if (excludePlayerNumber && p.playerNumber === excludePlayerNumber) {
-                    return false;
-                }
-                return true;
-            })
-            .map((p) => p.email);
+    // Form validation
+    const isFormValid = () => {
+        const hasGameName = gameName.trim().length > 0 && !/\s/.test(gameName);
+        const playersValid = players
+            .slice(0, playerCount)
+            .every((p) => p && !p.hasError && p.name && p.name.trim().length > 0);
+        return hasGameName && playersValid;
     };
 
-    // Berechne bereits verwendete Gast-Namen (exkl. aktueller Spieler)
-    const getUsedGuestNames = (excludePlayerNumber = null) => {
-        return players
-            .filter((p) => {
-                if (!p || p.email || !p.name) return false;
-                if (excludePlayerNumber && p.playerNumber === excludePlayerNumber) {
-                    return false;
-                }
-                return true;
-            })
-            .map((p) => p.name.toLowerCase());
+    // Submit handler
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setHasUnsavedChanges(false);
+        navigate('/game-summary', {
+            state: {
+                gameName,
+                playerCount,
+                players: players.slice(0, playerCount),
+                victoryPoints,
+            }
+        });
     };
 
-    // Berechne alle Namen (E-Mail-User + Gäste) für Name-Overlap-Check
-    const getAllPlayerNames = (excludePlayerNumber = null) => {
-        return players
-            .filter((p) => {
-                if (!p || !p.name) return false;
-                if (excludePlayerNumber && p.playerNumber === excludePlayerNumber) {
-                    return false;
-                }
-                return true;
-            })
-            .map((p) => p.name.toLowerCase());
-    };
-
-    // Generiere Spieler-Inputs
+    // Render player inputs
     const renderPlayerInputs = () => {
         const inputs = [];
-
         for (let i = 1; i <= playerCount; i++) {
-            const usedEmails = getUsedEmails(i);
-            const usedGuestNames = getUsedGuestNames(i);
-            const allPlayerNames = getAllPlayerNames(i);
-            
             const existingPlayerData = players[i - 1];
-            
             inputs.push(
                 <PlayerInput
                     key={`player-${i}`}
                     playerNumber={i}
                     currentUser={i === 1 ? user : null}
                     availableEmails={availableEmails}
-                    usedEmails={usedEmails}
-                    usedGuestNames={usedGuestNames}
-                    allPlayerNames={allPlayerNames}
+                    usedEmails={[]}
+                    usedGuestNames={[]}
+                    allPlayerNames={[]}
                     onPlayerChange={handlePlayerChange}
                     isCurrentUser={i === 1}
                     existingData={existingPlayerData}
-                    onRemovePlayer={i !== 1 ? handleRemovePlayer : null}
+                    onRemovePlayer={i !== 1 ? () => {} : null}
                     loading={usersLoading}
                 />
             );
         }
-
         return inputs;
     };
 
-    // Prüfe, ob Form valide ist (keine Fehler und alle Daten ausgefüllt)
-    const isFormValid = () => {
-        // Spielname muss vorhanden sein und darf keine Leerzeichen enthalten
-        const hasGameName = gameName.trim().length > 0 && !/\s/.test(gameName);
-
-        // Alle Spieler müssen ausgefüllt sein (für die eingestellte Anzahl)
-        const playersValid = players
-            .slice(0, playerCount)
-            .every((p) => p && !p.hasError && p.name && p.name.trim().length > 0);
-        
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
-        // 🆕 Schutz deaktivieren vor Navigation
-        setHasUnsavedChanges(false);
-        
-        // Navigiere zur Summary-Seite mit allen Daten
-        navigate('/game-summary', {
-            state: {
-                gameName,
-                playerCount,
-                players: players.slice(0, playerCount),
-                victoryPoints, // 🆕 Siegbedingung hinzufügen
-            }
-        });
-    };
-
-    // Loading State
     if (loading) {
         return (
             <div className="newgame">
-                <div className="newgame__form">
+                <div className="newgame__container">
                     <div className="loading-state">
-                        <p>⏳ Lade Spielerdaten...</p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Error State
-    if (error) {
-        return (
-            <div className="newgame">
-                <div className="newgame__form">
-                    <div className="error-state">
-                        <p>❌ {error}</p>
-                        <button
-                            className="btn btn-secondary"
-                            onClick={() => window.location.reload()}
-                        >
-                            Erneut versuchen
-                        </button>
+                        <p> Lade Spielerdaten...</p>
                     </div>
                 </div>
             </div>
@@ -260,65 +138,56 @@ function NewGame() {
 
     return (
         <div className="newgame">
-            <form className="newgame__form" onSubmit={handleSubmit}>
-                {/* Header */}
-                <div className="newgame__header">
-                    <h1 className="newgame__title">🎮 Neues Spiel</h1>
-                </div>
+            <div className="newgame__container">
+                <h1 className="newgame__title"> Neues Spiel</h1>
+                <p className="newgame__subtitle">Erstelle ein neues Spiel</p>
 
-                {/* FIELDSET 1: BASISDATEN */}
-                <fieldset className="form-fieldset">
-                    <legend className="form-legend">📋 Basisdaten</legend>
+                <form onSubmit={handleSubmit}>
+                    <fieldset className="form-section">
+                        <legend className="form-legend"> Basisdaten</legend>
+                        <GameNameInput
+                            value={gameNameInput}
+                            onChange={handleGameNameChange}
+                            required={true}
+                            initialFullName={restoredData.gameName}
+                            isValid={gameName.trim().length > 0 && !/\s/.test(gameName)}
+                        />
+                        <VictoryConditionSelector
+                            onChange={handleVictoryConditionChange}
+                            initialValue={restoredData.victoryPoints}
+                        />
+                    </fieldset>
 
-                    {/* ✅ GameNameInput mit restoredData */}
-                    <GameNameInput
-                        value={gameNameInput}
-                        onChange={handleGameNameChange}
-                        required={true}
-                        initialFullName={restoredData.gameName} // ✅ NEU: Vollständiger Name übergeben
-                        isValid={isGameNameValid()}
-                    />
+                    <fieldset className="form-section">
+                        <legend className="form-legend"> Spieler ({playerCount})</legend>
+                        <PlayerCountSelector
+                            value={playerCount}
+                            onChange={handlePlayerCountChange}
+                            maxPlayers={MAX_PLAYERS_CACHE}
+                        />
+                        <div className="players-grid">{renderPlayerInputs()}</div>
+                    </fieldset>
 
-                    {/* 🆕 VictoryConditionSelector */}
-                    <VictoryConditionSelector
-                        onChange={handleVictoryConditionChange}
-                        initialValue={restoredData.victoryPoints}
-                    />
-
-                    {/* ✅ PlayerCountSelector mit restoredData */}
-                    <PlayerCountSelector
-                        value={playerCount} // ✅ Aktueller Wert
-                        onChange={handlePlayerCountChange}
-                    />
-                </fieldset>
-
-                {/* FIELDSET 2: SPIELERDATEN */}
-                <fieldset className="form-fieldset">
-                    <legend className="form-legend">👥 Spielerdaten</legend>
-
-                    <div className="players-grid">{renderPlayerInputs()}</div>
-                </fieldset>
-
-                {/* Form Actions */}
-                <div className="form-actions">
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => navigate("/")}
-                    >
-                        Abbrechen
-                    </button>
-                    <div title={!isFormValid() ? "Einige Felder sind noch nicht korrekt ausgefüllt." : ""}>
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                            disabled={!isFormValid()}
+                    <div className="form-actions">
+                        <button 
+                            type="button" 
+                            className="btn btn-secondary"
+                            onClick={() => navigate("/")}
                         >
-                            Weiter zur Übersicht →
+                            Abbrechen
                         </button>
+                        <div title={!isFormValid() ? "Einige Felder sind noch nicht korrekt ausgefüllt." : ""}>
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                                disabled={!isFormValid()}
+                            >
+                                Weiter zur Übersicht 
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     );
 }
