@@ -17,6 +17,7 @@ function Register() {
     email: '',
     password: '',
     password_confirmation: '',
+    privacyAccepted: false, // 🆕 Datenschutz-Checkbox
   });
 
   const [error, setError] = useState('');
@@ -24,9 +25,10 @@ function Register() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: type === 'checkbox' ? checked : value,
     });
     setError('');
     setSuccess('');
@@ -44,6 +46,13 @@ function Register() {
     // Validation
     if (!formData.name || !formData.email || !formData.password || !formData.password_confirmation) {
       setError('Bitte fülle alle Felder aus');
+      setLoading(false);
+      stopLoading(); // ✅ NEU
+      return;
+    }
+
+    if (!formData.privacyAccepted) {
+      setError('Bitte akzeptiere die Datenschutzbestimmungen');
       setLoading(false);
       stopLoading(); // ✅ NEU
       return;
@@ -68,7 +77,8 @@ function Register() {
       formData.name,
       formData.email,
       formData.password,
-      formData.password_confirmation
+      formData.password_confirmation,
+      formData.privacyAccepted
     );
 
     if (result.success) {
@@ -177,6 +187,21 @@ function Register() {
               disabled={loading || success}
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="privacyAccepted"
+                checked={formData.privacyAccepted}
+                onChange={handleChange}
+                disabled={loading || success}
+                required
+              />
+              <span className="checkmark"></span>
+              Datenschutzbestimmungen gelesen?
+            </label>
           </div>
 
           <div className="form-actions">

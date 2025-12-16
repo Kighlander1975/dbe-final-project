@@ -199,7 +199,7 @@ async function initCSRF() {
  */
 const authAPI = {
     // Register
-    register: async (name, email, password, password_confirmation) => {
+    register: async (name, email, password, password_confirmation, privacyAccepted) => {
         return apiRequest("/register", {
             method: "POST",
             body: JSON.stringify({
@@ -207,6 +207,7 @@ const authAPI = {
                 email,
                 password,
                 password_confirmation,
+                privacy_accepted: privacyAccepted,
             }),
             loadingMessage: "Registrierung wird verarbeitet...",
         });
