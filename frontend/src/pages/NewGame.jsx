@@ -127,7 +127,7 @@ function NewGame() {
     if (loading) {
         return (
             <div className="newgame">
-                <div className="newgame__container">
+                <div className="newgame__form">
                     <div className="loading-state">
                         <p> Lade Spielerdaten...</p>
                     </div>
@@ -138,56 +138,56 @@ function NewGame() {
 
     return (
         <div className="newgame">
-            <div className="newgame__container">
-                <h1 className="newgame__title"> Neues Spiel</h1>
-                <p className="newgame__subtitle">Erstelle ein neues Spiel</p>
+            <form className="newgame__form" onSubmit={handleSubmit}>
+                <div className="newgame__header">
+                    <h1 className="newgame__title"> Neues Spiel</h1>
+                    <p className="newgame__subtitle">Erstelle ein neues Spiel</p>
+                </div>
 
-                <form onSubmit={handleSubmit}>
-                    <fieldset className="form-section">
-                        <legend className="form-legend"> Basisdaten</legend>
-                        <GameNameInput
-                            value={gameNameInput}
-                            onChange={handleGameNameChange}
-                            required={true}
-                            initialFullName={restoredData.gameName}
-                            isValid={gameName.trim().length > 0 && !/\s/.test(gameName)}
-                        />
-                        <VictoryConditionSelector
-                            onChange={handleVictoryConditionChange}
-                            initialValue={restoredData.victoryPoints}
-                        />
-                    </fieldset>
+                <fieldset className="form-fieldset">
+                    <legend className="form-legend"> Basisdaten</legend>
+                    <GameNameInput
+                        value={gameNameInput}
+                        onChange={handleGameNameChange}
+                        required={true}
+                        initialFullName={restoredData.gameName}
+                        isValid={gameName.trim().length > 0 && !/\s/.test(gameName)}
+                    />
+                    <VictoryConditionSelector
+                        onChange={handleVictoryConditionChange}
+                        initialValue={restoredData.victoryPoints}
+                    />
+                </fieldset>
 
-                    <fieldset className="form-section">
-                        <legend className="form-legend"> Spieler ({playerCount})</legend>
-                        <PlayerCountSelector
-                            value={playerCount}
-                            onChange={handlePlayerCountChange}
-                            maxPlayers={MAX_PLAYERS_CACHE}
-                        />
-                        <div className="players-grid">{renderPlayerInputs()}</div>
-                    </fieldset>
+                <fieldset className="form-fieldset">
+                    <legend className="form-legend"> Spieler ({playerCount})</legend>
+                    <PlayerCountSelector
+                        value={playerCount}
+                        onChange={handlePlayerCountChange}
+                        maxPlayers={MAX_PLAYERS_CACHE}
+                    />
+                    <div className="players-grid">{renderPlayerInputs()}</div>
+                </fieldset>
 
-                    <div className="form-actions">
-                        <button 
-                            type="button" 
-                            className="btn btn-secondary"
-                            onClick={() => navigate("/")}
+                <div className="form-actions">
+                    <button 
+                        type="button" 
+                        className="btn btn-secondary"
+                        onClick={() => navigate("/")}
+                    >
+                        Abbrechen
+                    </button>
+                    <div title={!isFormValid() ? "Einige Felder sind noch nicht korrekt ausgefüllt." : ""}>
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                            disabled={!isFormValid()}
                         >
-                            Abbrechen
+                            Weiter zur Übersicht 
                         </button>
-                        <div title={!isFormValid() ? "Einige Felder sind noch nicht korrekt ausgefüllt." : ""}>
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                                disabled={!isFormValid()}
-                            >
-                                Weiter zur Übersicht 
-                            </button>
-                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     );
 }
