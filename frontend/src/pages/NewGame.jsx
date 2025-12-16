@@ -46,10 +46,13 @@ function NewGame() {
 
     // 🆕 Prüfe, ob ungespeicherte Änderungen vorliegen
     const isDirty = () => {
-        return gameNameInput.trim() !== '' || 
-               playerCount !== initialPlayerCount || 
-               victoryPoints !== initialVictoryPoints || // 🆕 Siegbedingung prüfen
-               players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1 (currentUser)
+        const gameNameChanged = gameNameInput.trim() !== '';
+        const playerCountChanged = playerCount !== 5;
+        const victoryPointsChanged = victoryPoints !== (100 + new Date().getDate());
+        const player1Changed = players[0] && players[0].name !== user.name; // 🆕 Spieler 1 Name geändert?
+        const otherPlayersChanged = players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Andere Spieler hinzugefügt?
+        
+        return gameNameChanged || playerCountChanged || victoryPointsChanged || player1Changed || otherPlayersChanged;
     };
 
     // 🆕 User-Liste beim Mount laden (falls nicht schon geladen) - FORCE RELOAD für Cache-Problem
@@ -74,27 +77,20 @@ function NewGame() {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [hasUnsavedChanges]);
 
+    // 🆕 Automatische Aktualisierung des unsaved-Flags bei State-Änderungen
+    useEffect(() => {
+        setHasUnsavedChanges(isDirty());
+    }, [gameNameInput, playerCount, victoryPoints, players]); // 🆕 Abhängigkeiten hinzufügen
+
     // Handler für Spielname-Änderung
     const handleGameNameChange = (fullName, inputPart) => {
-        const newIsDirty = inputPart.trim() !== '' || 
-                          playerCount !== initialPlayerCount || 
-                          victoryPoints !== initialVictoryPoints || // 🆕 Siegbedingung prüfen
-                          players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
         setGameName(fullName);
         setGameNameInput(inputPart);
-        setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
-        console.log('🎮 Spielname:', fullName);
     };
 
     // Handler für Spieleranzahl-Änderung
     const handlePlayerCountChange = (count) => {
-        const newIsDirty = count !== initialPlayerCount || 
-                          gameNameInput.trim() !== '' || 
-                          victoryPoints !== initialVictoryPoints || // 🆕 Siegbedingung prüfen
-                          players.slice(1, count).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
-        console.log('🔢 handlePlayerCountChange:', { count, initialPlayerCount, gameNameInput: gameNameInput.trim(), playersSlice: players.slice(1, count), newIsDirty });
         setPlayerCount(count);
-        setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
 
         // Erweitere players Array, wenn nötig, aber behalte vorhandene Daten
         setPlayers(prev => {
@@ -109,13 +105,7 @@ function NewGame() {
 
     // Handler für Siegbedingung-Änderung
     const handleVictoryConditionChange = (points) => {
-        const newIsDirty = gameNameInput.trim() !== '' || 
-                          playerCount !== initialPlayerCount || 
-                          points !== initialVictoryPoints || // 🆕 Siegbedingung prüfen
-                          players.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
         setVictoryPoints(points);
-        setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
-        console.log('🏆 Siegbedingung:', points);
     };
 
     // Handler für Spieler entfernen
@@ -129,18 +119,16 @@ function NewGame() {
             return newPlayers.map((p, i) => p ? { ...p, playerNumber: i + 1 } : null);
         });
         setPlayerCount(playerCount - 1);
-        setHasUnsavedChanges(true); // Änderung markieren
     };
     const handlePlayerChange = (playerData) => {
         setPlayers((prev) => {
             const updated = [...prev];
-            updated[playerData.playerNumber - 1] = playerData;
-            const newPlayers = updated;
-            const newIsDirty = gameNameInput.trim() !== '' || 
-                              playerCount !== initialPlayerCount || 
-                              victoryPoints !== initialVictoryPoints || // 🆕 Siegbedingung prüfen
-                              newPlayers.slice(1, playerCount).some(p => p && (p.name || p.email)); // 🆕 Ignoriere Spieler 1
-            setHasUnsavedChanges(newIsDirty); // 🆕 Sofort mit neuen Werten prüfen
+            // 🆕 Für Spieler 1: Wenn der Name dem ursprünglichen user.name entspricht, entferne den Eintrag
+            if (playerData.playerNumber === 1 && playerData.name === user.name) {
+                updated[0] = null; // Zurück auf Standard
+            } else {
+                updated[playerData.playerNumber - 1] = playerData;
+            }
             return updated;
         });
     };
