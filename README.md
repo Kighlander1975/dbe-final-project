@@ -65,15 +65,16 @@
 - **Professionelle UI** mit modernem Design
 
 ### Inhaltsverzeichnis
-1. [Einleitung](#einleitung)
-2. [Projektbeschreibung](#projektbeschreibung)
+1. [🚀 Release Candidate 1.0 - Features Overview](#-release-candidate-10---features-overview)
+2. [Einleitung](#einleitung)
+3. [Projektbeschreibung](#projektbeschreibung)
    - [Die Idee](#die-idee)
    - [Die Regeln des Spiels Stechen](#die-regeln-des-spiels-stechen)
      - [Das Ansagen](#das-ansagen)
      - [Das Spielen](#das-spielen)
      - [Das Auswerten](#das-auswerten)
    - [Glossar der Spielbegriffe](#glossar-der-spielbegriffe)
-3. [Technische Anforderungen](#technische-anforderungen)
+4. [Technische Anforderungen](#technische-anforderungen)
    - [Technologiestack](#technologiestack)
    - [Entwicklungsumgebung](#entwicklungsumgebung)
    - [Installation und Setup](#installation-und-setup)
@@ -84,7 +85,20 @@
    - [Benutzerrollen und Zugriffsrechte](#benutzerrollen-und-zugriffsrechte)
    - [Rollenmanagement und Zugriffslogik](#rollenmanagement-und-zugriffslogik)
    - [Erweiterbarkeit](#erweiterbarkeit)
-4. [Admin-Bereich](#admin-bereich)
+5. [Admin-Bereich](#admin-bereich)
+6. [API-Dokumentation](#api-dokumentation)
+7. [Datenbank-Schema](#datenbank-schema)
+8. [🤝 Contributing](#-contributing)
+   - [🛡️ Branch-Schutz & Sicherheit](#️-branch-schutz--sicherheit)
+   - [🚀 Entwicklung beitragen](#-entwicklung-beitragen)
+   - [🔍 Änderungen in anderen Branches ansehen](#-änderungen-in-anderen-branches-ansehen)
+   - [🐛 Bug Reports & Feature Requests](#-bug-reports--feature-requests)
+   - [📝 Code Style & Guidelines](#-code-style--guidelines)
+   - [🔄 Pull Request Prozess](#-pull-request-prozess)
+   - [📞 Kontakt](#-kontakt)
+9. [🗺️ Roadmap](#️-roadmap)
+10. [📄 Lizenz](#-lizenz)
+11. [🙏 Danksagungen](#-danksagungen)
 
 ## Einleitung
 Das **Stechen**-Helper Projekt ist eine Webanwendung, die entwickelt wird, um die Organisation und Verwaltung von dem Kartenspiel "**Stechen**" zu erleichtern. Die Anwendung soll Benutzern helfen, **Stechen**-Partien zu planen, zu verwalten und zu verfolgen, indem sie eine benutzerfreundliche Oberfläche und leistungsstarke Funktionen bietet. Diese Webanwendung wird für **Tablets und Desktop** entwickelt, aber geeignete, große Handys im Querformat werden ebenfalls unterstützt.
