@@ -9,6 +9,7 @@
   <img src="https://img.shields.io/badge/Node.js-20-green.svg" alt="Node.js">
   <img src="https://img.shields.io/badge/Docker-Ready-blue.svg" alt="Docker">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
+  <img src="https://img.shields.io/badge/Status-Release_Candidate_1.0-orange.svg" alt="RC 1.0">
   <br>
   <img src="https://img.shields.io/github/issues/Kighlander1975/dbe-final-project.svg" alt="Issues">
   <img src="https://img.shields.io/github/stars/Kighlander1975/dbe-final-project.svg" alt="Stars">
@@ -20,8 +21,48 @@
   <img src="https://img.shields.io/badge/Open_Source-Yes-green.svg" alt="Open Source">
   <img src="https://img.shields.io/badge/PRs-Welcome-blue.svg" alt="PRs Welcome">
   <img src="https://img.shields.io/badge/Maintained-Yes-green.svg" alt="Maintained">
-  <img src="https://img.shields.io/badge/Status-Active-success.svg" alt="Status">
+  <img src="https://img.shields.io/badge/Version-RC_1.0-success.svg" alt="Version">
 </p>
+
+## 🚀 Release Candidate 1.0 - Features Overview
+
+**Stechen-Helper** ist eine moderne Webanwendung zur Organisation und Verwaltung von Stechen-Partien. Die Anwendung bietet eine vollständige Spielverwaltung mit Echtzeit-Updates, Ranking-System und umfassenden Admin-Funktionen.
+
+### ✨ Key Features (RC 1.0)
+
+#### 🎮 Spiel-Management
+- **Live-Spiele** mit Echtzeit-Updates während des Spielverlaufs
+- **Automatische Punkteberechnung** nach Stechen-Regeln
+- **Spieler-Auswahl** und Dealer-Rotation
+- **Spiel-Pause/Fortsetzung** mit visueller Kennzeichnung
+- **Spiel-Historie** und detaillierte Statistiken
+
+#### 🏆 Ranking & Statistiken
+- **Elo-ähnliches Rating-System** für faire Spielerbewertung
+- **Globale Ranglisten** mit Punkten und Platzierungen
+- **Persönliche Statistiken** (Durchschnittsplatzierung, Win-Rate, etc.)
+- **Konfigurierbare Count-Up-Animationen** (0.5-2 Sekunden)
+- **Vollständige Rankings-Reset-Funktion** für Admins
+
+#### 👥 User-Management
+- **Vollständige Authentifizierung** (Registrierung, Login, Passwort-Reset)
+- **E-Mail-Verifizierung** und Sicherheit
+- **Rollenbasierte Berechtigungen** (Player, Host, Admin)
+- **User-Profile** mit persönlichen Statistiken
+
+#### 🔧 Admin-Dashboard
+- **User-Verwaltung** (Rollen ändern, bannen, löschen)
+- **Einstellungs-Management** mit Datenpersistenz
+- **Test-E-Mail-Funktion** für Debugging
+- **System-Statistiken** und Monitoring
+- **Sichere Daten-Reset-Funktionen**
+
+#### 🎨 User Experience
+- **Responsive Design** für Desktop, Tablet und große Handys
+- **Intuitive Benutzeroberfläche** mit klarer Navigation
+- **Toast-Benachrichtigungen** für User-Feedback
+- **Loading-States** und Error-Handling
+- **Professionelle UI** mit modernem Design
 
 ### Inhaltsverzeichnis
 1. [Einleitung](#einleitung)
@@ -109,28 +150,35 @@ Der Schriftführer notiert die Punkte auf dem Zettel (später in der App) und z�
 Die Anwendung wird mit folgenden Technologien entwickelt:
 
 #### Frontend
-- **React.js 18+** als UI-Framework
-- **Vite** als Build-Tool und Dev-Server
-- **Vanilla CSS** für das Styling
+- **React.js 18.3.1** als UI-Framework
+- **Vite 6.4.1** als Build-Tool und Dev-Server
+- **Vanilla CSS** für das Styling (keine CSS-Frameworks)
 - **JavaScript (ES6+)** für die Funktionalität
-- **Native Fetch API** für HTTP-Requests (keine zusätzlichen Libraries wie Axios)
+- **Native Fetch API** für HTTP-Requests
+- **React Router** für Client-Side Navigation
+- **React Context** für State-Management
 
 #### Backend
 - **Laravel 12** als PHP-Framework
 - **PHP 8.2+** für die Serverlogik
 - **Laravel Sanctum** für API-Authentifizierung
 - **RESTful API** für Frontend-Backend-Kommunikation
+- **Eloquent ORM** für Datenbankoperationen
+- **Laravel Mail** für E-Mail-Funktionalität
 
 #### Datenbank
 - **MariaDB 10.11+** für die persistente Datenspeicherung
 - **Eloquent ORM** für Datenbankabfragen
+- **Database Migrations** für Schema-Management
+- **Database Seeders** für Testdaten
 
 #### DevOps & Deployment
 - **Docker & Docker Compose** für containerisierte Entwicklung
 - **Nginx** als Webserver (im Container)
+- **Supervisor** für Queue- und Task-Management
 - **phpMyAdmin** für Datenbankverwaltung
 - **Git** für Versionskontrolle
-- **Testing:** Unit- und Integrationstests noch nicht implementiert (geplant für zukünftige Versionen)
+- **GitHub Actions** für CI/CD (geplant)
 
 ### Entwicklungsumgebung
 
@@ -184,15 +232,16 @@ Die Entwicklungsumgebung basiert auf Docker und besteht aus vier Services:
 ### Installation und Setup
 
 #### Voraussetzungen
-- Docker Desktop installiert
-- Git installiert
-- Mindestens 4GB freier RAM
+- **Docker Desktop** installiert und laufend
+- **Git** installiert
+- **Mindestens 4GB freier RAM**
+- **Windows/Linux/macOS** mit Docker-Unterstützung
 
-#### Ersteinrichtung
+#### 🚀 Schnellstart (RC 1.0)
 
-```powershell
+```bash
 # 1. Repository klonen
-git clone <repository-url>
+git clone https://github.com/Kighlander1975/dbe-final-project.git
 cd stechen-helper
 
 # 2. Docker-Container starten
@@ -201,81 +250,103 @@ docker-compose up -d
 # 3. Backend initialisieren
 docker exec -it stechen_backend bash
 composer install
+cp .env.example .env
 php artisan key:generate
 php artisan migrate
+php artisan db:seed  # Optional: Testdaten laden
 exit
 
-**Hinweis:** Für E-Mail-Funktionalität bitte die `.env`-Datei des Backends anpassen, sonst könnten Fehler auftreten.
-
-# 4. Frontend-Dependencies installieren (falls nötig)
+# 4. Frontend-Dependencies (falls nötig)
 docker exec -it stechen_frontend npm install
 ```
 
-#### Zugriff auf die Anwendung
+#### 🌐 Zugriff auf die Anwendung
 
-- **Frontend**: http://localhost:3000
-- **Backend-API**: http://localhost:8000
-- **phpMyAdmin**: http://localhost:8080
+Nach erfolgreichem Setup sind folgende Services verfügbar:
+
+- **🎮 Frontend**: http://localhost:3000
+- **🔧 Backend-API**: http://localhost:8000
+- **🗄️ phpMyAdmin**: http://localhost:8080
   - Server: `stechen_database`
   - Benutzer: `stechen_user`
   - Passwort: `stechen_password`
-- **Datenbank** (extern): `localhost:3307`
+- **💾 Datenbank** (extern): `localhost:3307`
 
-#### Tägliche Nutzung
+#### 🛠️ Tägliche Entwicklung
 
-**Projekt starten:**
-```powershell
-cd C:\WebProjects\stechen-helper
+```bash
+# Projekt starten
 docker-compose up -d
-```
 
-**Projekt beenden:**
-```powershell
+# Projekt beenden
 docker-compose down
-```
 
-**Logs anzeigen:**
-```powershell
-# Alle Services
+# Logs anzeigen
 docker-compose logs -f
 
-# Einzelner Service
-docker logs stechen_frontend -f
-docker logs stechen_backend -f
+# Einzelne Container neu starten
+docker-compose restart stechen_frontend
+docker-compose restart stechen_backend
+
+# Container-Status prüfen
+docker-compose ps
 ```
 
-**Container-Status prüfen:**
-```powershell
-docker-compose ps
+#### 🔧 Troubleshooting
+
+**Frontend Hot-Reload funktioniert nicht:**
+```bash
+docker-compose restart stechen_frontend
+```
+
+**Backend-Änderungen werden nicht übernommen:**
+```bash
+docker exec -it stechen_backend php artisan cache:clear
+docker exec -it stechen_backend php artisan config:clear
+```
+
+**Datenbank-Verbindung fehlgeschlagen:**
+```bash
+docker-compose restart stechen_database
 ```
 
 ### Kernfunktionalitäten
 
-#### 1. Spielerverwaltung
-- Benutzerprofile erstellen und verwalten
-- Authentifizierung und Autorisierung via Laravel Sanctum
-- Spielerstatistiken und -wertungen speichern
-- Persönliche Einstellungen (Avatar, Benachrichtigungen)
+#### ✅ 1. Vollständiges User-Management
+- **Registrierung & Login** mit E-Mail-Verifizierung
+- **Passwort-Reset** und -Änderung
+- **Rollenbasierte Berechtigungen** (Player, Host, Admin)
+- **Profile-Management** mit persönlichen Statistiken
+- **Sichere Authentifizierung** via Laravel Sanctum
 
-#### 2. Spielablauf-Management
-- Spielerauswahl und Dealer-Bestimmung
-- Eingabe und Verfolgung von angesagten Stichen
-- Eingabe der tatsächlich erzielten Stiche
-- Automatische Punkteberechnung
-- Dealer-Rotation und Spielfortschritt
+#### ✅ 2. Spielablauf-Management
+- **Live-Spiele** mit Echtzeit-Updates
+- **Spieler-Auswahl** und automatische Dealer-Rotation
+- **Ansagen-Eingabe** mit Validierung
+- **Stich-Erfassung** und automatische Punkteberechnung
+- **Spiel-Pause/Fortsetzung** mit visueller Kennzeichnung
+- **Spiel-Beendigung** mit finaler Punktevergabe
 
-#### 3. Organisations-Features
-- Erstellung von Einzelspielen
-- Verwaltung mehrerer Spielgruppen *(noch nicht implementiert)*
-- Einladungssystem für Spiele *(noch nicht implementiert)*
-- Visuelle Unterscheidung pausierter Spiele: Auf der Startseite werden pausierte Spiele mit drei verschiedenen Pastellfarben (Blau, Lila, Orange) hervorgehoben, um Verwechslungen bei gleichen Spielnamen zu vermeiden
-- Detaillierte Tooltips: Hover über pausierte Spiel-Buttons zeigt Spielerliste mit aktuellen Punkten und Rängen
+#### ✅ 3. Ranking & Statistik-System
+- **Elo-ähnliches Rating-System** für faire Bewertung
+- **Globale Ranglisten** mit Punkten und Platzierungen
+- **Persönliche Statistiken** (Win-Rate, Durchschnittsplatzierung)
+- **Konfigurierbare Animationen** (Count-Up-Duration: 0.5-2s)
+- **Admin-Reset-Funktion** für Testdaten
 
-#### 4. Statistik und Ranglisten
-- Globale Einzelspieler-Ranglisten
-- Spielerwertungen basierend auf vergangenen Spielen
-- Detaillierte Spielstatistiken
-- Ligatabellen *(noch nicht implementiert)*
+#### ✅ 4. Admin-Dashboard
+- **User-Verwaltung** (Rollen ändern, bannen/entbannen, löschen)
+- **Einstellungs-Management** mit Datenbank-Persistenz
+- **Test-E-Mail-Funktion** für Debugging
+- **System-Statistiken** und Monitoring
+- **Sichere Daten-Reset-Funktionen** mit Bestätigung
+
+#### ✅ 5. Organisations-Features
+- **Erstellung von Live-Spielen** mit Host-Berechtigungen
+- **Spieler-Einladung** und -Verwaltung
+- **Spiel-Historie** und detaillierte Aufzeichnungen
+- **Visuelle Spiel-Unterscheidung** (aktiv/pausiert/beendet)
+- **Responsive Design** für alle Geräte
 
 ### Benutzeroberfläche
 
@@ -310,23 +381,105 @@ Besonderheiten des UI-Designs:
   - Gewinner (Spieler, der die Zielmarke zuerst erreicht)
 - Responsive Anpassung für verschiedene Bildschirmgrößen
 
-### Datenverwaltung
+#### 📝 API-Features
+- **JSON-API**: Alle Responses im JSON-Format
+- **Error-Handling**: Strukturierte Fehlerantworten
+- **Pagination**: Automatische Paginierung für Listen
+- **Rate-Limiting**: Schutz vor API-Missbrauch
+- **CORS**: Cross-Origin-Requests erlaubt
 
-- **Persistente Speicherung**: Alle Spielergebnisse werden dauerhaft in MariaDB gespeichert
-- **Docker Volume**: Datenbank-Daten bleiben auch nach Container-Neustart erhalten
-- **Datenstruktur**: Effiziente Datenbankstruktur mit Laravel Migrations für:
-  - Spieler (ID, Name, Profilinformationen, Avatar)
-  - Spiele (ID, Datum, Teilnehmer, Gewinner)
-  - Runden (Spiel-ID, Rundennummer, Dealer)
-  - Ergebnisse (Runden-ID, Spieler-ID, Ansage, Stiche, Punkte)
-- **Skalierbarkeit**: Optimierte Eloquent-Queries für schnelle Datenverarbeitung auch bei großen Datenmengen
-- **Backup**: Docker Volume `database_data` kann für Backups exportiert werden
+### Datenbank-Schema
+
+Die Anwendung verwendet eine normalisierte MySQL/MariaDB-Datenbank:
+
+#### Haupttabellen
+- **`users`**: Benutzerkonten mit Rollen und Statistiken
+- **`games`**: Spiel-Sessions mit Status und Metadaten
+- **`player_rankings`**: Detaillierte Spieler-Ergebnisse pro Spiel
+- **`admin_settings`**: Konfigurierbare Anwendungseinstellungen
+
+#### Wichtige Beziehungen
+- **User ↔ Games**: Viele-zu-Viele (Spieler können in vielen Spielen teilnehmen)
+- **Games ↔ Player Rankings**: Eins-zu-Viele (jedes Spiel hat viele Spieler-Ergebnisse)
+- **Users ↔ Admin Settings**: Verwaltung von App-Konfigurationen
+
+#### Datenbank-Features
+- **Foreign Keys**: Referenzielle Integrität
+- **Indexes**: Optimierte Queries für Rankings und Statistiken
+- **Migrations**: Versionskontrolle des Datenbank-Schemas
+- **Seeders**: Automatische Testdaten-Erstellung
 
 
 ### Sicherheit und Datenschutz
 
 **Authentifizierung**: Laravel Sanctum für sichere API-Token-basierte Authentifizierung
-**Autorisierung**: Rollenbasierte Zugriffsrechte via Laravel Policies (Spieler, Schriftführer, Administrator)
+**Autorisierung**: Rollenbasierte Zugriffsrechte (Player, Host, Admin)
+**E-Mail-Verifizierung**: Pflicht bei Registrierung
+**Passwort-Sicherheit**: Sichere Hashing-Algorithmen
+**CSRF-Schutz**: Automatischer Schutz für alle Formulare
+**Input-Validierung**: Serverseitige Validierung aller Eingaben
+
+### API-Dokumentation
+
+Die Anwendung bietet eine vollständige REST-API für alle Frontend-Interaktionen:
+
+#### 🔐 Authentifizierung
+```http
+POST /api/register          # Benutzerregistrierung
+POST /api/login             # Login
+POST /api/logout            # Logout
+GET  /api/user              # Aktuelle User-Daten
+POST /api/verify-email      # E-Mail-Verifizierung
+POST /api/forgot-password   # Passwort-Reset anfordern
+POST /api/reset-password    # Passwort zurücksetzen
+```
+
+#### 🎮 Spiele-Management
+```http
+GET    /api/games/user-games    # Eigene Spiele (Host)
+POST   /api/games               # Neues Spiel erstellen (Admin)
+GET    /api/games/{id}          # Spiel-Details
+PATCH  /api/games/{id}          # Spiel aktualisieren
+PATCH  /api/games/{id}/pause    # Spiel pausieren
+PATCH  /api/games/{id}/resume   # Spiel fortsetzen
+PATCH  /api/games/{id}/finish   # Spiel beenden
+DELETE /api/games/{id}          # Spiel löschen
+```
+
+#### 🏆 Rankings & Statistiken
+```http
+GET /api/rankings              # Top-Rankings
+GET /api/rankings/stats        # Ranking-Übersicht
+GET /api/rankings/{userId}     # Persönliche Details
+GET /api/stats/players         # Spieler-Statistiken
+GET /api/stats/player/{id}     # Einzelne Spieler-Stats
+```
+
+#### 👑 Admin-Funktionen
+```http
+GET    /api/admin/users              # Alle User (Admin)
+PATCH  /api/admin/users/{id}/role    # Rolle ändern
+PATCH  /api/admin/users/{id}/ban     # User bannen
+DELETE /api/admin/users/{id}         # User löschen
+GET    /api/admin/settings           # Einstellungen
+PUT    /api/admin/settings/{key}     # Einstellung ändern
+DELETE /api/admin/settings/reset-rankings # Rankings zurücksetzen
+POST   /api/admin/test-email         # Test-E-Mail senden
+```
+
+#### ⚙️ Öffentliche Endpunkte
+```http
+GET /api/users              # Alle User (für Spieler-Auswahl)
+GET /api/version            # App-Version
+GET /api/settings/count_up_duration # Animation-Dauer
+```
+
+#### 📝 API-Features
+- **JSON-API**: Alle Responses im JSON-Format
+- **Error-Handling**: Strukturierte Fehlerantworten
+- **Pagination**: Automatische Paginierung für Listen
+- **Rate-Limiting**: Schutz vor API-Missbrauch
+- **CORS**: Cross-Origin-Requests erlaubt
 **CSRF-Schutz**: Laravel CSRF-Token für alle Formulare
 **Passwort-Hashing**: Bcrypt-Verschlüsselung für Passwörter
 **Umgebungsvariablen**: Sensible Daten in `.env`-Dateien (nicht im Git)
@@ -757,4 +910,67 @@ Flagge als "inflation_suspicious"
 
 ---
 
-**Entwickelt mit ❤️ für Kartenspieler**
+## 🤝 Contributing
+
+Wir freuen uns über Beiträge zur Weiterentwicklung von Stechen-Helper!
+
+### 🚀 Entwicklung beitragen
+
+1. **Fork** das Repository
+2. **Clone** deinen Fork: `git clone https://github.com/YOUR-USERNAME/dbe-final-project.git`
+3. **Branch** erstellen: `git checkout -b feature/AmazingFeature`
+4. **Änderungen** committen: `git commit -m 'Add some AmazingFeature'`
+5. **Push** zu deinem Branch: `git push origin feature/AmazingFeature`
+6. **Pull Request** erstellen
+
+### 🐛 Bug Reports & Feature Requests
+
+- **Issues** für Bugs und Feature-Requests verwenden
+- **Detaillierte Beschreibungen** mit Screenshots wenn möglich
+- **Schritt-für-Schritt Reproduktion** bei Bugs
+
+### 📝 Code Style
+
+- **PHP**: PSR-12 Standard
+- **JavaScript**: ESLint Standard
+- **CSS**: Konsistente Benennung und Struktur
+- **Commits**: Englische Commit-Messages
+
+## 🗺️ Roadmap
+
+### ✅ Release Candidate 1.0 (Abgeschlossen)
+- Vollständiges Spiel-Management
+- Ranking-System mit Elo-Rating
+- Admin-Dashboard
+- Responsive UI
+- Docker-Setup
+
+### 🔄 Geplante Features (v1.1+)
+- **Multi-Game-Support**: Gleichzeitige Spiele verwalten
+- **Tournament-Mode**: Turnier-Organisation
+- **Advanced Statistics**: Detaillierte Analysen
+- **Mobile App**: React Native Implementation
+- **Real-time Notifications**: Push-Benachrichtigungen
+
+### 🔮 Vision (v2.0+)
+- **AI-Gegner**: Computergesteuerte Spieler
+- **Voice-Control**: Sprachsteuerung für Ansagen
+- **Social Features**: Freundeslisten, Challenges
+- **Internationalisierung**: Mehrsprachige Unterstützung
+- **Cloud-Sync**: Plattformübergreifende Synchronisation
+
+## 📄 Lizenz
+
+Dieses Projekt ist unter der **MIT License** lizenziert - siehe die [LICENSE](LICENSE) Datei für Details.
+
+## 🙏 Danksagungen
+
+- **DBE-Academy** für die Ausbildung und Unterstützung
+- **Laravel Community** für das fantastische Framework
+- **React Community** für die großartige UI-Library
+- **Docker Community** für die Containerisierung
+- **Open Source Community** für die vielen Tools und Libraries
+
+---
+
+**🎯 Stechen-Helper RC 1.0** - Bereit für die finale Phase! 🚀
