@@ -881,7 +881,7 @@ Flagge als "inflation_suspicious"
 **Problemstellung:** Das aktuelle Elo-System verhindert nicht, dass zwei oder mehr Spieler sich gegenseitig "hochpushen" können, indem sie nur untereinander spielen und abwechselnd gewinnen.
 
 **Geplante Lösungsansätze:**
-
+Siehe oben.
 ---
 
 ## 📊 Implementierungsstatus (Stand: Dezember 2025)
@@ -958,6 +958,89 @@ Wir freuen uns über Beiträge zur Weiterentwicklung von Stechen-Helper!
 - **Social Features**: Freundeslisten, Challenges
 - **Internationalisierung**: Mehrsprachige Unterstützung
 - **Cloud-Sync**: Plattformübergreifende Synchronisation
+
+## 🤝 Contributing
+
+Wir freuen uns über Beiträge zur Weiterentwicklung von Stechen-Helper!
+
+### 🛡️ Branch-Schutz & Sicherheit
+
+**❌ Direktes Pushen in `main` ist NICHT erlaubt!**
+- Der `main` Branch ist **geschützt** und kann nur von Maintainern direkt modifiziert werden
+- Alle Änderungen müssen über **Pull Requests** eingereicht werden
+- Dies verhindert versehentliche Schäden und ermöglicht Code-Reviews
+
+### 🚀 Entwicklung beitragen
+
+1. **Fork** das Repository auf GitHub
+2. **Clone** deinen Fork: `git clone https://github.com/YOUR-USERNAME/dbe-final-project.git`
+3. **Branch** erstellen: `git checkout -b feature/AmazingFeature`
+4. **Änderungen** entwickeln und testen
+5. **Änderungen** committen: `git commit -m 'Add some AmazingFeature'`
+6. **Push** zu deinem Branch: `git push origin feature/AmazingFeature`
+7. **Pull Request** erstellen über GitHub
+
+### 🔍 Änderungen in anderen Branches ansehen
+
+#### Option 1: GitHub Pull Request
+- Gehe zur **Pull Request** Seite des Repositories
+- Wähle den gewünschten PR aus
+- Klicke auf **"Files changed"** Tab
+- Hier siehst du alle geänderten Dateien mit **Diff-Ansicht**
+- **Kommentare** können direkt zu spezifischen Zeilen hinzugefügt werden
+
+#### Option 2: Lokale Branch-Vergleiche
+```bash
+# Remote Branches anzeigen
+git branch -r
+
+# Remote Branch lokal auschecken
+git checkout -b feature-branch origin/feature-branch
+
+# Mit main vergleichen
+git diff main..feature-branch
+
+# Spezifische Datei vergleichen
+git diff main..feature-branch -- path/to/file.php
+
+# GitHub CLI verwenden (falls installiert)
+gh pr diff 123  # PR #123 vergleichen
+```
+
+#### Option 3: GitHub Compare View
+- Gehe zu: `https://github.com/Kighlander1975/dbe-final-project/compare/main...branch-name`
+- Ersetze `branch-name` mit dem Namen des Branches
+- Vollständige Diff-Ansicht aller Änderungen
+
+### 🐛 Bug Reports & Feature Requests
+
+- **Issues** für Bugs und Feature-Requests verwenden
+- **Detaillierte Beschreibungen** mit Screenshots wenn möglich
+- **Schritt-für-Schritt Reproduktion** bei Bugs
+- **Labels** verwenden: `bug`, `enhancement`, `documentation`, etc.
+
+### 📝 Code Style & Guidelines
+
+- **PHP**: PSR-12 Standard (Laravel Coding Style)
+- **JavaScript**: ESLint Standard + React Best Practices
+- **CSS**: Konsistente Benennung (BEM-Methode bevorzugt)
+- **Commits**: Englische Commit-Messages, präzise und beschreibend
+- **Tests**: Unit-Tests für neue Features schreiben
+
+### 🔄 Pull Request Prozess
+
+1. **PR erstellen** mit klarer Beschreibung
+2. **Automated Tests** laufen automatisch (falls konfiguriert)
+3. **Code Review** durch Maintainer
+4. **Feedback** einarbeiten falls nötig
+5. **Merge** nach Approval
+
+### 📞 Kontakt
+
+Bei Fragen zum Contributing:
+- **Issues** für technische Fragen
+- **Discussions** für allgemeine Diskussionen
+- **E-Mail** an den Repository-Owner
 
 ## 📄 Lizenz
 
