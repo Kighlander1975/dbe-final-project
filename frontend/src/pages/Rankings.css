@@ -97,11 +97,7 @@
 }
 
 .player-col {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     text-align: center;
-    justify-content: center;
     align-self: center;
 }
 
