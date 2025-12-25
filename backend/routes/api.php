@@ -34,7 +34,7 @@ Route::get('/version', [AdminSettingController::class, 'getVersion']);
 // ⭐ Public Debug Setting (ÖFFENTLICH, für Header-Anzeige)
 Route::get('/admin/settings/debug_server_error', [AdminSettingController::class, 'getDebugSetting']);
 
-// ⭐ Public Count-Up Duration Setting (ÖFFENTLICH, für Animation)
+// ⭐ Public Count-Up Duration (ÖFFENTLICH, für Animation)
 Route::get('/settings/count_up_duration', [AdminSettingController::class, 'getCountUpDuration']);
 
 // Protected routes (Email verified required)
@@ -51,6 +51,9 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
     
     // Admin-only routes
     Route::middleware('role:admin')->prefix('admin')->group(function () {
+        // ⭐ Reset Rankings (Admin only) - MUSS vor apiResource stehen!
+        Route::delete('/settings/reset-rankings', [AdminSettingController::class, 'resetRankings']);
+
         Route::get('/users', [UserController::class, 'index'])->name('users.admin');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
         Route::patch('/users/{user}/name', [UserController::class, 'updateName']);

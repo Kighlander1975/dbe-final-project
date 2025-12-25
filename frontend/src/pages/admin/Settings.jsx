@@ -105,6 +105,30 @@ function Settings() {
         }
     };
 
+    const handleResetRankings = async () => {
+        const confirmed = window.confirm(
+            '⚠️ WARNUNG: Diese Aktion kann nicht rückgängig gemacht werden!\n\n' +
+            'Alle Spieler-Rankings, Punkte und Statistiken werden dauerhaft gelöscht.\n' +
+            'Außerdem werden alle beendeten Spiele entfernt.\n\n' +
+            'Bist du sicher, dass du fortfahren möchtest?'
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        setSaving(true);
+        try {
+            await adminAPI.resetRankings();
+            showToast('Alle Rankings wurden erfolgreich zurückgesetzt', 'success');
+        } catch (error) {
+            console.error('Error resetting rankings:', error);
+            showToast('Fehler beim Zurücksetzen der Rankings', 'error');
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="admin-settings">
@@ -195,6 +219,25 @@ function Settings() {
                         className="btn btn-primary visual-save-btn"
                     >
                         {saving ? 'Speichere...' : 'Speichern'}
+                    </button>
+                </div>
+            </div>
+
+            <div className="admin-settings__section">
+                <h2>Daten-Reset</h2>
+                <div className="reset-control">
+                    <div className="reset-warning">
+                        <p><strong>⚠️ Achtung:</strong> Diese Aktion kann nicht rückgängig gemacht werden!</p>
+                        <p>Alle Spieler-Rankings, Punkte und Statistiken werden dauerhaft gelöscht.</p>
+                        <p>Außerdem werden alle beendeten Spiele entfernt.</p>
+                        <p>Verwende dies nur für Testzwecke oder nach Backup.</p>
+                    </div>
+                    <button
+                        onClick={handleResetRankings}
+                        disabled={saving}
+                        className="btn btn-danger reset-btn"
+                    >
+                        {saving ? 'Setze zurück...' : '🗑️ Rankings zurücksetzen'}
                     </button>
                 </div>
             </div>

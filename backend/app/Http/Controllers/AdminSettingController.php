@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminSetting;
+use App\Models\Game;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AdminSettingController extends Controller
@@ -182,7 +185,7 @@ class AdminSettingController extends Controller
      */
     public function getCountUpDuration()
     {
-        $duration = AdminSetting::getValue('count_up_duration', '2');
+        $duration = AdminSetting::getValue('count_up_duration', '1.0');
 
         return response()->json([
             'setting' => [
@@ -190,5 +193,39 @@ class AdminSettingController extends Controller
                 'value' => $duration
             ]
         ]);
+    }
+
+    /**
+     * Reset all rankings data (Admin only)
+     */
+    public function resetRankings(Request $request)
+    {
+        try {
+            // Delete all finished games first
+            $finishedGamesCount = Game::where('status', 'finished')->delete();
+
+            // Delete all player rankings
+            DB::table('player_rankings')->delete();
+
+            // Reset user ranking stats
+            DB::table('users')->update([
+                'total_ranking_points' => 0,
+                'games_played' => 0,
+                'best_placement' => null,
+                'current_rating' => 1000, // Reset to default Elo rating
+            ]);
+
+            Log::info('Rankings and finished games reset by admin', [
+                'admin_id' => $request->user()->id,
+                'finished_games_deleted' => $finishedGamesCount
+            ]);
+
+            return response()->json([
+                'message' => "Alle Rankings, User-Statistiken und {$finishedGamesCount} beendete Spiele wurden erfolgreich zurückgesetzt"
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to reset rankings', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Fehler beim Zurücksetzen der Rankings'], 500);
+        }
     }
 }

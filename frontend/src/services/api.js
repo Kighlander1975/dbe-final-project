@@ -401,6 +401,14 @@ const adminAPI = {
             loadingMessage: "Einstellung wird gelöscht...",
         });
     },
+
+    // Reset rankings (Admin only)
+    resetRankings: async () => {
+        return apiRequest("/admin/settings/reset-rankings", {
+            method: "DELETE",
+            loadingMessage: "Rankings werden zurückgesetzt...",
+        });
+    },
 };
 const publicAPI = {
     // Get app version
