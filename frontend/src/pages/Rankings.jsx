@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { rankingAPI } from '../services/api';
+import { rankingAPI, publicAPI } from '../services/api';
 import './Rankings.css';
 
 function Rankings() {
@@ -11,10 +11,27 @@ function Rankings() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [animatedStats, setAnimatedStats] = useState({
+        total_ranked_players: 0,
+        total_ranked_games: 0,
+        total_points_awarded: 0,
+        average_points_per_player: 0,
+    });
+
+    const [countUpDuration, setCountUpDuration] = useState(2000); // Default 2 seconds
+    const [durationLoaded, setDurationLoaded] = useState(false);
+
     useEffect(() => {
         fetchRankings();
         fetchStats();
+        fetchCountUpDuration();
     }, []);
+
+    useEffect(() => {
+        if (stats && durationLoaded) {
+            animateCounters(stats.overview);
+        }
+    }, [stats, durationLoaded]);
 
     const fetchRankings = async () => {
         try {
@@ -30,11 +47,52 @@ function Rankings() {
         try {
             const response = await rankingAPI.getRankingStats();
             setStats(response);
+            // animateCounters(response.overview); // Remove this
         } catch (err) {
             console.error('Error fetching ranking stats:', err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const fetchCountUpDuration = async () => {
+        try {
+            const response = await publicAPI.getCountUpDuration();
+            const duration = parseFloat(response.setting.value) * 1000;
+            setCountUpDuration(duration); // Convert to milliseconds
+            setDurationLoaded(true);
+        } catch (err) {
+            console.error('Error fetching count-up duration:', err);
+            setCountUpDuration(2000); // Fallback to 2 seconds
+            setDurationLoaded(true);
+        }
+    };
+
+    // Animate counters from 0 to target value
+    const animateCounters = (targetStats) => {
+        const duration = countUpDuration;
+        const startTime = Date.now();
+
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            setAnimatedStats({
+                total_ranked_players: Math.floor(targetStats.total_ranked_players * progress),
+                total_ranked_games: Math.floor(targetStats.total_ranked_games * progress),
+                total_points_awarded: Math.floor(targetStats.total_points_awarded * progress),
+                average_points_per_player: Math.floor(targetStats.average_points_per_player * progress),
+            });
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                // Ensure final values are exact
+                setAnimatedStats(targetStats);
+            }
+        };
+
+        requestAnimationFrame(animate);
     };
 
     const getRankIcon = (rank) => {
@@ -69,19 +127,19 @@ function Rankings() {
             {stats && (
                 <div className="rankings-overview">
                     <div className="overview-card">
-                        <h3>{stats.overview.total_ranked_players}</h3>
+                        <h3>{animatedStats.total_ranked_players}</h3>
                         <p>Aktive Spieler</p>
                     </div>
                     <div className="overview-card">
-                        <h3>{stats.overview.total_ranked_games}</h3>
+                        <h3>{animatedStats.total_ranked_games}</h3>
                         <p>Gespielte Spiele</p>
                     </div>
                     <div className="overview-card">
-                        <h3>{stats.overview.total_points_awarded}</h3>
+                        <h3>{animatedStats.total_points_awarded}</h3>
                         <p>Vergebene Punkte</p>
                     </div>
                     <div className="overview-card">
-                        <h3>{stats.overview.average_points_per_player}</h3>
+                        <h3>{animatedStats.average_points_per_player}</h3>
                         <p>Ø Punkte pro Spieler</p>
                     </div>
                 </div>

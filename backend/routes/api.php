@@ -34,6 +34,9 @@ Route::get('/version', [AdminSettingController::class, 'getVersion']);
 // ⭐ Public Debug Setting (ÖFFENTLICH, für Header-Anzeige)
 Route::get('/admin/settings/debug_server_error', [AdminSettingController::class, 'getDebugSetting']);
 
+// ⭐ Public Count-Up Duration Setting (ÖFFENTLICH, für Animation)
+Route::get('/settings/count_up_duration', [AdminSettingController::class, 'getCountUpDuration']);
+
 // Protected routes (Email verified required)
 Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);

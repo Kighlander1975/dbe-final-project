@@ -160,9 +160,16 @@ function GameTable({ gameData: initialGameData, gameId, onGameUpdate }) {
     };
 
     // Funktion zum Beenden des Spiels
-    const finishGame = () => {
-        // Navigation zur GameEvaluation Seite
-        navigate(`/game-evaluation/${gameId}`);
+    const finishGame = async () => {
+        try {
+            const response = await gameAPI.finishGame(gameId);
+            showToast(response.message || '✅ Spiel erfolgreich beendet und ausgewertet', 'success', 3000);
+            // Navigation zur GameEvaluation Seite
+            navigate(`/game-evaluation/${gameId}`);
+        } catch (error) {
+            console.error('❌ Fehler beim Beenden des Spiels:', error);
+            showToast('❌ Fehler beim Beenden des Spiels', 'error');
+        }
     };
 
     // Funktion zum Pausieren des Spiels

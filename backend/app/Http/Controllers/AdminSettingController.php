@@ -176,4 +176,19 @@ class AdminSettingController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Get count_up_duration setting (public access)
+     */
+    public function getCountUpDuration()
+    {
+        $duration = AdminSetting::getValue('count_up_duration', '2');
+
+        return response()->json([
+            'setting' => [
+                'key' => 'count_up_duration',
+                'value' => $duration
+            ]
+        ]);
+    }
 }

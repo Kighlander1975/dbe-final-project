@@ -51,6 +51,11 @@ class RankingService
         int $playerCount,
         string $gameType = 'liga'
     ): float {
+        // Wenn keine Gegner-Ratings vorhanden, keine Rating-Änderung
+        if (empty($opponentRatings)) {
+            return 0.0;
+        }
+
         // Erwartete Punktzahl gegen jeden Gegner berechnen
         $expectedScores = [];
         foreach ($opponentRatings as $opponentRating) {

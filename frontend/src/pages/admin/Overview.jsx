@@ -1,7 +1,7 @@
 // src/pages/admin/Overview.jsx
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { statsAPI } from '../../services/api'
+import { statsAPI, publicAPI } from '../../services/api'
 import '../../styles/pages/admin/overview.css'
 
 function Overview() {
@@ -21,6 +21,9 @@ function Overview() {
     finished_games: 0,
   })
 
+  const [countUpDuration, setCountUpDuration] = useState(2000) // Default 2 seconds
+  const [durationLoaded, setDurationLoaded] = useState(false)
+
   // Load stats on mount
   useEffect(() => {
     const loadStats = async () => {
@@ -28,17 +31,37 @@ function Overview() {
         const response = await statsAPI.getAdminStats()
         setStats(response)
         // Start animation after loading
-        animateCounters(response)
+        // animateCounters(response) // Remove this
       } catch (error) {
         console.error('Failed to load admin stats:', error)
       }
     }
+
+    const loadDuration = async () => {
+      try {
+        const response = await publicAPI.getCountUpDuration()
+        setCountUpDuration(parseFloat(response.setting.value) * 1000) // Convert to milliseconds
+        setDurationLoaded(true)
+      } catch (error) {
+        console.error('Failed to load count-up duration:', error)
+        setCountUpDuration(2000) // Fallback
+        setDurationLoaded(true)
+      }
+    }
+
     loadStats()
+    loadDuration()
   }, [])
 
-  // Animate counters from 0 to target value in 2 seconds
+  useEffect(() => {
+    if (stats && durationLoaded) {
+      animateCounters(stats)
+    }
+  }, [stats, durationLoaded])
+
+  // Animate counters from 0 to target value
   const animateCounters = (targetStats) => {
-    const duration = 2000 // 2 seconds
+    const duration = countUpDuration
     const startTime = Date.now()
 
     const animate = () => {

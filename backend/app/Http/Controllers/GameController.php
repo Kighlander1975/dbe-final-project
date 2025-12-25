@@ -280,6 +280,14 @@ class GameController extends Controller
     {
         $game = Game::where('admin_id', $request->user()->id)->findOrFail($id);
 
+        // Prüfen, ob das Spiel bereits beendet wurde
+        if ($game->status === 'finished') {
+            return response()->json([
+                'message' => 'Spiel bereits beendet',
+                'game' => $game
+            ]);
+        }
+
         // Berechne Rankings für alle registrierten Spieler VOR dem Status-Update
         $this->calculateAndStoreRankings($game);
 
@@ -405,15 +413,19 @@ class GameController extends Controller
                 ]);
                 continue;
             }
-            // Speichere in player_rankings Tabelle
-            DB::table('player_rankings')->insert([
-                'user_id' => $user->id,
-                'game_id' => $game->id,
-                'player_count' => $playerCount,
-                'final_rank' => $placement,
-                'points_earned' => $pointsEarned,
-                'created_at' => now()
-            ]);
+            // Speichere in player_rankings Tabelle (update or insert)
+            DB::table('player_rankings')->updateOrInsert(
+                [
+                    'user_id' => $user->id,
+                    'game_id' => $game->id
+                ],
+                [
+                    'player_count' => $playerCount,
+                    'final_rank' => $placement,
+                    'points_earned' => $pointsEarned,
+                    'created_at' => now()
+                ]
+            );
 
             // Update User-Statistiken
             $user->increment('total_ranking_points', $pointsEarned);

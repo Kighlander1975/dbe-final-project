@@ -402,13 +402,18 @@ const adminAPI = {
         });
     },
 };
-
-// Public API Endpoints (keine Authentifizierung erforderlich)
 const publicAPI = {
     // Get app version
     getVersion: async () => {
         return apiRequest("/version", {
             loadingMessage: "Version wird geladen...",
+        });
+    },
+
+    // ⭐ Public Settings
+    getCountUpDuration: async () => {
+        return apiRequest("/settings/count_up_duration", {
+            method: "GET",
         });
     },
 };

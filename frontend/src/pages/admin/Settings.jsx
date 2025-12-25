@@ -9,6 +9,8 @@ function Settings() {
     const { showToast } = useToast();
     const [version, setVersion] = useState('1.0');
     const [debugServerErrors, setDebugServerErrors] = useState(false);
+    const [countUpDuration, setCountUpDuration] = useState(2.0);
+    const [originalCountUpDuration, setOriginalCountUpDuration] = useState(2.0);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -27,6 +29,13 @@ function Settings() {
             const debugSetting = response.settings.find(setting => setting.key === 'debug_server_error');
             if (debugSetting) {
                 setDebugServerErrors(debugSetting.value === 'true');
+            }
+
+            const countUpSetting = response.settings.find(setting => setting.key === 'count_up_duration');
+            if (countUpSetting) {
+                const value = parseFloat(countUpSetting.value);
+                setCountUpDuration(value);
+                setOriginalCountUpDuration(value);
             }
         } catch (error) {
             console.error('Error fetching settings:', error);
@@ -77,6 +86,22 @@ function Settings() {
         } catch (error) {
             console.error('Error saving debug setting:', error);
             showToast('Fehler beim Speichern der Debug-Einstellung', 'error');
+        }
+    };
+
+    const handleCountUpDurationChange = async () => {
+        if (countUpDuration === originalCountUpDuration) {
+            showToast('Keine Änderungen vorhanden', 'info');
+            return;
+        }
+
+        try {
+            await adminAPI.updateSetting('count_up_duration', { value: countUpDuration.toString() });
+            setOriginalCountUpDuration(countUpDuration);
+            showToast('Count-Up-Duration aktualisiert', 'success');
+        } catch (error) {
+            console.error('Error saving count-up duration:', error);
+            showToast('Fehler beim Speichern der Count-Up-Duration', 'error');
         }
     };
 
@@ -145,6 +170,32 @@ function Settings() {
                             </label>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div className="admin-settings__section">
+                <h2>Visuelle Einstellungen</h2>
+                <div className="visual-control">
+                    <div className="visual-input-group">
+                        <label htmlFor="countUpDuration">Count-Up-Duration (Sekunden):</label>
+                        <input
+                            id="countUpDuration"
+                            type="number"
+                            min="0.5"
+                            max="2.0"
+                            step="0.1"
+                            value={countUpDuration}
+                            onChange={(e) => setCountUpDuration(parseFloat(e.target.value))}
+                            className="visual-input"
+                        />
+                    </div>
+                    <button
+                        onClick={handleCountUpDurationChange}
+                        disabled={saving}
+                        className="btn btn-primary visual-save-btn"
+                    >
+                        {saving ? 'Speichere...' : 'Speichern'}
+                    </button>
                 </div>
             </div>
         </div>
