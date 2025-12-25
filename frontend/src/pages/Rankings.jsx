@@ -128,7 +128,7 @@ function Rankings() {
                 <div className="rankings-overview">
                     <div className="overview-card">
                         <h3>{animatedStats.total_ranked_players}</h3>
-                        <p>Aktive Spieler</p>
+                        <p>Registrierte User</p>
                     </div>
                     <div className="overview-card">
                         <h3>{animatedStats.total_ranked_games}</h3>

@@ -122,7 +122,7 @@ class RankingController extends Controller
      */
     public function stats(Request $request)
     {
-        $totalPlayers = User::where('total_ranking_points', '>', 0)->count();
+        $totalPlayers = User::count(); // Alle registrierten User, unabhängig von Punkten/Rolle
         $totalGames = DB::table('player_rankings')->distinct('game_id')->count('game_id');
         $totalPoints = User::sum('total_ranking_points');
 
