@@ -264,6 +264,9 @@ function MainLayout() {
                             <button onClick={() => { handleNavigate('/'); setMenuOpen(false); }} className="main-layout__menu-item">
                                 🏠 Home
                             </button>
+                            <button onClick={() => { handleNavigate('/regeln'); setMenuOpen(false); }} className="main-layout__menu-item">
+                                🎯 Spielregeln
+                            </button>
 
                             {user ? (
                                 <>

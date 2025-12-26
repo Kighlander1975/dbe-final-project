@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -24,6 +25,37 @@ class UserController extends Controller
             ->paginate(20);
 
         return response()->json($users);
+    }
+
+    /**
+     * Create a new user (Admin only)
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => ['required', Rule::enum(UserRole::class)]
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
+            'email_verified_at' => now(),
+            'total_ranking_points' => 0,
+            'games_played' => 0,
+            'best_placement' => null,
+            'current_rating' => 1000.00,
+            'remember_token' => null,
+        ]);
+
+        return response()->json([
+            'message' => 'Benutzer erfolgreich erstellt.',
+            'user' => $user
+        ], 201);
     }
 
     /**
@@ -77,6 +109,24 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Name erfolgreich aktualisiert.',
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * Update user email verified at (Admin only)
+     */
+    public function updateEmailVerifiedAt(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'email_verified' => 'required|boolean'
+        ]);
+
+        $user->email_verified_at = $validated['email_verified'] ? now() : null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'E-Mail-Verifizierung erfolgreich aktualisiert.',
             'user' => $user
         ]);
     }

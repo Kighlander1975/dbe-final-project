@@ -1,0 +1,208 @@
+/* src/styles/pages/regeln.css */
+
+.regeln {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.regeln h1 {
+  color: var(--primary-green-dark);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+}
+
+.regeln h2 {
+  color: var(--primary-green);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  border-bottom: 2px solid var(--primary-green-light);
+  padding-bottom: 0.5rem;
+}
+
+.regeln h3 {
+  color: var(--primary-green);
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.4rem;
+}
+
+.regeln h4 {
+  color: var(--primary-orange);
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+.regeln p {
+  margin-bottom: 1rem;
+}
+
+.regeln strong {
+  color: var(--primary-green-dark);
+  font-weight: 600;
+}
+
+.regeln em {
+  font-style: italic;
+  color: var(--primary-orange);
+}
+
+.regeln ul, .regeln ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.regeln li {
+  margin-bottom: 0.5rem;
+}
+
+.regeln__intro {
+  background: linear-gradient(135deg, var(--background-light) 0%, rgba(76, 175, 80, 0.05) 100%);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--primary-green);
+}
+
+.regeln__grundlagen,
+.regeln__ansagen,
+.regeln__spielen,
+.regeln__auswerten,
+.regeln__glossar {
+  margin-bottom: 2rem;
+}
+
+.regeln__sonderfall {
+  background: rgba(255, 152, 0, 0.1);
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 3px solid var(--primary-orange);
+  margin: 1rem 0;
+}
+
+.regeln__glossar-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: var(--background-light);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.regeln__glossar-table th,
+.regeln__glossar-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.regeln__glossar-table th {
+  background: var(--primary-green);
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.regeln__glossar-table tr:nth-child(even) {
+  background: rgba(76, 175, 80, 0.02);
+}
+
+.regeln__glossar-table tr:hover {
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.regeln__glossar-table td:first-child {
+  font-weight: 600;
+  color: var(--primary-green-dark);
+  width: 25%;
+}
+
+/* External Links */
+.regeln__external-link {
+  color: var(--primary-orange);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.regeln__external-link:hover {
+  color: var(--primary-orange-dark, #e65100);
+  border-bottom-color: var(--primary-orange);
+  text-decoration: none;
+}
+
+.regeln__external-link:focus {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Placeholder Images */
+.regeln__content-with-image {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.regeln__initial-image {
+  float: left;
+  margin-right: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--primary-green);
+  border-radius: 8px;
+  width: 150px;
+  height: 150px;
+}
+
+.regeln__text-content {
+  overflow: hidden; /* Clear float */
+}
+
+.regeln__section-image {
+  float: right;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+  width: 150px;
+  height: 150px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .regeln {
+    padding: 15px;
+  }
+
+  .regeln h1 {
+    font-size: 2rem;
+  }
+
+  .regeln h2 {
+    font-size: 1.5rem;
+  }
+
+  .regeln h3 {
+    font-size: 1.2rem;
+  }
+
+  .regeln__glossar-table {
+    font-size: 0.9rem;
+  }
+
+  .regeln__glossar-table th,
+  .regeln__glossar-table td {
+    padding: 0.8rem 0.5rem;
+  }
+
+  .regeln__intro {
+    padding: 1rem;
+  }
+}

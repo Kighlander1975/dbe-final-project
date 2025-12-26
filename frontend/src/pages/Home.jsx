@@ -97,6 +97,11 @@ function Home() {
               <div className="home__link-main">🏠 Startseite</div>
             </Link>
           </li>
+          <li>
+            <Link to="/regeln">
+              <div className="home__link-main">🎯 Spielregeln</div>
+            </Link>
+          </li>
           
           {!isAuthenticated ? (
             <>

@@ -55,10 +55,13 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         Route::delete('/settings/reset-rankings', [AdminSettingController::class, 'resetRankings']);
 
         Route::get('/users', [UserController::class, 'index'])->name('users.admin');
+        Route::post('/users', [UserController::class, 'store']);
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
         Route::patch('/users/{user}/name', [UserController::class, 'updateName']);
+        Route::patch('/users/{user}/email-verified-at', [UserController::class, 'updateEmailVerifiedAt']);
         Route::patch('/users/{user}/ban', [UserController::class, 'banUser']);
         Route::patch('/users/{user}/unban', [UserController::class, 'unbanUser']);
+        Route::delete('/users/{user}', [UserController::class, 'destroy']);
         // ⭐ Admin Stats
         Route::get('/stats', [StatsController::class, 'adminStats']);
         // ⭐ Test Email
@@ -78,7 +81,6 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         // User management
         Route::get('/users', [UserController::class, 'index']);
         Route::patch('/users/{user}', [UserController::class, 'update']);
-        Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
         // Host Request admin routes
         Route::get('/host-requests', [HostRequestController::class, 'index']);

@@ -19,6 +19,7 @@ import ResetPassword from "./pages/ResetPassword";
 import ChangePassword from './pages/ChangePassword'
 import VerifyEmail from "./pages/VerifyEmail";
 import Forbidden from "./pages/Forbidden";
+import Regeln from "./pages/Regeln";
 import NotFound from "./pages/NotFound";
 import ServerError from "./pages/ServerError";
 
@@ -55,6 +56,7 @@ function App() {
                 { path: "/", element: <Home /> },
                 { path: "/verify-email", element: <VerifyEmail /> },
                 { path: "/forbidden", element: <Forbidden /> },
+                { path: "/regeln", element: <Regeln /> },
 
                 // NUR für NICHT angemeldete User
                 {
