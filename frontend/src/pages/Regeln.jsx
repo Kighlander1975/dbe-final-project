@@ -44,6 +44,7 @@ function Regeln() {
       <section className="regeln__ansagen">
         <h3>Das Ansagen</h3>
         <p>
+          <img src="https://placehold.co/150x150" alt="Ansagen im Stechen-Spiel" className="regeln__section-image" />
           In diesem Spielabschnitt startet der Spieler <strong>links vom Dealer</strong> mit den Ansagen. Einen sogenannten <em>Stich</em> kann man machen, wenn man mit der ausgespielten Farbe die höchste Zahl selbst hat oder, wenn die ausgespielte Karte keine Trumpf-Farbe ist, die höchste Trumpf-Farbe-Karte auf den Tisch legt. Entscheidend ist, dass man die Farbe, die ausgespielt wurde, bedienen muss, es sei denn, man hat diese Farbe nicht. Dann kann man entweder eine Trumpf-Farbe legen und so eventuell den Stich zu bekommen oder eine andere Farbe abwerfen. Mit diesem Hintergrund <em>schätzt</em> der Spieler, wie viele Stiche er mit seinen Karten bekommt. Es sind Ansagen von 0 bis 7 (oder 9 bei Spieleranzahl kleiner als sieben) möglich.
         </p>
         <p>
@@ -52,12 +53,12 @@ function Regeln() {
         <p>
           Der Schriftführer notiert die Ansagen nach und nach auf seinem Zettel (später in der App) und nachdem der Dealer seine Ansage gemacht hat, startet der zweite Abschnitt:
         </p>
-        <img src="https://placehold.co/150x150" alt="Ansagen im Stechen-Spiel" className="regeln__section-image" />
       </section>
 
       <section className="regeln__spielen">
         <h3>Das Spielen</h3>
         <p>
+          <img src="https://placehold.co/150x150" alt="Spielen im Stechen-Spiel" className="regeln__section-image" />
           Der Spieler <strong>links vom Dealer</strong> beginnt mit dem Ausspielen einer Karte. Dabei ist es vollkommen egal, was für eine Karte er ausspielt (Trumpf-Farbe oder nicht). Alle nachfolgenden Spieler müssen diese Farbe erwidern, sofern sie sie haben. Wenn nicht, darf eine Trumpf-Farbe ausgespielt werden, um zu signalisieren, dass <strong>dieser Spieler</strong> den Stich haben möchte. Er kann aber auch eine andere Farbe abwerfen, wenn er die Farbe nicht bedienen kann. Das bewusste Nichtbedienen ist ein Regelverstoß, der bis zum Spielausschluss geahndet werden kann.
         </p>
         <p>
@@ -66,12 +67,12 @@ function Regeln() {
         <p>
           Sind alle Stiche ausgespielt, geht es zum dritten Abschnitt:
         </p>
-        <img src="https://placehold.co/150x150" alt="Spielen im Stechen-Spiel" className="regeln__section-image" />
       </section>
 
       <section className="regeln__auswerten">
         <h3>Das Auswerten</h3>
         <p>
+          <img src="https://placehold.co/150x150" alt="Auswerten im Stechen-Spiel" className="regeln__section-image" />
           Der Schriftführer zählt reihum, beginnend vom Spieler <strong>links vom Dealer</strong> die Stiche und vergleicht diese mit den Ansagen. Jeder Stich ist pauschal schon mal ein Punkt wert. Hat der Spieler genauso viele Stiche bekommen, wie er angesagt hat, bekommt dieser einen Bonus von 10 Punkten. Hat der Spieler mehr oder weniger Stiche als angesagt, bekommt er so viele Punkte, wie er Stiche bekommen hat.
         </p>
         <div className="regeln__sonderfall">
@@ -83,7 +84,6 @@ function Regeln() {
         <p>
           Der Schriftführer notiert die Punkte auf dem Zettel (später in der App) und zählt die Punkte zusammen. Sobald ein Spieler 100 Punkte + Datum erreicht hat, ist die Runde zu Ende. 100 plus Datum heißt, wenn heute z.B. der 6.11. wäre, dann ist die Gewinnmarke 106 Punkte, die es zu erreichen gilt. Haben mehrere Spieler die Gewinnmarke erreicht, dann ist derjenige Spieler, der diese Marke zuerst erreicht hat, der Gewinner.
         </p>
-        <img src="https://placehold.co/150x150" alt="Auswerten im Stechen-Spiel" className="regeln__section-image" />
       </section>
 
       <section className="regeln__glossar">

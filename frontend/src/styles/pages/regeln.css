@@ -164,7 +164,7 @@
 }
 
 .regeln__text-content {
-  overflow: hidden; /* Clear float */
+  /* overflow: hidden; entfernt - Float soll funktionieren */
 }
 
 .regeln__section-image {
