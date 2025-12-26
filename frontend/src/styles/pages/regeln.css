@@ -83,7 +83,7 @@
   padding: 1rem;
   border-radius: 6px;
   border-left: 3px solid var(--primary-orange);
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 }
 
 .regeln__glossar-table {
@@ -171,6 +171,8 @@
   float: right;
   margin-left: 1.5rem;
   margin-bottom: 1rem;
+  border: 1px solid var(--primary-green);
+  border-radius: 8px;
   width: 150px;
   height: 150px;
 }
