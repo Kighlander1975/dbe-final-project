@@ -194,7 +194,6 @@
 
 .regeln__image-link {
   text-decoration: none;
-  display: inline-block;
   transition: transform 0.2s ease;
 }
 
