@@ -330,12 +330,14 @@
   background: var(--bg-card);
   border-radius: 8px;
   box-shadow: var(--shadow-xl);
-  max-width: 75vw;
+  max-width: 90vw;
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
 }
-
+.modal-content--wide {
+  max-width: 90vw !important;
+}
 .modal-header {
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
@@ -355,6 +357,24 @@
 .modal-body-scroll {
   max-height: 45vh;
   overflow-y: auto;
+}
+
+.modal-form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.modal-form-group label {
+  min-width: 120px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.modal-form-group input,
+.modal-form-group select {
+  flex: 1;
 }
 
 .modal-footer {

@@ -19,6 +19,13 @@ function UserManagement() {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
   const [pendingRoleChanges, setPendingRoleChanges] = useState({}) // 🆕 Für ausstehende Rollenänderungen
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [createForm, setCreateForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'host'
+  })
 
   // Load users
   useEffect(() => {
@@ -93,6 +100,40 @@ function UserManagement() {
     })
   }
 
+  const handleCreateUser = async (e) => {
+    e.preventDefault()
+    
+    if (!createForm.name || !createForm.email || !createForm.password) {
+      showToast('Bitte fülle alle Felder aus', 'error')
+      return
+    }
+
+    if (createForm.password.length < 8) {
+      showToast('Passwort muss mindestens 8 Zeichen lang sein', 'error')
+      return
+    }
+
+    startLoading('Neuer Benutzer wird erstellt...')
+
+    try {
+      await adminAPI.createUser(createForm)
+      showToast('Benutzer erfolgreich erstellt!', 'success')
+      setShowCreateModal(false)
+      setCreateForm({ name: '', email: '', password: '', role: 'host' })
+      loadUsers()
+      loadAdminUsers()
+    } catch (error) {
+      showToast('Fehler beim Erstellen des Benutzers', 'error')
+    } finally {
+      stopLoading()
+    }
+  }
+
+  const handleCreateFormChange = (e) => {
+    const { name, value } = e.target
+    setCreateForm(prev => ({ ...prev, [name]: value }))
+  }
+
   const getRoleBadge = (role) => {
     return (
       <span className={`role-badge role-badge--${role}`}>
@@ -111,6 +152,14 @@ function UserManagement() {
       <div className="user-management__card">
         <div className="user-management__header">
           <h2 className="user-management__section-title">Alle Benutzer</h2>
+          
+          {/* Neuer Benutzer Button */}
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="btn btn-primary user-management__create-btn"
+          >
+            + Neuer Benutzer
+          </button>
           
           {/* Filter */}
           <div className="user-management__filter">
@@ -199,6 +248,86 @@ function UserManagement() {
           </div>
         )}
       </div>
+
+      {/* Create User Modal */}
+      {showCreateModal && (
+        <div className="modal-overlay">
+          <div className="modal-content modal-content--wide">
+            <div className="modal-header">
+              <h2>Neuer Benutzer erstellen</h2>
+            </div>
+            <form onSubmit={handleCreateUser}>
+              <div className="modal-body">
+                <div className="modal-form-group">
+                  <label htmlFor="create-name">Name</label>
+                  <input
+                    type="text"
+                    id="create-name"
+                    name="name"
+                    value={createForm.name}
+                    onChange={handleCreateFormChange}
+                    placeholder="Benutzername"
+                    autoComplete="off"
+                    required
+                  />
+                </div>
+                <div className="modal-form-group">
+                  <label htmlFor="create-email">E-Mail</label>
+                  <input
+                    type="email"
+                    id="create-email"
+                    name="email"
+                    value={createForm.email}
+                    onChange={handleCreateFormChange}
+                    placeholder="benutzer@email.de"
+                    autoComplete="off"
+                    required
+                  />
+                </div>
+                <div className="modal-form-group">
+                  <label htmlFor="create-password">Passwort</label>
+                  <input
+                    type="password"
+                    id="create-password"
+                    name="password"
+                    value={createForm.password}
+                    onChange={handleCreateFormChange}
+                    placeholder="Mindestens 8 Zeichen"
+                    autoComplete="new-password"
+                    required
+                  />
+                </div>
+                <div className="modal-form-group">
+                  <label htmlFor="create-role">Rolle</label>
+                  <select
+                    id="create-role"
+                    name="role"
+                    value={createForm.role}
+                    onChange={handleCreateFormChange}
+                  >
+                    <option value="host">Host</option>
+                    <option value="player">Player</option>
+                    <option value="admin">Admin</option>
+                    <option value="banned">Banned</option>
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="btn btn-secondary"
+                >
+                  Abbrechen
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Erstellen
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

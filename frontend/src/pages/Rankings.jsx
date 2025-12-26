@@ -191,7 +191,7 @@ function Rankings() {
                         <div className="actions-col">
                             <Link
                                 to={`/rankings/${player.id}`}
-                                className="btn btn-sm btn-outline"
+                                className="btn btn-secondary btn-sm"
                             >
                                 Details
                             </Link>

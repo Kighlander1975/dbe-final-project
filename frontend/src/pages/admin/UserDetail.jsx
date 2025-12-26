@@ -20,6 +20,7 @@ function UserDetail() {
   const [isEditingName, setIsEditingName] = useState(false)
   const [editName, setEditName] = useState('')
   const [pendingRoleChange, setPendingRoleChange] = useState(null) // 🆕 Für ausstehende Rollenänderung
+  const [emailVerified, setEmailVerified] = useState(user?.email_verified_at ? true : false)
 
   // Load user details
   useEffect(() => {
@@ -40,6 +41,7 @@ function UserDetail() {
       }
 
       setUser(foundUser)
+      setEmailVerified(foundUser.email_verified_at ? true : false)
 
       // Load user stats
       try {
@@ -94,7 +96,8 @@ function UserDetail() {
     try {
       await adminAPI.deleteUser(user.id)
       showToast('Spieler wurde gelöscht', 'success')
-      navigate('/admin/users')
+      // Nach erfolgreichem Löschen zur Benutzerverwaltung weiterleiten
+      window.location.href = '/admin/users'
     } catch (error) {
       showToast('Fehler beim Löschen', 'error')
     } finally {
@@ -147,6 +150,22 @@ function UserDetail() {
       handleNameSubmit()
     } else if (e.key === 'Escape') {
       handleNameCancel()
+    }
+  }
+
+  const handleEmailVerifiedSubmit = async () => {
+    startLoading('E-Mail-Verifizierung wird aktualisiert...')
+
+    try {
+      await adminAPI.updateUserEmailVerifiedAt(user.id, emailVerified)
+      showToast('E-Mail-Verifizierung erfolgreich aktualisiert!', 'success')
+      setUser({ ...user, email_verified_at: emailVerified ? new Date().toISOString() : null })
+      // Seite refreshen
+      window.location.reload()
+    } catch (error) {
+      showToast('Fehler beim Aktualisieren der E-Mail-Verifizierung', 'error')
+    } finally {
+      stopLoading()
     }
   }
 
@@ -249,51 +268,81 @@ function UserDetail() {
           <div className="user-detail__card">
             <h2 className="user-detail__section-title">Aktionen</h2>
             <div className="user-detail__actions">
-              <div className="user-detail__action-group">
-                <label>Rolle ändern:</label>
-                <div className="role-change-container">
-                  <select
-                    value={pendingRoleChange || user.role}
-                    onChange={(e) => handleRoleSelectChange(e.target.value)}
-                    className="user-detail__role-select"
-                  >
-                    <option value="player">Player</option>
-                    <option value="host">Host</option>
-                    <option value="admin">Admin</option>
-                    <option value="banned">Banned</option>
-                  </select>
-                  
-                  {/* Bestätigungs-Button immer sichtbar, aber disabled wenn keine Änderung */}
-                  <button
-                    onClick={handleRoleConfirm}
-                    disabled={!pendingRoleChange || pendingRoleChange === user.role}
-                    className="action-btn action-btn--confirm"
-                    title={(!pendingRoleChange || pendingRoleChange === user.role) ? "Wähle eine andere Rolle aus" : "Rolle ändern bestätigen"}
-                  >
-                    ✓ Bestätigen
-                  </button>
-                  
-                  {/* Abbrechen-Button nur wenn Änderung aussteht */}
-                  {pendingRoleChange && pendingRoleChange !== user.role && (
-                    <button
-                      onClick={handleRoleCancel}
-                      className="action-btn action-btn--cancel"
-                      title="Änderung abbrechen"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="user-detail__action-group">
-                <button
-                  onClick={handleDelete}
-                  className="action-btn action-btn--delete"
-                >
-                  Spieler löschen
-                </button>
-              </div>
+              <table className="user-detail__actions-table">
+                <tbody>
+                  <tr>
+                    <td className="user-detail__action-label">Rolle ändern</td>
+                    <td className="user-detail__action-inputs">
+                      <select
+                        value={pendingRoleChange || user.role}
+                        onChange={(e) => handleRoleSelectChange(e.target.value)}
+                        className="user-detail__role-select"
+                      >
+                        <option value="player">Player</option>
+                        <option value="host">Host</option>
+                        <option value="admin">Admin</option>
+                        <option value="banned">Banned</option>
+                      </select>
+                    </td>
+                    <td className="user-detail__action-buttons">
+                      <button
+                        onClick={handleRoleConfirm}
+                        disabled={!pendingRoleChange || pendingRoleChange === user.role}
+                        className="action-btn action-btn--confirm"
+                        title={(!pendingRoleChange || pendingRoleChange === user.role) ? "Wähle eine andere Rolle aus" : "Rolle ändern bestätigen"}
+                      >
+                        ✓ Bestätigen
+                      </button>
+                      
+                      {pendingRoleChange && pendingRoleChange !== user.role && (
+                        <button
+                          onClick={handleRoleCancel}
+                          className="action-btn action-btn--cancel"
+                          title="Änderung abbrechen"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="user-detail__action-label">E-Mail-Verifizierung</td>
+                    <td className="user-detail__action-inputs">
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={emailVerified}
+                          onChange={(e) => setEmailVerified(e.target.checked)}
+                          disabled={user.email_verified_at !== null}
+                        />
+                        <span className="checkmark"></span>
+                        E-Mail als verifiziert markieren
+                      </label>
+                    </td>
+                    <td className="user-detail__action-buttons">
+                      <button
+                        onClick={handleEmailVerifiedSubmit}
+                        className="action-btn action-btn--confirm"
+                        disabled={user.email_verified_at !== null}
+                      >
+                        Speichern
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="user-detail__action-label">Benutzer löschen</td>
+                    <td className="user-detail__action-inputs"></td>
+                    <td className="user-detail__action-buttons">
+                      <button
+                        onClick={handleDelete}
+                        className="action-btn action-btn--delete"
+                      >
+                        Spieler löschen
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         )}

@@ -90,6 +90,17 @@
   background: var(--bg-light);
 }
 
+.user-detail__email-verified {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-detail__submit-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
 .user-detail__name-editor {
   display: flex;
   align-items: center;
@@ -309,4 +320,32 @@
   .action-btn--confirm {
     flex: 1;
   }
+}
+
+.user-detail__actions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-detail__actions-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.user-detail__action-label {
+  font-weight: 600;
+  color: var(--text-dark);
+  width: 200px;
+  white-space: nowrap;
+}
+
+.user-detail__action-inputs {
+  width: auto;
+  padding: 0 1rem;
+}
+
+.user-detail__action-buttons {
+  width: auto;
+  text-align: right;
 }

@@ -44,9 +44,9 @@ export function AuthProvider({ children }) {
   }, [user])
 
   // Register Funktion
-  const register = async (name, email, password, password_confirmation) => {
+  const register = async (name, email, password, password_confirmation, privacyAccepted) => {
     try {
-      const data = await authAPI.register(name, email, password, password_confirmation)
+      const data = await authAPI.register(name, email, password, password_confirmation, privacyAccepted)
       
       return { 
         success: true, 

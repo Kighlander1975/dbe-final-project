@@ -362,6 +362,24 @@ const adminAPI = {
         });
     },
 
+    // Update user email verified at
+    updateUserEmailVerifiedAt: async (userId, emailVerified) => {
+        return apiRequest(`/admin/users/${userId}/email-verified-at`, {
+            method: "PATCH",
+            body: JSON.stringify({ email_verified: emailVerified }),
+            loadingMessage: "E-Mail-Verifizierung wird aktualisiert...",
+        });
+    },
+
+    // Create new user
+    createUser: async (userData) => {
+        return apiRequest("/admin/users", {
+            method: "POST",
+            body: JSON.stringify(userData),
+            loadingMessage: "Neuer Benutzer wird erstellt...",
+        });
+    },
+
     // Delete user
     deleteUser: async (userId) => {
         return apiRequest(`/admin/users/${userId}`, {
