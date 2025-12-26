@@ -250,6 +250,15 @@
   background: rgba(0, 0, 0, 0.9);
 }
 
+/* Image Captions */
+.regeln__image-caption {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .regeln {
