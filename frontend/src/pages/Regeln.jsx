@@ -31,7 +31,7 @@ function Regeln() {
       <section className="regeln__grundlagen">
         <h2>Die Regeln des Spiels <em>Stechen</em></h2>
         <div className="regeln__content-with-image">
-          <div className="regeln__image-container">
+          <div className="regeln__image-wrapper regeln__image-wrapper-left">
             <a href="#" onClick={(e) => { e.preventDefault(); openModal('https://placehold.co/600x400'); }} className="regeln__image-link">
               <img src="https://placehold.co/150x150" alt="Kartenspiel Stechen" className="regeln__initial-image" />
             </a>
@@ -61,7 +61,7 @@ function Regeln() {
       <section className="regeln__ansagen">
         <h3>Das Ansagen</h3>
         <p>
-          <div className="regeln__image-container">
+          <div className="regeln__image-wrapper regeln__image-wrapper-right">
             <a href="#" onClick={(e) => { e.preventDefault(); openModal('https://placehold.co/600x400'); }} className="regeln__image-link">
               <img src="https://placehold.co/150x150" alt="Ansagen im Stechen-Spiel" className="regeln__section-image" />
             </a>
@@ -80,7 +80,7 @@ function Regeln() {
       <section className="regeln__spielen">
         <h3>Das Spielen</h3>
         <p>
-          <div className="regeln__image-container">
+          <div className="regeln__image-wrapper regeln__image-wrapper-right">
             <a href="#" onClick={(e) => { e.preventDefault(); openModal('https://placehold.co/600x400'); }} className="regeln__image-link">
               <img src="https://placehold.co/150x150" alt="Spielen im Stechen-Spiel" className="regeln__section-image" />
             </a>
@@ -99,7 +99,7 @@ function Regeln() {
       <section className="regeln__auswerten">
         <h3>Das Auswerten</h3>
         <p>
-          <div className="regeln__image-container">
+          <div className="regeln__image-wrapper regeln__image-wrapper-right">
             <a href="#" onClick={(e) => { e.preventDefault(); openModal('https://placehold.co/600x400'); }} className="regeln__image-link">
               <img src="https://placehold.co/150x150" alt="Auswerten im Stechen-Spiel" className="regeln__section-image" />
             </a>
