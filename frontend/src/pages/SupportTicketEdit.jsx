@@ -7,7 +7,7 @@ import { gameAPI } from '../services/api'
 import '../styles/pages/support-ticket-edit.css'
 
 function SupportTicketEdit() {
-    const { user } = useAuth()
+    const { user, isAdmin } = useAuth()
     const { showToast } = useToast()
     const navigate = useNavigate()
     const { id } = useParams()
@@ -78,7 +78,7 @@ function SupportTicketEdit() {
     }
 
     // Check if user can edit this ticket
-    const canEdit = ticket && (user.email === ticket.email || user.isAdmin())
+    const canEdit = ticket && (user.email === ticket.email || isAdmin())
 
     // Status options for users (limited)
     const userStatusOptions = [
@@ -94,7 +94,7 @@ function SupportTicketEdit() {
         { value: 'geschlossen', label: 'Geschlossen' }
     ]
 
-    const statusOptions = user.isAdmin() ? adminStatusOptions : userStatusOptions
+    const statusOptions = isAdmin() ? adminStatusOptions : userStatusOptions
 
     if (loading) {
         return (
