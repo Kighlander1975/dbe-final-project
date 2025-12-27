@@ -48,6 +48,34 @@ class SupportController extends Controller
     }
 
     /**
+     * Get user's own support tickets.
+     */
+    public function getUserTickets()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $tickets = Support::where('email', $user->email)->get();
+        return response()->json($tickets);
+    }
+
+    /**
+     * Get all open support tickets (Admin only).
+     */
+    public function getOpenTickets()
+    {
+        $user = Auth::user();
+        if (!$user || !$user->is_admin) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $tickets = Support::where('status', '!=', 'geschlossen')->get();
+        return response()->json($tickets);
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(string $id)

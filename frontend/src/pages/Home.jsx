@@ -20,6 +20,11 @@ function Home() {
   const [userGames, setUserGames] = useState([])
   const [loadingGames, setLoadingGames] = useState(false)
 
+  // State für Support Tickets
+  const [hasUserTickets, setHasUserTickets] = useState(false)
+  const [hasOpenTicketsForAdmin, setHasOpenTicketsForAdmin] = useState(false)
+  const [loadingTickets, setLoadingTickets] = useState(false)
+
   // User-Spiele laden Funktion (für alle authentifizierten User)
   const loadUserGames = async () => {
     if (isAuthenticated) {
@@ -39,9 +44,38 @@ function Home() {
     }
   };
 
-  // ⭐ User-Spiele beim Mount laden
+  // Support Tickets laden Funktion
+  const loadSupportTickets = async () => {
+    if (isAuthenticated) {
+      setLoadingTickets(true);
+      try {
+        if (isAdmin()) {
+          // Für Admin: Prüfe offene Tickets
+          const response = await gameAPI.getAllOpenSupportTickets();
+          setHasOpenTicketsForAdmin(response.length > 0);
+        } else {
+          // Für User: Prüfe eigene Tickets
+          const response = await gameAPI.getUserSupportTickets();
+          setHasUserTickets(response.length > 0);
+        }
+      } catch (error) {
+        console.error('Failed to load support tickets:', error);
+        setHasUserTickets(false);
+        setHasOpenTicketsForAdmin(false);
+      } finally {
+        setLoadingTickets(false);
+      }
+    } else {
+      setHasUserTickets(false);
+      setHasOpenTicketsForAdmin(false);
+      setLoadingTickets(false);
+    }
+  };
+
+  // ⭐ User-Spiele und Tickets beim Mount laden
   useEffect(() => {
     loadUserGames();
+    loadSupportTickets();
   }, [isAuthenticated]);
 
   // Handler für geschützte Links
@@ -209,6 +243,24 @@ function Home() {
             </>
           )}
 
+          {/* Offene Tickets Button - nur für nicht-Admins */}
+          {isAuthenticated && !isAdmin() && (
+            <li>
+              <Link
+                to="/support-tickets"
+                className={!hasUserTickets ? 'home__link-disabled' : ''}
+                onClick={(e) => {
+                  if (!hasUserTickets) {
+                    e.preventDefault();
+                    showToast('Keine Support-Tickets vorhanden', 'info');
+                  }
+                }}
+              >
+                <div className="home__link-main">Offene Tickets</div>
+              </Link>
+            </li>
+          )}
+
           {/* Lade-Status für Spiele */}
           {isAuthenticated && loadingGames && (
             <li>
@@ -231,6 +283,9 @@ function Home() {
             <li>
               <Link to="/admin">
                 <div className="home__link-main">Admin Dashboard</div>
+                {hasOpenTicketsForAdmin && (
+                  <div className="home__link-sub">Ticket(s) vorhanden</div>
+                )}
               </Link>
             </li>
           )}

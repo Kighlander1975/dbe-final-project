@@ -121,6 +121,8 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
     // ⭐ Support routes (auth required)
     Route::prefix('support')->group(function () {
         Route::get('/', [SupportController::class, 'index']); // Admin only
+        Route::get('/user', [SupportController::class, 'getUserTickets']); // User own tickets
+        Route::get('/open', [SupportController::class, 'getOpenTickets']); // Admin open tickets
         Route::get('/{id}', [SupportController::class, 'show']); // User or Admin
         Route::patch('/{id}', [SupportController::class, 'update']); // User or Admin with restrictions
         Route::delete('/{id}', [SupportController::class, 'destroy']); // Admin only
