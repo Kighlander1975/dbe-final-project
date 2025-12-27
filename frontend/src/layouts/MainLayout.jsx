@@ -158,23 +158,23 @@ function MainLayout() {
             const width = window.innerWidth;
             const height = window.innerHeight;
             const isLandscape = width > height;
-            const isHomePage = location.pathname === '/';
+            const isAllowedPage = location.pathname === '/' || location.pathname === '/regeln' || location.pathname === '/login' || location.pathname === '/register';
 
             // Geräte-Erkennung
-            if (width < 768 && !isHomePage) {
-                // Telefon - blocken, außer auf Home-Seite
+            if (width < 768 && !isAllowedPage) {
+                // Telefon - blocken, außer auf erlaubten Seiten
                 setDeviceStatus({
                     isAllowed: false,
                     reason: 'phone'
                 });
-            } else if (!isLandscape && !isHomePage) {
-                // Tablet im Portrait, aber nicht Home-Seite - blocken
+            } else if (!isLandscape && !isAllowedPage) {
+                // Tablet im Portrait, aber nicht auf erlaubten Seiten - blocken
                 setDeviceStatus({
                     isAllowed: false,
                     reason: 'portrait'
                 });
             } else {
-                // Erlaubt: Landscape oder Home-Seite
+                // Erlaubt: Landscape oder erlaubte Seiten
                 setDeviceStatus({
                     isAllowed: true,
                     reason: null
@@ -222,7 +222,7 @@ function MainLayout() {
             <LoadingOverlay />
 
             <header className="main-layout__header">
-                <nav className={`main-layout__nav ${location.pathname === '/' ? 'main-layout__nav--home' : ''}`}>
+                <nav className={`main-layout__nav ${(location.pathname === '/' || location.pathname === '/regeln' || location.pathname === '/login' || location.pathname === '/register') ? 'main-layout__nav--home' : ''}`}>
                     <div className="main-layout__logo-container">
                         <button onClick={() => handleNavigate('/')} className="main-layout__logo">
                             🎯 Stechen Helper

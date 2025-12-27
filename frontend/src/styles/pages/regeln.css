@@ -54,7 +54,7 @@
 }
 
 .regeln p {
-  margin-bottom: 1rem;
+  hyphens: auto;
 }
 
 .regeln strong {
@@ -297,5 +297,29 @@
 
   .regeln__intro {
     padding: 1rem;
+  }
+
+  .regeln p {
+    text-align: justify;
+  }
+
+  .regeln__initial-image,
+  .regeln__section-image {
+    width: 90px;
+    height: 90px;
+  }
+
+  .regeln__image-wrapper {
+    width: 90px;
+  }
+
+  .regeln__modal-content {
+    max-width: none;
+    margin: 0 2px;
+  }
+
+  .regeln__modal-image {
+    width: calc(100vw - 4px);
+    height: auto;
   }
 }
