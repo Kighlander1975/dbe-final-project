@@ -442,6 +442,14 @@ const publicAPI = {
             method: "GET",
         });
     },
+
+    // Submit support request
+    submitSupport: async (supportData) => {
+        return apiRequest("/support", {
+            method: "POST",
+            body: JSON.stringify(supportData),
+        });
+    },
 };
 
 // Game API Endpoints

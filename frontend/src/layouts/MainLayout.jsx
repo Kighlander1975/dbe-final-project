@@ -56,10 +56,41 @@ function MainLayout() {
     };
 
     // Handle Support Form Submit
-    const handleSupportSubmit = (e) => {
+    const handleSupportSubmit = async (e) => {
         e.preventDefault();
-        console.log('Support Form Data:', supportForm);
-        // TODO: Send to API
+
+        // Validate required fields
+        if (!supportForm.message.trim()) {
+            showToast('Nachricht ist erforderlich', 'error');
+            return;
+        }
+        if (!supportForm.urgency) {
+            showToast('Dringlichkeit ist erforderlich', 'error');
+            return;
+        }
+
+        // Set email if empty
+        const emailToSend = supportForm.email.trim() || 'anonymus@stechen-helper.de';
+
+        const dataToSend = {
+            ...supportForm,
+            email: emailToSend,
+        };
+
+        try {
+            await publicAPI.submitSupport(dataToSend);
+            showToast('Support-Anfrage erfolgreich gesendet', 'success');
+            setShowSupportModal(false);
+            setSupportForm({
+                title: '',
+                urgency: '2 - info',
+                email: user ? user.email : '',
+                message: ''
+            });
+        } catch (error) {
+            console.error('Support submit error:', error);
+            showToast('Fehler beim Senden der Support-Anfrage', 'error');
+        }
     };
 
     // ⭐ Function to refresh active game status
@@ -637,8 +668,8 @@ function MainLayout() {
                                         value={supportForm.email}
                                         onChange={handleSupportChange}
                                         placeholder="deine@email.de"
-                                        required
                                     />
+                                    <div className="muted-text">Wenn leer, wird anonym gesendet</div>
                                 </div>
                                 <div className="form-group form-group--full">
                                     <label htmlFor="support-message">Nachricht:</label>

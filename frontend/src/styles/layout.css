@@ -475,6 +475,12 @@
   margin-top: 0.25rem;
 }
 
+.muted-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
 .form-group label {
   font-weight: 600;
   color: var(--text-primary);
