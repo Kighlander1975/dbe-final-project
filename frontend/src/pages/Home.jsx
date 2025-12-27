@@ -89,6 +89,19 @@ function Home() {
       showToast('Ticket erstellt', 'success');
       localStorage.removeItem('supportTicketCreated');
     }
+
+    // Reload support tickets when window gets focus (user comes back from edit page)
+    const handleFocus = () => {
+      if (isAuthenticated) {
+        loadSupportTickets();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [isAuthenticated]);
 
   // Handler für geschützte Links
