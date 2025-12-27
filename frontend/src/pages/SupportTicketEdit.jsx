@@ -120,7 +120,7 @@ function SupportTicketEdit() {
     }
 
     // Check if user can edit this ticket
-    const canEdit = ticket && ticket.status !== 'geschlossen' && (user.email === ticket.email || isAdmin())
+    const canEdit = ticket && ticket.status !== 'geschlossen' && (isAdmin() || (user.email === ticket.email && ticket.status !== 'Fehlmeldung'))
 
     // Status options - always include current status, plus "offen" and "Fehlmeldung"
     const getStatusOptions = () => {
@@ -175,6 +175,21 @@ function SupportTicketEdit() {
                 <h1>Support-Ticket geschlossen</h1>
                 <div className="closed-ticket">
                     <p>Dieses Support-Ticket wurde bereits geschlossen und kann nicht mehr bearbeitet werden.</p>
+                    <button type="button" onClick={() => navigate('/support-tickets')} className="btn-cancel">
+                        Zurück zur Übersicht
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
+    if (ticket.status === 'Fehlmeldung' && user.email === ticket.email && !isAdmin()) {
+        return (
+            <div className="support-ticket-edit">
+                <h1>Support-Ticket als Fehlmeldung markiert</h1>
+                <div className="closed-ticket">
+                    <p>Dieses Support-Ticket wurde von Ihnen als Fehlmeldung markiert und kann nicht mehr bearbeitet werden.</p>
+                    <p>Ein Administrator wird sich das Ticket ansehen und ggf. den Status anpassen.</p>
                     <button type="button" onClick={() => navigate('/support-tickets')} className="btn-cancel">
                         Zurück zur Übersicht
                     </button>

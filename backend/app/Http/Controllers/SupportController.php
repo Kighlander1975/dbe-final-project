@@ -104,8 +104,9 @@ class SupportController extends Controller
         }
 
         // Geschlossene Tickets können nicht bearbeitet werden
-        if ($support->status === 'geschlossen') {
-            return response()->json(['error' => 'Cannot edit closed ticket'], 403);
+        // User können Tickets mit Status "Fehlmeldung" nicht mehr bearbeiten
+        if ($support->status === 'geschlossen' || ($support->status === 'Fehlmeldung' && $user->email === $support->email && !$user->isAdmin())) {
+            return response()->json(['error' => 'Cannot edit this ticket'], 403);
         }
 
         // Status ändern
