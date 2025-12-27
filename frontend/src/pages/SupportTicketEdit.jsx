@@ -69,8 +69,9 @@ function SupportTicketEdit() {
                 formData.status !== ticket.status
 
             if (!hasChanges) {
-                showToast('Keine Änderungen vorgenommen', 'info')
-                setSaving(false)
+                // Store no changes message for display after navigation
+                localStorage.setItem('ticketUpdateNoChanges', 'true')
+                navigate('/support-tickets')
                 return
             }
 
@@ -91,14 +92,17 @@ function SupportTicketEdit() {
             }
 
             await gameAPI.updateSupportTicket(id, dataToSend)
-            showToast('Ticket wurde aktualisiert', 'success')
-            // Small delay to ensure toast is shown before navigation
-            setTimeout(() => {
-                navigate('/support-tickets')
-            }, 100)
+            
+            // Store success message for display after navigation
+            localStorage.setItem('ticketUpdateSuccess', 'true')
+            
+            // Navigate first, then show toast in target component
+            navigate('/support-tickets')
         } catch (error) {
             console.error('Failed to update ticket:', error)
-            showToast('Fehler beim Aktualisieren des Tickets', 'error')
+            // Store error message for display after navigation
+            localStorage.setItem('ticketUpdateError', 'true')
+            navigate('/support-tickets')
         } finally {
             setSaving(false)
         }

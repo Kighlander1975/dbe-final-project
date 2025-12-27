@@ -47,6 +47,22 @@ function SupportTickets() {
 
     useEffect(() => {
         loadTickets()
+
+        // Check for ticket update messages
+        const successMessage = localStorage.getItem('ticketUpdateSuccess')
+        const errorMessage = localStorage.getItem('ticketUpdateError')
+        const noChangesMessage = localStorage.getItem('ticketUpdateNoChanges')
+
+        if (successMessage) {
+            localStorage.removeItem('ticketUpdateSuccess')
+            showToast('Ticket wurde aktualisiert', 'success')
+        } else if (errorMessage) {
+            localStorage.removeItem('ticketUpdateError')
+            showToast('Fehler beim Aktualisieren des Tickets', 'error')
+        } else if (noChangesMessage) {
+            localStorage.removeItem('ticketUpdateNoChanges')
+            showToast('Keine Änderungen vorgenommen', 'info')
+        }
     }, [])
 
     // Handle ticket click - navigate to edit page
