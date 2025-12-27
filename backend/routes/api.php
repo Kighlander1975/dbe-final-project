@@ -44,6 +44,7 @@ Route::post('/support', [SupportController::class, 'store']);
 // Protected routes (Email verified required)
 Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
+    Route::get('/heartbeat', [AuthController::class, 'heartbeat']);
     
     // Role-Check Endpoint (für alle authentifizierten User)
     Route::get('/user/role', [AuthController::class, 'checkRole']);

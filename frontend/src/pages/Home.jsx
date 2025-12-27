@@ -22,6 +22,7 @@ function Home() {
 
   // State für Support Tickets
   const [hasUserTickets, setHasUserTickets] = useState(false)
+  const [userTicketCounts, setUserTicketCounts] = useState({ total: 0, open: 0 })
   const [hasOpenTicketsForAdmin, setHasOpenTicketsForAdmin] = useState(false)
   const [loadingTickets, setLoadingTickets] = useState(false)
 
@@ -56,17 +57,22 @@ function Home() {
         } else {
           // Für User: Prüfe eigene Tickets
           const response = await gameAPI.getUserSupportTickets();
-          setHasUserTickets(response.length > 0);
+          const total = response.length;
+          const open = response.filter(ticket => ticket.status !== 'geschlossen').length;
+          setHasUserTickets(total > 0);
+          setUserTicketCounts({ total, open });
         }
       } catch (error) {
         console.error('Failed to load support tickets:', error);
         setHasUserTickets(false);
+        setUserTicketCounts({ total: 0, open: 0 });
         setHasOpenTicketsForAdmin(false);
       } finally {
         setLoadingTickets(false);
       }
     } else {
       setHasUserTickets(false);
+      setUserTicketCounts({ total: 0, open: 0 });
       setHasOpenTicketsForAdmin(false);
       setLoadingTickets(false);
     }
@@ -256,7 +262,14 @@ function Home() {
                   }
                 }}
               >
-                <div className="home__link-main">Offene Tickets</div>
+                <div className="home__link-main">
+                  {userTicketCounts.open > 0
+                    ? `Ticket(s) offen (${userTicketCounts.open})`
+                    : userTicketCounts.total > 0
+                    ? `Ticket(s) (${userTicketCounts.total}), offen (0)`
+                    : 'Offene Tickets'
+                  }
+                </div>
               </Link>
             </li>
           )}

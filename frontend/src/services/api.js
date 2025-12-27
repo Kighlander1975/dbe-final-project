@@ -450,20 +450,6 @@ const publicAPI = {
             body: JSON.stringify(supportData),
         });
     },
-
-    // Get user support tickets
-    getUserSupportTickets: async () => {
-        return apiRequest("/support/user", {
-            method: "GET",
-        });
-    },
-
-    // Get all open support tickets (Admin only)
-    getAllOpenSupportTickets: async () => {
-        return apiRequest("/support/open", {
-            method: "GET",
-        });
-    },
 };
 
 // Game API Endpoints
@@ -538,6 +524,20 @@ const gameAPI = {
         return apiRequest(`/games/${gameId}`, {
             method: "DELETE",
             skipLoading: true,
+        });
+    },
+
+    // Get all open support tickets (Admin only)
+    getAllOpenSupportTickets: async () => {
+        return apiRequest("/support/open", {
+            method: "GET",
+        });
+    },
+
+    // Get user support tickets
+    getUserSupportTickets: async () => {
+        return apiRequest("/support/user", {
+            method: "GET",
         });
     },
 };

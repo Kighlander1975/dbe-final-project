@@ -14,7 +14,7 @@ class SupportController extends Controller
     public function index()
     {
         // Nur Admins können alle Support-Tickets sehen
-        if (!Auth::user() || !Auth::user()->is_admin) {
+        if (!Auth::user() || !Auth::user()->isAdmin()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -67,7 +67,7 @@ class SupportController extends Controller
     public function getOpenTickets()
     {
         $user = Auth::user();
-        if (!$user || !$user->is_admin) {
+        if (!$user || !$user->isAdmin()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -84,7 +84,7 @@ class SupportController extends Controller
 
         // Nur der User selbst (wenn email passt) oder Admin
         $user = Auth::user();
-        if (!$user || (!$user->is_admin && $user->email !== $support->email)) {
+        if (!$user || (!$user->isAdmin() && $user->email !== $support->email)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -107,7 +107,7 @@ class SupportController extends Controller
         if ($request->has('status')) {
             if ($request->status === 'Fehlmeldung' && $support->status === 'offen' && $user->email === $support->email) {
                 // OK
-            } elseif ($user->is_admin) {
+            } elseif ($user->isAdmin()) {
                 // Admin kann alles
             } else {
                 return response()->json(['error' => 'Cannot change status'], 403);
@@ -143,7 +143,7 @@ class SupportController extends Controller
     public function destroy(string $id)
     {
         // Nur Admins
-        if (!Auth::user() || !Auth::user()->is_admin) {
+        if (!Auth::user() || !Auth::user()->isAdmin()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
