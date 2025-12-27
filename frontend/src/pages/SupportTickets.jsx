@@ -47,6 +47,19 @@ function SupportTickets() {
 
     useEffect(() => {
         loadTickets()
+
+        // Check for stored toast message from edit page
+        const toastData = localStorage.getItem('ticketUpdateToast')
+        if (toastData) {
+            try {
+                const { message, type } = JSON.parse(toastData)
+                localStorage.removeItem('ticketUpdateToast')
+                showToast(message, type)
+            } catch (error) {
+                console.error('Failed to parse toast data:', error)
+                localStorage.removeItem('ticketUpdateToast')
+            }
+        }
     }, [])
 
     // Handle ticket click - navigate to edit page

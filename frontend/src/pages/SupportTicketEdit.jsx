@@ -69,10 +69,11 @@ function SupportTicketEdit() {
                 formData.status !== ticket.status
 
             if (!hasChanges) {
-                showToast('Keine Änderungen vorgenommen', 'info')
-                setTimeout(() => {
-                    window.location.href = '/support-tickets'
-                }, 1500)
+                localStorage.setItem('ticketUpdateToast', JSON.stringify({
+                    message: 'Keine Änderungen vorgenommen',
+                    type: 'info'
+                }))
+                window.location.href = '/support-tickets'
                 return
             }
 
@@ -94,17 +95,20 @@ function SupportTicketEdit() {
 
             await gameAPI.updateSupportTicket(id, dataToSend)
             
-            // Show success toast, then navigate
-            showToast('Ticket wurde aktualisiert', 'success')
-            setTimeout(() => {
-                window.location.href = '/support-tickets'
-            }, 1500)
+            // Store success message for display after page reload
+            localStorage.setItem('ticketUpdateToast', JSON.stringify({
+                message: 'Ticket wurde aktualisiert',
+                type: 'success'
+            }))
+            
+            window.location.href = '/support-tickets'
         } catch (error) {
             console.error('Failed to update ticket:', error)
-            showToast('Fehler beim Aktualisieren des Tickets', 'error')
-            setTimeout(() => {
-                window.location.href = '/support-tickets'
-            }, 1500)
+            localStorage.setItem('ticketUpdateToast', JSON.stringify({
+                message: 'Fehler beim Aktualisieren des Tickets',
+                type: 'error'
+            }))
+            window.location.href = '/support-tickets'
         } finally {
             setSaving(false)
         }
