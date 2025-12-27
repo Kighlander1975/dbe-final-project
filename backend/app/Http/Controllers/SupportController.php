@@ -111,7 +111,9 @@ class SupportController extends Controller
         // Status ändern
         if ($request->has('status')) {
             if ($request->status === 'Fehlmeldung' && $support->status === 'offen' && $user->email === $support->email) {
-                // OK
+                // User kann Status auf Fehlmeldung setzen, wenn Ticket offen ist
+            } elseif ($request->status === 'offen' && $user->email === $support->email) {
+                // User kann Status auf offen setzen (wird automatisch gemacht bei Änderungen)
             } elseif ($user->isAdmin()) {
                 // Admin kann alles
             } else {
