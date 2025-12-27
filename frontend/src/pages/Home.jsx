@@ -93,13 +93,8 @@ function Home() {
       <nav className="home__nav">
         <ul className="home__menu">
           <li>
-            <Link to="/">
-              <div className="home__link-main">Startseite</div>
-            </Link>
-          </li>
-          <li>
             <Link to="/regeln">
-              <div className="home__link-main">Spielregeln</div>
+              <div className="home__link-main" dangerouslySetInnerHTML={{__html: "Spiel&shy;regeln"}} />
             </Link>
           </li>
           
@@ -220,6 +215,16 @@ function Home() {
               <div className="home__link-main">Spiele werden geladen...</div>
             </li>
           )}
+          
+          {/* Support Button */}
+          <li>
+            <button 
+              onClick={() => window.setShowSupportModal && window.setShowSupportModal(true)}
+              className="home__link-main home__link-button"
+            >
+              Support
+            </button>
+          </li>
           
           {/* Admin Dashboard nur für Admins */}
           {isAuthenticated && isAdmin() && (

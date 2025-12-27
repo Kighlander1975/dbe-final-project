@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\SupportController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,9 @@ Route::get('/admin/settings/debug_server_error', [AdminSettingController::class,
 
 // ⭐ Public Count-Up Duration (ÖFFENTLICH, für Animation)
 Route::get('/settings/count_up_duration', [AdminSettingController::class, 'getCountUpDuration']);
+
+// ⭐ Public Support Create (ÖFFENTLICH, für Support-Tickets)
+Route::post('/support', [SupportController::class, 'store']);
 
 // Protected routes (Email verified required)
 Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(function () {
@@ -117,5 +121,13 @@ Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->group(functio
         Route::get('/', [RankingController::class, 'index']); // Top-Rankings
         Route::get('/stats', [RankingController::class, 'stats']); // Ranking-Übersicht
         Route::get('/{userId}', [RankingController::class, 'show']); // Persönliche Details
+    });
+
+    // ⭐ Support routes (auth required)
+    Route::prefix('support')->group(function () {
+        Route::get('/', [SupportController::class, 'index']); // Admin only
+        Route::get('/{id}', [SupportController::class, 'show']); // User or Admin
+        Route::patch('/{id}', [SupportController::class, 'update']); // User or Admin with restrictions
+        Route::delete('/{id}', [SupportController::class, 'destroy']); // Admin only
     });
 });

@@ -38,6 +38,29 @@ function MainLayout() {
     // Modal States
     const [showImprintModal, setShowImprintModal] = useState(false);
     const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+    const [showSupportModal, setShowSupportModal] = useState(false);
+
+    // Support Form State
+    const [supportForm, setSupportForm] = useState({
+        title: '',
+        urgency: '2 - info',
+        email: '',
+        message: ''
+    });
+
+    // Handle Support Form Change with Char Limit
+    const handleSupportChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'message' && value.length > 5000) return;
+        setSupportForm({ ...supportForm, [name]: value });
+    };
+
+    // Handle Support Form Submit
+    const handleSupportSubmit = (e) => {
+        e.preventDefault();
+        console.log('Support Form Data:', supportForm);
+        // TODO: Send to API
+    };
 
     // ⭐ Function to refresh active game status
     const refreshActiveGame = async () => {
@@ -77,6 +100,14 @@ function MainLayout() {
             delete window.refreshDebugMode;
         };
     }, []);
+
+    // Expose setShowSupportModal globally
+    useEffect(() => {
+        window.setShowSupportModal = setShowSupportModal;
+        return () => {
+            delete window.setShowSupportModal;
+        };
+    }, [setShowSupportModal]);
 
     // ⭐ Function to load app version
     const loadAppVersion = async () => {
@@ -388,6 +419,12 @@ function MainLayout() {
                         >
                             Datenschutzerklärung
                         </button>
+                        <button 
+                            onClick={() => setShowSupportModal(true)}
+                            className="footer-link"
+                        >
+                            Support
+                        </button>
                     </div>
                     <div className="footer-links-desktop">
                         <button 
@@ -402,6 +439,13 @@ function MainLayout() {
                             className="footer-link"
                         >
                             Datenschutzerklärung
+                        </button>
+                        <span className="footer-separator">|</span>
+                        <button 
+                            onClick={() => setShowSupportModal(true)}
+                            className="footer-link"
+                        >
+                            Support
                         </button>
                     </div>
                 </div>
@@ -532,6 +576,101 @@ function MainLayout() {
                                 className="btn btn-primary"
                             >
                                 OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Support Modal */}
+            {showSupportModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content modal-content--support">
+                        <button 
+                            onClick={() => setShowSupportModal(false)}
+                            className="modal-close modal-close--top-right"
+                            aria-label="Schließen"
+                        >
+                            ×
+                        </button>
+                        <div className="modal-header">
+                            <h2>Support</h2>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={handleSupportSubmit} className="support-form" id="support-form">
+                                <div className="form-group form-group--inline">
+                                    <label htmlFor="support-title">Art des Problems:</label>
+                                    <select
+                                        id="support-title"
+                                        name="title"
+                                        value={supportForm.title}
+                                        onChange={handleSupportChange}
+                                        required
+                                    >
+                                        <option value="">Bitte wählen...</option>
+                                        <option value="Bug gefunden">Bug gefunden</option>
+                                        <option value="Login-/Registrierungsproblem">Login-/Registrierungsproblem</option>
+                                        <option value="sonstiges Problem">sonstiges Problem</option>
+                                        <option value="Nachricht an Admin">Nachricht an Admin</option>
+                                    </select>
+                                </div>
+                                <div className="form-group form-group--inline">
+                                    <label htmlFor="support-urgency">Dringlichkeit:</label>
+                                    <select
+                                        id="support-urgency"
+                                        name="urgency"
+                                        value={supportForm.urgency}
+                                        onChange={handleSupportChange}
+                                    >
+                                        <option value="1 - notice">1 - notice</option>
+                                        <option value="2 - info">2 - info</option>
+                                        <option value="3 - warning">3 - warning</option>
+                                        <option value="4 - danger">4 - danger</option>
+                                    </select>
+                                </div>
+                                <div className="form-group form-group--inline">
+                                    <label htmlFor="support-email">E-Mail-Adresse:</label>
+                                    <input
+                                        type="email"
+                                        id="support-email"
+                                        name="email"
+                                        value={supportForm.email}
+                                        onChange={handleSupportChange}
+                                        placeholder="deine@email.de"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group form-group--full">
+                                    <label htmlFor="support-message">Nachricht:</label>
+                                    <textarea
+                                        id="support-message"
+                                        name="message"
+                                        value={supportForm.message}
+                                        onChange={handleSupportChange}
+                                        rows="4"
+                                        maxLength="5000"
+                                        required
+                                    ></textarea>
+                                    <div className="char-counter">
+                                        {5000 - supportForm.message.length} Zeichen verbleibend
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button 
+                                type="button"
+                                onClick={() => setShowSupportModal(false)}
+                                className="btn btn-secondary"
+                            >
+                                Abbrechen
+                            </button>
+                            <button 
+                                type="submit"
+                                form="support-form"
+                                className="btn btn-primary"
+                            >
+                                Absenden
                             </button>
                         </div>
                     </div>

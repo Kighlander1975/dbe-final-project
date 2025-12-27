@@ -17,7 +17,7 @@ function Regeln() {
   return (
     <div className="regeln">
       <Link to="/" className="regeln__back-link">← Zurück zur Startseite</Link>
-      <h1>🎯 Spielregeln</h1>
+      <h1 dangerouslySetInnerHTML={{__html: "🎯 Spiel&shy;regeln"}} />
 
       <section className="regeln__intro">
         <p>
