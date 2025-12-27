@@ -111,21 +111,31 @@ class SupportController extends Controller
 
         // Status ändern
         if ($request->has('status')) {
-            if ($request->status === 'Fehlmeldung' && $support->status === 'offen' && $user->email === $support->email) {
-                // User kann Status auf Fehlmeldung setzen, wenn Ticket offen ist
-            } elseif ($request->status === 'offen' && $user->email === $support->email) {
-                // User kann Status auf offen setzen (wird automatisch gemacht bei Änderungen)
-            } elseif ($user->isAdmin()) {
-                // Admin kann alles
+            if ($user->isAdmin()) {
+                // Admin kann jeden Status setzen
+                $support->status = $request->status;
+            } elseif ($user->email === $support->email) {
+                // User kann nur bestimmte Status-Änderungen machen
+                if ($request->status === 'Fehlmeldung' && in_array($support->status, ['offen', 'in Bearbeitung'])) {
+                    // User kann Status auf Fehlmeldung setzen, wenn Ticket offen oder in Bearbeitung ist
+                    $support->status = $request->status;
+                } elseif ($request->status === 'geschlossen' && $support->status === 'Fehlmeldung') {
+                    // User kann Fehlmeldung-Tickets schließen
+                    $support->status = $request->status;
+                } elseif ($request->status === 'offen') {
+                    // User kann Status auf offen setzen (wird automatisch gemacht bei Änderungen)
+                    $support->status = $request->status;
+                } else {
+                    return response()->json(['error' => 'Invalid status change for user'], 403);
+                }
             } else {
                 return response()->json(['error' => 'Cannot change status'], 403);
             }
-            $support->status = $request->status;
         }
 
         // Message ändern
         if ($request->has('message')) {
-            if ($user->is_admin || $user->email === $support->email) {
+            if ($user->isAdmin() || $user->email === $support->email) {
                 $support->message = $request->message;
             } else {
                 return response()->json(['error' => 'Cannot change message'], 403);
@@ -134,7 +144,7 @@ class SupportController extends Controller
 
         // Urgency ändern
         if ($request->has('urgency')) {
-            if ($user->is_admin || $user->email === $support->email) {
+            if ($user->isAdmin() || $user->email === $support->email) {
                 $support->urgency = $request->urgency;
             } else {
                 return response()->json(['error' => 'Cannot change urgency'], 403);
