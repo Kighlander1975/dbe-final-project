@@ -1,0 +1,120 @@
+/* src/styles/pages/support-tickets.css */
+
+.support-tickets {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.support-tickets h1 {
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.loading, .no-tickets {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.tickets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ticket-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 4px solid #007bff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ticket-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.ticket-title {
+    font-weight: bold;
+    font-size: 1.05em;
+    color: #333;
+}
+
+.ticket-status {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+}
+
+/* Status colors */
+.status-offen {
+    background-color: #dc3545; /* light red */
+}
+
+.status-bearbeitung {
+    background-color: #ffc107; /* light yellow */
+    color: #333;
+}
+
+.status-gelesen {
+    background-color: #17a2b8; /* light blue */
+}
+
+.status-fehl {
+    background-color: #28a745; /* light green */
+}
+
+.status-geschlossen {
+    background-color: #6c757d; /* darker green/gray */
+}
+
+.ticket-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.ticket-message {
+    color: #555;
+    line-height: 1.4;
+    font-size: 0.95em;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .support-tickets {
+        padding: 10px;
+    }
+
+    .ticket-card {
+        padding: 15px;
+    }
+
+    .ticket-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .ticket-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+}

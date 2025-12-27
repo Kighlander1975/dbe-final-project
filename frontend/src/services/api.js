@@ -540,6 +540,21 @@ const gameAPI = {
             method: "GET",
         });
     },
+
+    // Get single support ticket
+    getSupportTicket: async (id) => {
+        return apiRequest(`/support/${id}`, {
+            method: "GET",
+        });
+    },
+
+    // Update support ticket
+    updateSupportTicket: async (id, data) => {
+        return apiRequest(`/support/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify(data),
+        });
+    },
 };
 
 // Stats API Endpoints

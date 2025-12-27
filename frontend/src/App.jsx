@@ -30,6 +30,8 @@ import GameEvaluation from './pages/GameEvaluation'; // 🆕 Neue Auswertungssei
 import Game from './pages/Game';
 import Rankings from './pages/Rankings';
 import PlayerDetails from './pages/PlayerDetails';
+import SupportTickets from './pages/SupportTickets';
+import SupportTicketEdit from './pages/SupportTicketEdit';
 
 // Pages - Admin
 import Dashboard from "./pages/admin/Dashboard";
@@ -139,6 +141,22 @@ function App() {
                     element: (
                         <ProtectedRoute>
                             <PlayerDetails />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: "/support-tickets",
+                    element: (
+                        <ProtectedRoute>
+                            <SupportTickets />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: "/support-tickets/:id/edit",
+                    element: (
+                        <ProtectedRoute>
+                            <SupportTicketEdit />
                         </ProtectedRoute>
                     ),
                 },
