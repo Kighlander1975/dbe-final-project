@@ -284,6 +284,116 @@ function SupportTicketEdit() {
             </form>
         </div>
     )
+
+    // Loading overlay outside return statement
+    return saving ? (
+        <div className="loading-overlay">
+            <div className="loading-content">
+                <div className="loading-spinner"></div>
+                <p className="loading-text">Ticket wird gespeichert...</p>
+            </div>
+        </div>
+    ) : (
+        <div className="support-ticket-edit">
+            <h1>Support-Ticket bearbeiten</h1>
+
+            <div className="ticket-info">
+                <div className="info-item">
+                    <strong>Ticket-ID:</strong> #{ticket.id}
+                </div>
+                <div className="info-item">
+                    <strong>Erstellt:</strong> {new Date(ticket.created_at).toLocaleString('de-DE')}
+                </div>
+                <div className="info-item">
+                    <strong>E-Mail:</strong> {ticket.email}
+                </div>
+            </div>
+
+            <form onSubmit={handleSave} className="edit-form">
+                <div className="form-group">
+                    <label htmlFor="title">Betreff</label>
+                    <select
+                        id="title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        disabled={!canEdit}
+                        required
+                    >
+                        <option value="Bug gefunden">Bug gefunden</option>
+                        <option value="Login-/Registrierungsproblem">Login-/Registrierungsproblem</option>
+                        <option value="sonstiges Problem">sonstiges Problem</option>
+                        <option value="Nachricht an Admin">Nachricht an Admin</option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="urgency">Dringlichkeit</label>
+                    <select
+                        id="urgency"
+                        name="urgency"
+                        value={formData.urgency}
+                        onChange={handleChange}
+                        disabled={!canEdit}
+                        required
+                    >
+                        <option value="1 - notice">1 - notice</option>
+                        <option value="2 - info">2 - info</option>
+                        <option value="3 - warning">3 - warning</option>
+                        <option value="4 - danger">4 - danger</option>
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="status">Status</label>
+                    <select
+                        id="status"
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                        disabled={!canEdit}
+                        required
+                    >
+                        {getStatusOptions().map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="message">Nachricht</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        disabled={!canEdit}
+                        rows={6}
+                        required
+                    />
+                </div>
+
+                {canEdit ? (
+                    <div className="form-actions">
+                        <button type="submit" disabled={saving} className="btn-save">
+                            {saving ? 'Speichern...' : 'Speichern'}
+                        </button>
+                        <button type="button" onClick={handleCancel} className="btn-cancel">
+                            Abbrechen
+                        </button>
+                    </div>
+                ) : (
+                    <div className="form-actions">
+                        <button type="button" onClick={handleCancel} className="btn-cancel">
+                            Zurück
+                        </button>
+                    </div>
+                )}
+            </form>
+        </div>
+    )
 }
 
 export default SupportTicketEdit
