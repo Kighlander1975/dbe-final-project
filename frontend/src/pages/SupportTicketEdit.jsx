@@ -92,7 +92,10 @@ function SupportTicketEdit() {
 
             await gameAPI.updateSupportTicket(id, dataToSend)
             showToast('Ticket wurde aktualisiert', 'success')
-            navigate('/support-tickets')
+            // Small delay to ensure toast is shown before navigation
+            setTimeout(() => {
+                navigate('/support-tickets')
+            }, 100)
         } catch (error) {
             console.error('Failed to update ticket:', error)
             showToast('Fehler beim Aktualisieren des Tickets', 'error')
