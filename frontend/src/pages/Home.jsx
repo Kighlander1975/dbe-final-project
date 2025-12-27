@@ -82,6 +82,13 @@ function Home() {
   useEffect(() => {
     loadUserGames();
     loadSupportTickets();
+
+    // Check for support ticket creation toast
+    const ticketCreated = localStorage.getItem('supportTicketCreated');
+    if (ticketCreated) {
+      showToast('Ticket erstellt', 'success');
+      localStorage.removeItem('supportTicketCreated');
+    }
   }, [isAuthenticated]);
 
   // Handler für geschützte Links

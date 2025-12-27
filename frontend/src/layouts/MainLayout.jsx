@@ -79,14 +79,9 @@ function MainLayout() {
 
         try {
             await publicAPI.submitSupport(dataToSend);
-            showToast('Support-Anfrage erfolgreich gesendet', 'success');
             setShowSupportModal(false);
-            setSupportForm({
-                title: '',
-                urgency: '2 - info',
-                email: user ? user.email : '',
-                message: ''
-            });
+            localStorage.setItem('supportTicketCreated', 'true');
+            window.location.href = '/';
         } catch (error) {
             console.error('Support submit error:', error);
             showToast('Fehler beim Senden der Support-Anfrage', 'error');
@@ -214,6 +209,15 @@ function MainLayout() {
             }
         }
     }, []);
+
+    // Prefill support form email with user email
+    useEffect(() => {
+        if (user && user.email) {
+            setSupportForm(prev => ({ ...prev, email: user.email }));
+        } else {
+            setSupportForm(prev => ({ ...prev, email: '' }));
+        }
+    }, [user]);
 
     useEffect(() => {
         const checkDeviceAndOrientation = () => {
@@ -668,8 +672,9 @@ function MainLayout() {
                                         value={supportForm.email}
                                         onChange={handleSupportChange}
                                         placeholder="deine@email.de"
+                                        readOnly={!!user}
                                     />
-                                    <div className="muted-text">Wenn leer, wird anonym gesendet</div>
+                                    {!user && <div className="muted-text">Wenn leer, wird anonym gesendet</div>}
                                 </div>
                                 <div className="form-group form-group--full">
                                     <label htmlFor="support-message">Nachricht:</label>
