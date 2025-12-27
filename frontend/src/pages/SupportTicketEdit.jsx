@@ -61,7 +61,36 @@ function SupportTicketEdit() {
         setSaving(true)
 
         try {
-            await gameAPI.updateSupportTicket(id, formData)
+            // Check if any changes were made
+            const hasChanges = 
+                formData.title !== ticket.title ||
+                formData.urgency !== ticket.urgency ||
+                formData.message !== ticket.message ||
+                formData.status !== ticket.status
+
+            if (!hasChanges) {
+                showToast('Keine Änderungen vorgenommen', 'info')
+                setSaving(false)
+                return
+            }
+
+            // Check if only status changed to "Fehlmeldung"
+            const onlyStatusToFehlmeldung = 
+                formData.status === 'Fehlmeldung' && 
+                formData.status !== ticket.status &&
+                formData.title === ticket.title &&
+                formData.urgency === ticket.urgency &&
+                formData.message === ticket.message
+
+            // Prepare data to send
+            let dataToSend = { ...formData }
+
+            // If changes were made (and not only status to Fehlmeldung), set status to "offen"
+            if (!onlyStatusToFehlmeldung) {
+                dataToSend.status = 'offen'
+            }
+
+            await gameAPI.updateSupportTicket(id, dataToSend)
             showToast('Ticket wurde aktualisiert', 'success')
             navigate('/support-tickets')
         } catch (error) {
@@ -78,23 +107,38 @@ function SupportTicketEdit() {
     }
 
     // Check if user can edit this ticket
-    const canEdit = ticket && (user.email === ticket.email || isAdmin())
+    const canEdit = ticket && ticket.status !== 'geschlossen' && (user.email === ticket.email || isAdmin())
 
-    // Status options for users (limited)
-    const userStatusOptions = [
-        { value: 'Fehlmeldung', label: 'Fehlmeldung' }
-    ]
+    // Status options - always include current status, plus "offen" and "Fehlmeldung"
+    const getStatusOptions = () => {
+        const options = [
+            { value: ticket.status, label: getStatusLabel(ticket.status) }
+        ]
 
-    // Status options for admins (all)
-    const adminStatusOptions = [
-        { value: 'offen', label: 'Offen' },
-        { value: 'in Bearbeitung', label: 'In Bearbeitung' },
-        { value: 'gelesen', label: 'Gelesen' },
-        { value: 'Fehlmeldung', label: 'Fehlmeldung' },
-        { value: 'geschlossen', label: 'Geschlossen' }
-    ]
+        // Add "offen" if not already current
+        if (ticket.status !== 'offen') {
+            options.push({ value: 'offen', label: 'Offen' })
+        }
 
-    const statusOptions = isAdmin() ? adminStatusOptions : userStatusOptions
+        // Add "Fehlmeldung" if not already current
+        if (ticket.status !== 'Fehlmeldung') {
+            options.push({ value: 'Fehlmeldung', label: 'Fehlmeldung' })
+        }
+
+        return options
+    }
+
+    // Helper to get status label
+    const getStatusLabel = (status) => {
+        const labels = {
+            'offen': 'Offen',
+            'in Bearbeitung': 'In Bearbeitung',
+            'gelesen': 'Gelesen',
+            'Fehlmeldung': 'Fehlmeldung',
+            'geschlossen': 'Geschlossen'
+        }
+        return labels[status] || status
+    }
 
     if (loading) {
         return (
@@ -108,6 +152,20 @@ function SupportTicketEdit() {
         return (
             <div className="support-ticket-edit">
                 <div className="error">Ticket nicht gefunden</div>
+            </div>
+        )
+    }
+
+    if (ticket.status === 'geschlossen') {
+        return (
+            <div className="support-ticket-edit">
+                <h1>Support-Ticket geschlossen</h1>
+                <div className="closed-ticket">
+                    <p>Dieses Support-Ticket wurde bereits geschlossen und kann nicht mehr bearbeitet werden.</p>
+                    <button type="button" onClick={() => navigate('/support-tickets')} className="btn-cancel">
+                        Zurück zur Übersicht
+                    </button>
+                </div>
             </div>
         )
     }
@@ -173,7 +231,7 @@ function SupportTicketEdit() {
                         disabled={!canEdit}
                         required
                     >
-                        {statusOptions.map(option => (
+                        {getStatusOptions().map(option => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>

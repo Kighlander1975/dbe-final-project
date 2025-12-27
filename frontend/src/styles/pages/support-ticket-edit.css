@@ -22,6 +22,19 @@
     color: #dc3545;
 }
 
+.closed-ticket {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    border-left: 4px solid #6c757d;
+}
+
+.closed-ticket p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
 .ticket-info {
     background: #f8f9fa;
     border-radius: 8px;

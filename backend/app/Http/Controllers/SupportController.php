@@ -103,6 +103,11 @@ class SupportController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        // Geschlossene Tickets können nicht bearbeitet werden
+        if ($support->status === 'geschlossen') {
+            return response()->json(['error' => 'Cannot edit closed ticket'], 403);
+        }
+
         // Status ändern
         if ($request->has('status')) {
             if ($request->status === 'Fehlmeldung' && $support->status === 'offen' && $user->email === $support->email) {
