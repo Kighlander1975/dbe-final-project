@@ -256,7 +256,7 @@
 }
 
 @media (max-width: 768px) {
-  .main-layout__nav {
+  .main-layout__nav:not(.main-layout__nav--home) {
     flex-direction: column;
     gap: 1rem;
   }
@@ -269,6 +269,26 @@
   
   .main-layout__logo {
     font-size: 1.5rem;
+  }
+  
+  .main-layout__main {
+    padding: 0;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .footer-links-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .footer-links-desktop {
+    display: none;
   }
 }
 
@@ -283,6 +303,16 @@
 }
 
 .footer-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-links-mobile {
+  display: none;
+}
+
+.footer-links-desktop {
   display: flex;
   align-items: center;
   gap: 0.5rem;

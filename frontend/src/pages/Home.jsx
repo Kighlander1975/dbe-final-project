@@ -85,7 +85,7 @@ function Home() {
 
   return (
     <div className="home">
-      <h1 className="home__title">🏠 Startseite</h1>
+      <h1 className="home__title">Startseite</h1>
       <p className="home__subtitle">
         Willkommen beim Stechen Helper{isAuthenticated && user ? `, ${user.name}` : ''}!
       </p>
@@ -94,12 +94,12 @@ function Home() {
         <ul className="home__menu">
           <li>
             <Link to="/">
-              <div className="home__link-main">🏠 Startseite</div>
+              <div className="home__link-main">Startseite</div>
             </Link>
           </li>
           <li>
             <Link to="/regeln">
-              <div className="home__link-main">🎯 Spielregeln</div>
+              <div className="home__link-main">Spielregeln</div>
             </Link>
           </li>
           
@@ -125,7 +125,7 @@ function Home() {
               {userGames.filter(game => game.status === 'active').length > 0 && (
                 <>
                   <li className="home__section-header">
-                    <div className="home__link-main">🎯 Aktive Spiele</div>
+                    <div className="home__link-main">Aktive Spiele</div>
                     <div className="home__link-sub">Klicke zum Weiterspielen</div>
                   </li>
                   {userGames.filter(game => game.status === 'active').map((game) => (
@@ -135,7 +135,7 @@ function Home() {
                         className="home__link--with-sub home__link-button home__link-button--active"
                       >
                         <div className="home__link-main">
-                          🎯 Spiel weiterführen
+                          Spiel weiterführen
                         </div>
                         <div className="home__link-sub">
                           {(() => {
@@ -206,7 +206,7 @@ function Home() {
               ) : (
                 <li>
                   <span className="home__link-disabled" title="Maximum an offenen Spielen erreicht">
-                    <div className="home__link-main">🎮 Neues Spiel (Max. erreicht)</div>
+                    <div className="home__link-main">Neues Spiel (Max. erreicht)</div>
                     <div className="home__link-sub">Max. 3 Spiele erlaubt</div>
                   </span>
                 </li>
@@ -217,7 +217,7 @@ function Home() {
           {/* Lade-Status für Spiele */}
           {isAuthenticated && loadingGames && (
             <li>
-              <div className="home__link-main">⏳ Spiele werden geladen...</div>
+              <div className="home__link-main">Spiele werden geladen...</div>
             </li>
           )}
           

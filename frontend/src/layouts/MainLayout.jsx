@@ -161,8 +161,8 @@ function MainLayout() {
             const isHomePage = location.pathname === '/';
 
             // Geräte-Erkennung
-            if (width < 768) {
-                // Telefon - immer blocken (außer vielleicht Home, aber vorerst alles)
+            if (width < 768 && !isHomePage) {
+                // Telefon - blocken, außer auf Home-Seite
                 setDeviceStatus({
                     isAllowed: false,
                     reason: 'phone'
@@ -222,7 +222,7 @@ function MainLayout() {
             <LoadingOverlay />
 
             <header className="main-layout__header">
-                <nav className="main-layout__nav">
+                <nav className={`main-layout__nav ${location.pathname === '/' ? 'main-layout__nav--home' : ''}`}>
                     <div className="main-layout__logo-container">
                         <button onClick={() => handleNavigate('/')} className="main-layout__logo">
                             🎯 Stechen Helper
@@ -375,7 +375,21 @@ function MainLayout() {
             <footer className="main-layout__footer">
                 <div className="footer-content">
                     <p>© 2025 Stechen Helper - Alle Rechte vorbehalten</p>
-                    <div className="footer-links">
+                    <div className="footer-links-mobile">
+                        <button 
+                            onClick={() => setShowImprintModal(true)}
+                            className="footer-link"
+                        >
+                            Impressum
+                        </button>
+                        <button 
+                            onClick={() => setShowPrivacyModal(true)}
+                            className="footer-link"
+                        >
+                            Datenschutzerklärung
+                        </button>
+                    </div>
+                    <div className="footer-links-desktop">
                         <button 
                             onClick={() => setShowImprintModal(true)}
                             className="footer-link"
